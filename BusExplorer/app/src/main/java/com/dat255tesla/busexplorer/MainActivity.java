@@ -1,5 +1,6 @@
 package com.dat255tesla.busexplorer;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
@@ -8,6 +9,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+
+import java.util.ArrayList;
 
 public class MainActivity extends FragmentActivity {
     private BusMap bMap;
@@ -62,12 +66,27 @@ public class MainActivity extends FragmentActivity {
      */
     private void setUpMap() {
         mMap.setMyLocationEnabled(true);
-        if(mMap.getMyLocation() != null){ //Note that GoogleMap.getMyLocation() is deprecated and only used for testing
-            LatLng latlng = new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude());
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 18));
-        } else{
-            Toast.makeText(getApplicationContext(), "getMyLocation() gives null", Toast.LENGTH_LONG).show();
+        Location myLoc;
+
+        while(true) {
+            myLoc = mMap.getMyLocation();
+            if (myLoc != null)
+                break;
         }
+
+        bMap = new BusMap(mMap);
+        bMap.addMarker(new LatLng(38.906734, 1.420598));
+        bMap.addMarker(new LatLng(57.708870, 11.974560));
+        bMap.addMarker(new LatLng(51.507351, -0.127758));
+        bMap.addMarker(new LatLng(59.913869, 10.752245));
+        ArrayList<Marker> toRemove;
+        toRemove = bMap.getMarkersInRange(myLoc, 50);
+
+        for (Marker m : toRemove)
+            bMap.removeMarker(m);
+
+        LatLng latlng = new LatLng(myLoc.getLatitude(), myLoc.getLongitude());
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 18));
     }
 
 }
