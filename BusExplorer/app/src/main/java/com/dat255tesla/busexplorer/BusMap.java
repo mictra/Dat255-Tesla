@@ -24,18 +24,18 @@ public class BusMap {
         markers = new HashSet<>();
     }
 
+    @Deprecated
     public boolean addMarker(LatLng lat) {
         MarkerOptions marker = new MarkerOptions().position(lat);
         return markers.add(map.addMarker(marker));
     }
 
-    // Experiment - don't actually use this
-    public boolean removeMarker(Marker m) {
-        return markers.remove(m);
+    public boolean addMarker(MarkerOptions opt) {
+        return markers.add(map.addMarker(opt));
     }
 
     public ArrayList<Marker> getMarkersInRange(Location center, int maxDist) {
-        ArrayList<Marker> out = new ArrayList<Marker>();
+        ArrayList<Marker> out = new ArrayList<>();
         Location tempLoc = new Location("temp");
 
         for (Marker temp : markers) {
@@ -49,7 +49,38 @@ public class BusMap {
                 out.add(temp);
             }
         }
-
         return out;
+    }
+
+    /**
+     * Returns a {@link LatLng} that has the same positional properties as the supplied
+     * {@link Location}
+     * Useful for easily switching between the normal Location class used by Android and the LatLng
+     * class that is used by the Google Maps V2 API.
+     *
+     * @param loc   An existing object with a latitude and longitude
+     * @return      A new LatLng instance at provided Location.
+     * @see         LatLng
+     */
+    public static LatLng LocToLatLng (Location loc) {
+        return new LatLng(loc.getLatitude(), loc.getLongitude());
+    }
+
+    /**
+     * Returns a {@link Location} that has the same positional properties as the supplied
+     * {@link LatLng}
+     * Useful for easily switching between the normal Location class used by Android and the LatLng
+     * class that is used by the Google Maps V2 API.
+     *
+     * @param latlng An existing object with a latitude and longitude
+     * @param name   A name/identifier used by the Location class
+     * @return       A new Location instance at provided LatLng
+     * @see          Location
+     */
+    public static Location LatLngToLoc (LatLng latlng, String name) {
+        Location loc = new Location(name);
+        loc.setLatitude(latlng.latitude);
+        loc.setLongitude(latlng.longitude);
+        return loc;
     }
 }
