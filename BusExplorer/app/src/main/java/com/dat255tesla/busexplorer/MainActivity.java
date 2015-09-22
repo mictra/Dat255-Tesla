@@ -1,29 +1,39 @@
 package com.dat255tesla.busexplorer;
 
+import com.google.android.gms.maps.SupportMapFragment;
+
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
-    private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private BusMap bMap;
+    private GoogleMap mMap;
+    private Location pretendLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        pretendLocation = new Location("pretend");
+        // (57.707373, 11.973864) - "Nära" (<2km) göteborgsmarkören
+        pretendLocation.setLatitude(57.707373);
+        pretendLocation.setLongitude(11.973864);
+
         setUpMapIfNeeded();
     }
 
@@ -88,21 +98,43 @@ public class MainActivity extends AppCompatActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.setMyLocationEnabled(true);
-        if(mMap.getMyLocation() != null){ //Note that GoogleMap.getMyLocation() is deprecated and only used for testing
-            LatLng latlng = new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude());
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 18));
-        } else{
-            Toast.makeText(getApplicationContext(), "getMyLocation() gives null", Toast.LENGTH_LONG).show();
-        }
+        bMap = new BusMap(mMap);
+        bMap.addMarker(new LatLng(38.906734, 1.420598));
+        bMap.addMarker(new LatLng(57.708870, 11.974560));   // Göteborg
+        bMap.addMarker(new LatLng(51.507351, -0.127758));
+        bMap.addMarker(new LatLng(59.913869, 10.752245));
+
+        bMap.addMarker(new MarkerOptions().position(BusMap.LocToLatLng(pretendLocation))
+                .draggable(true)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+
+        LatLng latlng = new LatLng(pretendLocation.getLatitude(), pretendLocation.getLongitude());
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 18));
+
+        // EXPERIMENTERING!!
+        // Bra att veta: det finns mer lyssnare (och callbacks) än bara OnMapClickListener()
+        // skriv GoogleMap.On utanför kommentaren och se alternativen!
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                bMap.addMarker(new MarkerOptions().position(latLng).draggable(true).icon(
+                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+
+                ArrayList<Marker> nearMyLocation =
+                        bMap.getMarkersInRange(pretendLocation, 5000);
+
+                Toast.makeText(getApplicationContext(),
+                        nearMyLocation.size() + " markers within 5000 meters (of cyan)",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
-    * Open the Settings
-    */
+     * Open the Settings
+     */
     private void openSettings() {
         Intent intent = new Intent(this, Settings.class);
         startActivity(intent);
     }
-
 }
