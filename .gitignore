@@ -16,7 +16,6 @@ gen/
 .gradle/
 build/
 /*/build/
-.idea/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -26,3 +25,13 @@ proguard/
 
 # Log Files
 *.log
+
+# Files in .idea
+./BusExplorer/.idea/workspace.xml
+./BusExplorer/.idea/gradle.xml
+./BusExplorer/.idea/misc.xml
+./BusExplorer/.idea/runConfigurations.xml
+./BusExplorer/.idea/vcs.xml
+./BusExplorer/.idea/modules.xml
+./BusExplorer/.idea/compiler.xml
+./BusExplorer/.idea/encodings.xml
