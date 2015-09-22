@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,6 +35,14 @@ public class MainActivity extends AppCompatActivity {
         // (57.707373, 11.973864) - "Nära" (<2km) göteborgsmarkören
         pretendLocation.setLatitude(57.707373);
         pretendLocation.setLongitude(11.973864);
+
+        // Temp-list below map
+        String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, sites);
+
+        ListView listView = (ListView) findViewById(R.id.listBelowMap);
+        listView.setAdapter(adapter);
 
         setUpMapIfNeeded();
     }
