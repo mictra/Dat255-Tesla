@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BusExplorer</string>
+    <string name="action_settings">Inställningar</string>
+    <string name="google_maps_key" translatable="false"></string>
+    <string name="hello_world">Hej</string>
+    <string name="title_activity_maps">Karta</string>
+    <string name="title_activity_settings">Inställningar</string>
+    <string name="TestBox">Testlåda</string>
+</resources>
