@@ -14,11 +14,9 @@
         tools:context="com.dat255tesla.busexplorer.MainActivity" />
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="0.5"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
         android:gravity="center"
         android:orientation="vertical">
 
