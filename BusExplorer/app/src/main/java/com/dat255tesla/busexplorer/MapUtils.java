@@ -1,52 +1,29 @@
 package com.dat255tesla.busexplorer;
 
 import android.location.Location;
-import android.support.v4.app.FragmentActivity;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 
 /**
- * Created by roy lena on 2015-09-16.
+ * Created by roy lena on 2015-09-23.
  */
-public class BusMap {
-    private GoogleMap map; // Might be null if Google Play services APK is not available.
-    private HashSet<Marker> markers;
+public class MapUtils {
+    public static ArrayList<Marker> MarkersInRange(HashMap<Marker, InfoNode> map, Location center,
+                                                   int maxDist) {
 
-    public BusMap(GoogleMap map) {
-        this.map = map;
-
-        markers = new HashSet<>();
-    }
-
-    @Deprecated
-    public boolean addMarker(LatLng lat) {
-        MarkerOptions marker = new MarkerOptions().position(lat);
-        return markers.add(map.addMarker(marker));
-    }
-
-    public boolean addMarker(MarkerOptions opt) {
-        return markers.add(map.addMarker(opt));
-    }
-
-    public ArrayList<Marker> getMarkersInRange(Location center, int maxDist) {
         ArrayList<Marker> out = new ArrayList<>();
-        Location tempLoc = new Location("temp");
+        Location tempLoc;
 
-        for (Marker temp : markers) {
-            LatLng tempPos = temp.getPosition();
-            tempLoc.setLatitude(tempPos.latitude);
-            tempLoc.setLongitude(tempPos.longitude);
+        for (Marker key : map.keySet()) {
+            tempLoc = LatLngToLoc(key.getPosition(), "temp");
 
             float distance = center.distanceTo(tempLoc);
-
             if (distance < maxDist) {
-                out.add(temp);
+                out.add(key);
             }
         }
         return out;
