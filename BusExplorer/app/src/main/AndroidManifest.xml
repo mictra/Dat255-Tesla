@@ -49,6 +49,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dat255tesla.busexplorer.MainActivity" />
         </activity>
+        <activity
+            android:name=".DetailView"
+            android:label="@string/title_activity_detail_view"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dat255tesla.busexplorer.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

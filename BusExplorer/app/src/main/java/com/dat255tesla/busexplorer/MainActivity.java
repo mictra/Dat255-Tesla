@@ -55,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
+            case R.id.action_detailview:
+                openDetailView();
+                return true;
             case R.id.action_settings:
                 openSettings();
                 return true;
@@ -135,6 +138,16 @@ public class MainActivity extends AppCompatActivity {
      */
     private void openSettings() {
         Intent intent = new Intent(this, Settings.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Open the Detailview
+     * This is just a temporary method. Will be moved to ListView-listener once available.
+     */
+
+    private void openDetailView() {
+        Intent intent = new Intent(this, DetailView.class);
         startActivity(intent);
     }
 }

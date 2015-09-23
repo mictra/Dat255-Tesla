@@ -6,4 +6,6 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_settings">Settings</string>
     <string name="app_settings">Settings</string>
+    <string name="title_activity_detail_view">DetailView</string>
+    <string name="action_detailview">DetailView</string>
 </resources>
