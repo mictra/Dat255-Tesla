@@ -1,13 +1,18 @@
 package com.dat255tesla.busexplorer;
 
+import com.google.android.gms.maps.SupportMapFragment;
+
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -16,12 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-<<<<<<< Updated upstream
-public class MainActivity extends FragmentActivity {
-    private BusMap bMap;
-=======
 public class MainActivity extends AppCompatActivity {
->>>>>>> Stashed changes
     private GoogleMap mMap;
     private HashMap<Marker, InfoNode> markers;
 
@@ -50,6 +50,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_activity_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_detailview:
+                openDetailView();
+                return true;
+            case R.id.action_settings:
+                openSettings();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
@@ -127,5 +150,23 @@ public class MainActivity extends AppCompatActivity {
         busStopOptions.position(latLng)
                 .title(info.getTitle());
         markers.put(mMap.addMarker(busStopOptions), info);
+    }
+
+    /**
+     * Open the Settings
+     */
+    private void openSettings() {
+        Intent intent = new Intent(this, Settings.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Open the Detailview
+     * This is just a temporary method. Will be moved to ListView-listener once available.
+     */
+
+    private void openDetailView() {
+        Intent intent = new Intent(this, DetailView.class);
+        startActivity(intent);
     }
 }

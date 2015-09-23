@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">BusExplorer</string>
-
+    <string name="TestBox">Testbox</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="app_settings">Settings</string>
+    <string name="title_activity_detail_view">DetailView</string>
+    <string name="action_detailview">DetailView</string>
 </resources>
