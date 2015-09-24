@@ -19,11 +19,17 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
-    private BusMap bMap;
     private GoogleMap mMap;
+    private HashMap<Marker, InfoNode> markers;
+
+    private MarkerOptions busStopOptions;
+
+    // examples
     private Location pretendLocation;
+    private InfoNode exampleNode; //TODO: Create all InfoNodes from file or db
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
         // (57.707373, 11.973864) - "Nära" (<2km) göteborgsmarkören
         pretendLocation.setLatitude(57.707373);
         pretendLocation.setLongitude(11.973864);
+        exampleNode = new InfoNode("test", "information");
+        markers = new HashMap<>();
+
+        busStopOptions =  new MarkerOptions()
+                .alpha(0.8f)
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_01));
 
         setUpMapIfNeeded();
     }
@@ -95,22 +107,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
+     * This is where we can add markers or lines, add listeners or move the camera.
      * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        bMap = new BusMap(mMap);
-        bMap.addMarker(new LatLng(38.906734, 1.420598));
-        bMap.addMarker(new LatLng(57.708870, 11.974560));   // Göteborg
-        bMap.addMarker(new LatLng(51.507351, -0.127758));
-        bMap.addMarker(new LatLng(59.913869, 10.752245));
-
-        bMap.addMarker(new MarkerOptions().position(BusMap.LocToLatLng(pretendLocation))
-                .draggable(true)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
-
         LatLng latlng = new LatLng(pretendLocation.getLatitude(), pretendLocation.getLongitude());
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 18));
 
@@ -120,17 +121,38 @@ public class MainActivity extends AppCompatActivity {
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                bMap.addMarker(new MarkerOptions().position(latLng).draggable(true).icon(
-                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                addBusStop(latLng, exampleNode);
 
                 ArrayList<Marker> nearMyLocation =
-                        bMap.getMarkersInRange(pretendLocation, 5000);
+                        MapUtils.MarkersInRange(markers, pretendLocation, 5000);
 
                 Toast.makeText(getApplicationContext(),
                         nearMyLocation.size() + " markers within 5000 meters (of cyan)",
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_SHORT).show();
             }
         });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                String title = markers.get(marker).getTitle();
+                Toast.makeText(getApplicationContext(), title, Toast.LENGTH_SHORT).show();
+
+                return false;
+            }
+        });
+    }
+
+    /**
+     * Creates a new {@link Marker} which is used as a key with its information {@link InfoNode} as
+     * value in the busStops map.
+     * @param latLng    The position of the new bus stop in {@link LatLng} coordinates.
+     * @param info      Contains information about the bus stop.
+     */
+    private void addBusStop(LatLng latLng, InfoNode info) {
+        busStopOptions.position(latLng)
+                .title(info.getTitle());
+        markers.put(mMap.addMarker(busStopOptions), info);
     }
 
     /**
@@ -142,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Open the Detailview
+     * Open the DetailView
      * This is just a temporary method. Will be moved to ListView-listener once available.
      */
 
