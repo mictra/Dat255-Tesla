@@ -9,12 +9,14 @@ import android.util.Log;
  * Created by roy lena on 2015-09-24.
  */
 public class SQLiteHelper extends SQLiteOpenHelper {
-    private static final String TABLE_MARKERS = "markers";
-    private static final String COLUMN_ID = "_id";
-    private static final String COLUMN_TITLE = "title";
-    private static final String COLUMN_LAT = "lat";
-    private static final String COLUMN_LONG = "long";
-    private static final String COLUMN_INFO = "info";
+    public static final String TABLE_MARKERS = "markers";
+    public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_TITLE = "title";
+    public static final String COLUMN_LAT = "lat";
+    public static final String COLUMN_LNG = "lng";
+    public static final String COLUMN_TYPE = "type";
+    public static final String COLUMN_INFO = "info";
+    public static final String COLUMN_ADDR = "addr";
 
     private static final String DATABASE_NAME = "markers.db";
     private static final int DATABASE_VERSION = 1;
@@ -24,8 +26,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             + TABLE_MARKERS + "(" + COLUMN_ID
             + " integer primary key autoincrement, " + COLUMN_TITLE
             + " text not null" + COLUMN_LAT
-            + " real not null" + COLUMN_LONG
-            + " real not null" + COLUMN_INFO
+            + " real not null" + COLUMN_LNG
+            + " real not null" + COLUMN_TYPE
+            + " integer not null" + COLUMN_INFO
+            + " text not null" + COLUMN_ADDR
             + " text not null"
             + ");";
 
