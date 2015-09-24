@@ -4,8 +4,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class Settings extends AppCompatActivity {
+
+    CheckBox checkbox;
+    Button testbutton;
+    ToggleButton testtoggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,6 +25,39 @@ public class Settings extends AppCompatActivity {
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_settings);
+
+        checkbox = (CheckBox) findViewById(R.id.checkBox);
+        testbutton = (Button) findViewById(R.id.testbutton);
+        testtoggle = (ToggleButton) findViewById(R.id.testtoggleButton);
+
+        View.OnClickListener hello = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Pressed", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        testbutton.setOnClickListener(hello);
+
+
+        testtoggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Toast.makeText(getApplicationContext(), "ON", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "OFF", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
+                Toast.makeText(getApplicationContext(), "Checked", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
     }
 
     @Override
