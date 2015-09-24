@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,10 +30,20 @@ public class DetailView extends AppCompatActivity {
 
         addImagesToGallery();
 
-        TextView desc = (TextView) findViewById(R.id.dv_description);
-        desc.setText("Poseidon med brunnskar (eller Poseidonbrunnen) är en bronsskulptur som står på Götaplatsen i Göteborg. Statyn, som föreställer havsguden Poseidon, är skapad av Carl Milles och invigdes 1931. Den är ett av Göteborgs mest kända landmärken.");
-        desc.append("\n\nDen sju meter höga skulpturen håller en fisk i höger hand och en snäcka i vänster hand.");
-        desc.append("\n\nI brunnskaret återfinns sex mindre skulpturer och reliefer med olika vidunder, tritoner, najader, fiskar och sjöjungfrur. Brunskaret är 120 cm högt och själva poseidonskulpturen ytterligare 7 meter hög.[4] Statyn var från början tänkt att heta Neptunus, det romerska namnet på havets gud.[5] Brunskaret tillverkades vid Herman Bergmans bronsgjuteri i Stockholm men mittgrupperna med Poseidonskulpturen göts vid Lauriz Rasmussens Broncestøberi i Köpenhamn.");
+//        TextView desc = (TextView) findViewById(R.id.dv_description);
+//        desc.setText("Poseidon med brunnskar (eller Poseidonbrunnen) är en bronsskulptur som står på Götaplatsen i Göteborg. Statyn, som föreställer havsguden Poseidon, är skapad av Carl Milles och invigdes 1931. Den är ett av Göteborgs mest kända landmärken.");
+//        desc.append("\n\nDen sju meter höga skulpturen håller en fisk i höger hand och en snäcka i vänster hand.");
+//        desc.append("\n\nI brunnskaret återfinns sex mindre skulpturer och reliefer med olika vidunder, tritoner, najader, fiskar och sjöjungfrur. Brunskaret är 120 cm högt och själva poseidonskulpturen ytterligare 7 meter hög.[4] Statyn var från början tänkt att heta Neptunus, det romerska namnet på havets gud.[5] Brunskaret tillverkades vid Herman Bergmans bronsgjuteri i Stockholm men mittgrupperna med Poseidonskulpturen göts vid Lauriz Rasmussens Broncestøberi i Köpenhamn.");
+
+        WebView desc = (WebView) findViewById(R.id.dv_description);
+        String customHtml = "<html>"
+                + "<head>"
+                + "<style type=\"text/css\">"
+                + "body{color:green; text-align:left; font-size:11pt;}"
+                + "</style>"
+                + "</head>"
+                + "<body>Poseidon med brunnskar (eller Poseidonbrunnen) är en bronsskulptur som står på Götaplatsen i Göteborg. Statyn, som föreställer havsguden Poseidon, är skapad av Carl Milles och invigdes 1931. Den är ett av Göteborgs mest kända landmärken.<br /><br />Den sju meter höga skulpturen håller en fisk i höger hand och en snäcka i vänster hand.<br /><br />I brunnskaret återfinns sex mindre skulpturer och reliefer med olika vidunder, tritoner, najader, fiskar och sjöjungfrur. Brunskaret är 120 cm högt och själva poseidonskulpturen ytterligare 7 meter hög.[4] Statyn var från början tänkt att heta Neptunus, det romerska namnet på havets gud.[5] Brunskaret tillverkades vid Herman Bergmans bronsgjuteri i Stockholm men mittgrupperna med Poseidonskulpturen göts vid Lauriz Rasmussens Broncestøberi i Köpenhamn.</body></html>";
+        desc.loadData(customHtml, "text/html; charset=utf-8", "UTF-8");
 
     }
 
