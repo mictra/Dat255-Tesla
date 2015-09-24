@@ -1,11 +1,5 @@
 package com.dat255tesla.busexplorer;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.ArrayList;
-
 /**
  * Created by roy lena on 2015-09-23.
  */
