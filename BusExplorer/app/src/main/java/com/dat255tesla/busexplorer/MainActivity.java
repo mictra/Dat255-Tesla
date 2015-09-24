@@ -25,8 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private GoogleMap mMap;
     private HashMap<Marker, InfoNode> markers;
 
-    private static MarkerOptions busStopOptions = new MarkerOptions()
-            .alpha(0.8f); // example
+    private MarkerOptions busStopOptions;
 
     // examples
     private Location pretendLocation;
@@ -42,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
         pretendLocation.setLongitude(11.973864);
         exampleNode = new InfoNode("test", "information");
         markers = new HashMap<>();
+
+        busStopOptions =  new MarkerOptions()
+                .alpha(0.8f)
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_01));
 
         setUpMapIfNeeded();
     }
@@ -161,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Open the Detailview
+     * Open the DetailView
      * This is just a temporary method. Will be moved to ListView-listener once available.
      */
 

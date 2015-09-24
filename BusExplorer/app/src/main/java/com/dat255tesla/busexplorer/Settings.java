@@ -10,10 +10,11 @@ public class Settings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_settings);
-
     }
 
     @Override
