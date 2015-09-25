@@ -1,5 +1,8 @@
 package com.dat255tesla.busexplorer;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,14 +14,14 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-public class Settings extends AppCompatActivity {
+public class Settings extends AppCompatActivity implements View.OnClickListener {
+
+    public static final String PREFS_NAME = "MyPrefsFile";
 
     CheckBox checkbox;
-    Button testbutton;
-    ToggleButton testtoggle;
-
+    Button button;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
         assert getSupportActionBar() != null;
@@ -27,38 +30,53 @@ public class Settings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         checkbox = (CheckBox) findViewById(R.id.checkBox);
-        testbutton = (Button) findViewById(R.id.testbutton);
-        testtoggle = (ToggleButton) findViewById(R.id.testtoggleButton);
-
-        View.OnClickListener hello = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Pressed", Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        testbutton.setOnClickListener(hello);
-
-
-        testtoggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Toast.makeText(getApplicationContext(), "ON", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "OFF", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
-                Toast.makeText(getApplicationContext(), "Checked", Toast.LENGTH_SHORT).show();
-            }
-
-        });
+        button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(this);
+        loadSavedPreferences();
 
     }
+
+    private void loadSavedPreferences() {
+
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        boolean checkBoxValue = sharedPreferences.getBoolean("CheckBox_Value", false);
+
+        if (checkBoxValue) {
+            checkbox.setChecked(true);
+        } else {
+            checkbox.setChecked(false);
+        }
+
+    }
+
+    private void savePreferences(String key, boolean value) {
+
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(key, value);
+        editor.commit();
+
+    }
+
+    public void onClick(View v) {
+        savePreferences("CheckBox_Value", checkbox.isChecked());
+       //finish();
+        Toast.makeText(getApplicationContext(), "Settings saved", Toast.LENGTH_LONG).show();
+
+    }
+
+
+    @Override
+    public void onPause()
+    {
+
+
+        super.onPause();
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
