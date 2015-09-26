@@ -18,6 +18,15 @@
         android:layout_height="0dp"
         android:layout_weight="0.5">
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dev Mode"
+            android:id="@+id/b_devMode"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:onClick="openDeveloper"/>
     </RelativeLayout>
 
 </LinearLayout>

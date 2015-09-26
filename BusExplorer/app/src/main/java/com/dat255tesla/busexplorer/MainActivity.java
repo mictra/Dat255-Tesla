@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -134,6 +135,11 @@ public class MainActivity extends AppCompatActivity {
         busStopOptions.position(latLng)
                 .title(info.getTitle());
         markers.put(mMap.addMarker(busStopOptions), info);
+    }
+
+    public void openDeveloper(View view) {
+        Intent intent = new Intent(this, DeveloperActivity.class);
+        startActivity(intent);
     }
 
     /**

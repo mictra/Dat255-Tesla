@@ -22,15 +22,15 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     // SQL statement to create database
-    private static final String DATABASE_CREATE = "create table"
+    private static final String DATABASE_CREATE = "CREATE TABLE "
             + TABLE_MARKERS + "(" + COLUMN_ID
-            + " integer primary key autoincrement, " + COLUMN_TITLE
-            + " text not null" + COLUMN_LAT
-            + " real not null" + COLUMN_LNG
-            + " real not null" + COLUMN_TYPE
-            + " integer not null" + COLUMN_INFO
-            + " text not null" + COLUMN_ADDR
-            + " text not null"
+            + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_TITLE
+            + " TEXT NOT NULL, " + COLUMN_LAT
+            + " REAL NOT NULL, " + COLUMN_LNG
+            + " REAL NOT NULL, " + COLUMN_TYPE
+            + " INTEGER NOT NULL, " + COLUMN_INFO
+            + " TEXT NOT NULL, " + COLUMN_ADDR
+            + " TEXT"
             + ");";
 
     public SQLiteHelper (Context context) {
