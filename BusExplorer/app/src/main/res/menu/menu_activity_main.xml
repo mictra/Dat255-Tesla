@@ -5,6 +5,10 @@
         android:title="@string/action_detailview"
         android:orderInCategory="100"
         app:showAsAction="never" />
+    <item android:id="@+id/action_devmode"
+        android:title="@string/action_devmode"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"

@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,7 +18,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -71,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.action_settings:
                 openSettings();
+                return true;
+            case R.id.action_devmode:
+                openDevMode();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         markers.put(mMap.addMarker(busStopOptions), info);
     }
 
-    public void openDeveloper(View view) {
+    public void openDevMode() {
         Intent intent = new Intent(this, DeveloperActivity.class);
         startActivity(intent);
     }
