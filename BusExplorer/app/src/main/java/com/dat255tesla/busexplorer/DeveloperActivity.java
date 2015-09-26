@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.io.IOException;
@@ -16,11 +17,30 @@ public class DeveloperActivity extends AppCompatActivity {
     private InfoDataSource ds;
     private ListView list;
 
+    private EditText et_title;
+    private EditText et_lat;
+    private EditText et_lng;
+    private EditText et_type;
+    private EditText et_info;
+    private EditText et_addr;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_developer);
 
+        // Find all views
+        et_title    = (EditText) findViewById(R.id.et_Title);
+        et_lat      = (EditText) findViewById(R.id.et_Latitude);
+        et_lng      = (EditText) findViewById(R.id.et_Longitude);
+        et_type     = (EditText) findViewById(R.id.et_Type);
+        et_info     = (EditText) findViewById(R.id.et_Info);
+        et_addr     = (EditText) findViewById(R.id.et_Address);
+
+        list = (ListView) findViewById(R.id.lv_Database);
+
+        // Establish database connection
         ds = new InfoDataSource(this);
 
         try {
@@ -31,10 +51,9 @@ public class DeveloperActivity extends AppCompatActivity {
 
         List<InfoNode> values = ds.getAllInfoNodes();
 
-        list = (ListView) findViewById(R.id.lv_Database);
         // Adapt the values to fit a ListView
-        ArrayAdapter<InfoNode> adapter = new ArrayAdapter<InfoNode>(this,
-                android.R.layout.simple_list_item_1, values);
+        ArrayAdapter<InfoNode> adapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
         list.setAdapter(adapter);
     }
 
@@ -45,16 +64,15 @@ public class DeveloperActivity extends AppCompatActivity {
         InfoNode node;
         switch (view.getId()) {
             case R.id.b_AddEntry:
-                /*
-                String title = findViewById(R.id.et_Title).toString();
-                double lat = Double.parseDouble(findViewById(R.id.et_Latitude).toString());
-                double lng = Double.parseDouble(findViewById(R.id.et_Longitude).toString());
-                int type = Integer.parseInt(findViewById(R.id.et_Type).toString());
-                String info = findViewById(R.id.et_Info).toString();
-                String addr = findViewById(R.id.et_Address).toString();
-                */ 
+                String title = et_title.getText().toString();
+                double lat = Double.parseDouble(et_lat.getText().toString());
+                double lng = Double.parseDouble(et_lng.getText().toString());
+                int type = Integer.parseInt(et_type.getText().toString());
+                String info = et_info.getText().toString();
+                String addr = et_addr.getText().toString();
+
                 // save the new comment to the database
-                node = ds.createInfoNode("test", 2.32d, 2.32d, 1, "none", "none street 2");
+                node = ds.createInfoNode(title, lat, lng, type, info, addr);
                 adapter.add(node);
                 break;
             case R.id.b_DelEntry:
