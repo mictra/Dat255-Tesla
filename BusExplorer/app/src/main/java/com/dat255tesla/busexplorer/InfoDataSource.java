@@ -1,11 +1,10 @@
 package com.dat255tesla.busexplorer;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
