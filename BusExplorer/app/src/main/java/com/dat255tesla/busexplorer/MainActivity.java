@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
 
     // examples
     private Location pretendLocation;
-    private InfoNode exampleNode; //TODO: Create all InfoNodes from file or db
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
         // (57.707373, 11.973864) - "Nära" (<2km) göteborgsmarkören
         pretendLocation.setLatitude(57.707373);
         pretendLocation.setLongitude(11.973864);
-        exampleNode = new InfoNode("test", "information");
         markers = new HashMap<>();
 
         busStopOptions =  new MarkerOptions()
@@ -114,23 +112,6 @@ public class MainActivity extends AppCompatActivity {
     private void setUpMap() {
         LatLng latlng = new LatLng(pretendLocation.getLatitude(), pretendLocation.getLongitude());
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 18));
-
-        // EXPERIMENTERING!!
-        // Bra att veta: det finns mer lyssnare (och callbacks) än bara OnMapClickListener()
-        // skriv GoogleMap.On utanför kommentaren och se alternativen!
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                addBusStop(latLng, exampleNode);
-
-                ArrayList<Marker> nearMyLocation =
-                        MapUtils.MarkersInRange(markers, pretendLocation, 5000);
-
-                Toast.makeText(getApplicationContext(),
-                        nearMyLocation.size() + " markers within 5000 meters (of cyan)",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
