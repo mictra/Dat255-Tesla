@@ -52,4 +52,10 @@ public class InfoNode {
     public String getAddress() {
         return addr;
     }
+
+    @Override
+    public String toString() {
+        return title + " at " + addr + " (" + lat + ", " + lng +
+                ") with type " + type;
+    }
 }
