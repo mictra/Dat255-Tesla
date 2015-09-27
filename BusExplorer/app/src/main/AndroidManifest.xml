@@ -39,7 +39,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="AIzaSyCdF5GAjbU3cxXDpi6hturmlAv1aFlxNlM" /> <!-- Needs to be "hard coded" to avoid Google Maps Key Recognition when generating apk -->
 
         <activity
             android:name=".Settings"
