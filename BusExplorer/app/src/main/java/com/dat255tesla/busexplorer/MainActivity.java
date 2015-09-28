@@ -20,11 +20,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private GoogleMap mMap;
     private HashMap<Marker, InfoNode> markers;
+    private InfoDataSource ds;
+    private List<InfoNode> values;
 
     private MarkerOptions busStopOptions;
 
@@ -41,6 +45,15 @@ public class MainActivity extends AppCompatActivity {
         pretendLocation.setLatitude(57.707373);
         pretendLocation.setLongitude(11.973864);
         markers = new HashMap<>();
+
+        // Establish database connection
+        ds = new InfoDataSource(this);
+
+        try {
+            ds.open();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
 
         busStopOptions =  new MarkerOptions()
                 .alpha(0.8f)
@@ -118,6 +131,13 @@ public class MainActivity extends AppCompatActivity {
         LatLng latlng = new LatLng(pretendLocation.getLatitude(), pretendLocation.getLongitude());
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 18));
 
+        // Add all markers from the internal database
+        values = ds.getAllInfoNodes();
+
+        for (InfoNode node : values) {
+            addMarker(node);
+        }
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -129,16 +149,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Creates a new {@link Marker} which is used as a key with its information {@link InfoNode} as
-     * value in the busStops map.
-     * @param latLng    The position of the new bus stop in {@link LatLng} coordinates.
-     * @param info      Contains information about the bus stop.
-     */
-    private void addBusStop(LatLng latLng, InfoNode info) {
-        busStopOptions.position(latLng)
-                .title(info.getTitle());
-        markers.put(mMap.addMarker(busStopOptions), info);
+    private void addMarker(InfoNode node) {
+        LatLng pos = new LatLng(node.getLatitude(), node.getLongitude());
+
+        switch(node.getType()) {
+            case 1:
+                busStopOptions.position(pos)
+                        .title(node.getTitle());
+                markers.put(mMap.addMarker(busStopOptions), node);
+                break;
+            default:
+                break;
+        }
     }
 
     public void openDevMode() {
