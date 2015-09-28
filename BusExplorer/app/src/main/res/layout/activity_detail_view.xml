@@ -1,52 +1,57 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="0dp"
-    android:paddingBottom="6dp"
-    tools:context="dat255.tesla.delta_one.helloworld.DetailView">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/dv_headline"
-        android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:layout_marginTop="0dp"
-        android:textSize="32dp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/dv_subheadline"
-        android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18dp"
-        android:layout_below="@id/dv_headline"
-        android:layout_marginBottom="6dp"
-        android:layout_marginTop="-8dp"
-        android:textStyle="normal"/>
-
-    <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:id="@+id/dv_imageScrollView"
-        android:layout_below="@id/dv_subheadline"
-        >
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="0dp"
+        android:paddingBottom="6dp"
+        tools:context="dat255.tesla.delta_one.helloworld.DetailView">
 
-        <LinearLayout
-            android:id="@+id/dv_imageGallery"
+        <TextView
+            android:id="@+id/dv_headline"
+            android:text="@string/hello_world"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" />
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="0dp"
+            android:textSize="32dp"
+            android:textStyle="bold"/>
 
-    </HorizontalScrollView>
+        <TextView
+            android:id="@+id/dv_subheadline"
+            android:text="@string/hello_world"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:layout_below="@id/dv_headline"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="-8dp"
+            android:textStyle="normal"/>
+
+        <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:id="@+id/dv_imageScrollView"
+            android:layout_below="@id/dv_subheadline"
+            >
+
+            <LinearLayout
+                android:id="@+id/dv_imageGallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+
+        </HorizontalScrollView>
 
 
-    <!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
         <!--android:orientation="vertical"-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
@@ -54,13 +59,12 @@
         <!--android:id="@+id/textScrollView">-->
 
         <!--<TextView-->
-            <!--android:id="@+id/dv_description"-->
-            <!--android:text="@string/hello_world"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textSize="14dp"-->
-
-            <!--android:textStyle="normal"/>-->
+        <!--android:id="@+id/dv_descriptiontest"-->
+        <!--android:text="@string/hello_world"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textSize="14dp"-->
+        <!--android:textStyle="normal"/>-->
         <WebView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/dv_description"
             android:layout_height="match_parent"
@@ -68,6 +72,15 @@
             android:layout_below="@id/dv_imageScrollView"
             />
 
-    <!--</ScrollView>-->
+        <!--</ScrollView>-->
 
-</RelativeLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/dv_expanded_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:contentDescription="@string/description_zoom_touch_close" />
+
+</FrameLayout>
