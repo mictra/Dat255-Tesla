@@ -9,6 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -45,7 +49,20 @@ public class DeveloperActivity extends AppCompatActivity {
 
         try {
             ds.open();
+            ds.clearTable();
         } catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        /*
+        Add nodes from server database
+         */
+
+        try {
+            for(ParseObject object : ParseQuery.getQuery("Marker").find()){
+                ds.createInfoNode(object.getString("title"), object.getParseGeoPoint("location").getLatitude(), object.getParseGeoPoint("location").getLongitude(), object.getInt("type"), object.getString("info"), object.getString("address"));
+            }
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 

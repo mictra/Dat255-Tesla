@@ -36,6 +36,10 @@ public class InfoDataSource {
         helper.close();
     }
 
+    public void clearTable(){
+        helper.onUpgrade(db, 1, 1);
+    }
+
     // Method for adding new InfoNodes
     public InfoNode createInfoNode(String title, double lat, double lng, int type,
                                    String info, String addr) {
