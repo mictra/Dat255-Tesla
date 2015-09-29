@@ -22,6 +22,7 @@ import android.widget.Toast;
 public class DetailView extends AppCompatActivity {
 
     private Integer images[] = {R.drawable.poseidon1, R.drawable.poseidon2, R.drawable.poseidon3};
+    private Integer thumbs[] = {R.drawable.poseidon1_thumb, R.drawable.poseidon2_thumb, R.drawable.poseidon3_thumb};
     /**
      * Hold a reference to the current animator, so that it can be canceled mid-way.
      */
@@ -91,7 +92,7 @@ public class DetailView extends AppCompatActivity {
 
     private String getPStyle() {
         return "{text-align:left;" +
-                "font-size:10pt;}";
+                "font-size:12pt;}";
     }
 
     private String getBodyStyle() {
@@ -142,22 +143,25 @@ public class DetailView extends AppCompatActivity {
      */
     private void addImagesToGallery() {
         LinearLayout imageGallery = (LinearLayout) findViewById(R.id.dv_imageGallery);
-        for (Integer image : images) {
-            imageGallery.addView(getImageView(image));
+//        for (Integer image : images) {
+//            imageGallery.addView(getImageView(image));
+//        }
+        for (int i = 0; i < images.length; i++) {
+            imageGallery.addView(getImageView(images[i], thumbs[i]));
         }
     }
 
-    private View getImageView(final Integer image) {
+    private View getImageView(final Integer image, Integer thumb) {
         //final ImageView imageView = new ImageView(getApplicationContext());
         final com.dat255tesla.busexplorer.TouchHighlightImageButton imageButton = new com.dat255tesla.busexplorer.TouchHighlightImageButton(getApplicationContext());
         //LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         //LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(500, 650);
-        int width = (int) Math.round(150 * (getResources().getDisplayMetrics().densityDpi/160));
-        int height = (int) Math.round(200 * (getResources().getDisplayMetrics().densityDpi/160));
+        int width = (int) Math.round(175 * (getResources().getDisplayMetrics().densityDpi/160));
+        int height = (int) Math.round(175 * (getResources().getDisplayMetrics().densityDpi/160));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(width, height);
         lp.setMargins(0, 0, 10, 0);
         imageButton.setLayoutParams(lp);
-        imageButton.setImageResource(image);
+        imageButton.setImageResource(thumb);
         imageButton.setScaleType(TouchHighlightImageButton.ScaleType.CENTER_CROP);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
