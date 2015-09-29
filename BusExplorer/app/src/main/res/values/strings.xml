@@ -9,4 +9,7 @@
     <string name="title_activity_detail_view">DetailView</string>
     <string name="action_detailview">DetailView</string>
     <string name="description_zoom_touch_close">Expanded image (touch to close)</string>
+    <string name="title_activity_test_call_api">TestCallAPI</string>
+    <string name="action_testcallapi">TestCallAPI</string>
+
 </resources>

@@ -73,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                 openSettings();
                 return true;
+            case R.id.action_testcallapi:
+                openTestCallAPI();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -170,6 +173,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void openDetailView() {
         Intent intent = new Intent(this, DetailView.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Open the TestCallAPI
+     * This is just a temporary method. Will be removed.
+     */
+
+    private void openTestCallAPI() {
+        Intent intent = new Intent(this, TestCallAPI.class);
         startActivity(intent);
     }
 }

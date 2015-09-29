@@ -57,6 +57,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dat255tesla.busexplorer.MainActivity" />
         </activity>
+        <activity
+            android:name=".TestCallAPI"
+            android:label="@string/title_activity_test_call_api" >
+        </activity>
     </application>
 
 </manifest>

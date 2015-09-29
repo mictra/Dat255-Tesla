@@ -1,21 +1,82 @@
 package com.dat255tesla.busexplorer;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
-public class Settings extends AppCompatActivity {
+public class Settings extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String PREFS_NAME = "MyPrefsFile";
+
+    CheckBox checkbox;
+    Button button;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_settings);
+
+        checkbox = (CheckBox) findViewById(R.id.checkBox);
+        button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(this);
+        loadSavedPreferences();
+
     }
+
+    private void loadSavedPreferences() {
+
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        boolean checkBoxValue = sharedPreferences.getBoolean("CheckBox_Value", false);
+
+        if (checkBoxValue) {
+            checkbox.setChecked(true);
+        } else {
+            checkbox.setChecked(false);
+        }
+
+    }
+
+    private void savePreferences(String key, boolean value) {
+
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(key, value);
+        editor.commit();
+
+    }
+
+    public void onClick(View v) {
+        savePreferences("CheckBox_Value", checkbox.isChecked());
+       //finish();
+        Toast.makeText(getApplicationContext(), "Settings saved", Toast.LENGTH_LONG).show();
+
+    }
+
+
+    @Override
+    public void onPause()
+    {
+
+
+        super.onPause();
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
