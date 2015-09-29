@@ -21,9 +21,13 @@ import javax.net.ssl.HttpsURLConnection;
 public class APIHelper extends AsyncTask<String, String, String> {
 
     private TextView tv;
+    private boolean update;
+    private String vin = "Vin_Num_001"; // Use numbers like 100020, see dgw
+    private String sensor = "GPS";
 
-    public APIHelper(TextView tv){
+    public APIHelper(TextView tv) {
         this.tv = tv;
+        this.update = true;
     }
 
     private String doGet(String encoded) throws IOException, JSONException {
@@ -33,8 +37,8 @@ public class APIHelper extends AsyncTask<String, String, String> {
         StringBuffer response = new StringBuffer();
         //TODO Enter your base64 encoded Username:Password
         String key = encoded;
-        String url = "https://ece01.ericsson.net:4443/ecity?dgw=Ericsson$Vin_Num_001&sensorSpec=Ericsson$Next_Stop&t1="
-                + t1 + "&t2=" + t2;
+        String url = "https://ece01.ericsson.net:4443/ecity?dgw=Ericsson$" + vin +
+                "&sensorSpec=Ericsson$" + sensor + "&t1=" + t1 + "&t2=" + t2;
 
         URL requestURL = new URL(url);
         HttpsURLConnection con = (HttpsURLConnection) requestURL
@@ -61,26 +65,32 @@ public class APIHelper extends AsyncTask<String, String, String> {
         String printout = "";//TEMP TEST
 
         JSONArray jsonArray = new JSONArray(response.toString());
-        for(int i = 0; i < jsonArray.length(); i++){
+        for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject object = jsonArray.getJSONObject(i);
             printout = printout + "\nNext stop: " + object.getString("value") + "\nTimestamp: " + new Date(object.getLong("timestamp"));
         }
 
-        return printout;
+        return response.toString(); // TODO: Parse printout string and print it instead of this
     }
 
     @Override
     protected String doInBackground(String... params) {
-        try {
+        String info = "NO WORK :<";
+        while (update) {
             try {
-                return doGet(params[0]);
+                info = doGet(params[0]);
+                publishProgress(info);
+                Thread.sleep(3000);
+            } catch (IOException e) {
+                e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return "NO WORK :<";
+
+        return info;
     }
 
     @Override
@@ -91,6 +101,10 @@ public class APIHelper extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String s) {
         tv.setText(s);
+    }
+
+    public void setUpdate(boolean update) {
+        this.update = update;
     }
 
 }
