@@ -19,6 +19,8 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
     public static final String PREFS_NAME = "MyPrefsFile";
 
     CheckBox checkbox;
+    CheckBox checkbox2;
+    CheckBox checkbox3;
     Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -30,9 +32,62 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
         setContentView(R.layout.activity_settings);
 
         checkbox = (CheckBox) findViewById(R.id.checkBox);
+        checkbox2 = (CheckBox) findViewById(R.id.checkBox2);
+        checkbox3 = (CheckBox) findViewById(R.id.checkBox3);
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(this);
         loadSavedPreferences();
+
+
+        checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(checkbox.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "Checked", Toast.LENGTH_SHORT).show();
+                    /*
+                    Function here
+                     */
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Unchecked", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        checkbox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(checkbox2.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "Checked", Toast.LENGTH_SHORT).show();
+                     /*
+                    Function here
+                     */
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Unchecked", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        checkbox3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(checkbox3.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "Checked", Toast.LENGTH_SHORT).show();
+                     /*
+                    Function here
+                     */
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Unchecked", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+
+
 
     }
 
@@ -41,11 +96,25 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
         boolean checkBoxValue = sharedPreferences.getBoolean("CheckBox_Value", false);
+        boolean checkBoxValue2 = sharedPreferences.getBoolean("CheckBox_Value2", false);
+        boolean checkBoxValue3 = sharedPreferences.getBoolean("CheckBox_Value3", false);
 
         if (checkBoxValue) {
             checkbox.setChecked(true);
         } else {
             checkbox.setChecked(false);
+        }
+        if(checkBoxValue2){
+            checkbox2.setChecked(true);
+        }
+        else{
+            checkbox2.setChecked(false);
+        }
+        if(checkBoxValue3){
+            checkbox3.setChecked(true);
+        }
+        else{
+            checkbox3.setChecked(false);
         }
 
     }
@@ -60,9 +129,12 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
 
     }
 
+
     public void onClick(View v) {
         savePreferences("CheckBox_Value", checkbox.isChecked());
-       //finish();
+        savePreferences("CheckBox_Value2", checkbox2.isChecked());
+        savePreferences("CheckBox_Value3", checkbox3.isChecked());
+        finish();
         Toast.makeText(getApplicationContext(), "Settings saved", Toast.LENGTH_LONG).show();
 
     }
