@@ -1,7 +1,7 @@
 package com.dat255tesla.busexplorer;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,17 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public class DeveloperActivity extends AppCompatActivity {
+public class DeveloperActivity extends AppCompatActivity implements IValuesChangedListener {
     private InfoDataSource ds;
     private ListView list;
+    private List<InfoNode> values;
+    private ArrayAdapter<InfoNode> adapter;
 
     private EditText et_title;
     private EditText et_lat;
@@ -35,43 +32,34 @@ public class DeveloperActivity extends AppCompatActivity {
         setContentView(R.layout.activity_developer);
 
         // Find all views
-        et_title    = (EditText) findViewById(R.id.et_Title);
-        et_lat      = (EditText) findViewById(R.id.et_Latitude);
-        et_lng      = (EditText) findViewById(R.id.et_Longitude);
-        et_type     = (EditText) findViewById(R.id.et_Type);
-        et_info     = (EditText) findViewById(R.id.et_Info);
-        et_addr     = (EditText) findViewById(R.id.et_Address);
+        et_title = (EditText) findViewById(R.id.et_Title);
+        et_lat = (EditText) findViewById(R.id.et_Latitude);
+        et_lng = (EditText) findViewById(R.id.et_Longitude);
+        et_type = (EditText) findViewById(R.id.et_Type);
+        et_info = (EditText) findViewById(R.id.et_Info);
+        et_addr = (EditText) findViewById(R.id.et_Address);
 
         list = (ListView) findViewById(R.id.lv_Database);
 
         // Establish database connection
         ds = new InfoDataSource(this);
+        ds.setValuesChangedListener(this);
 
         try {
             ds.open();
-            ds.clearTable();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        /*
-        Add nodes from server database
-         */
+        ds.updateDatabaseIfNeeded();
 
-        try {
-            for(ParseObject object : ParseQuery.getQuery("Marker").find()){
-                ds.createInfoNode(object.getString("title"), object.getParseGeoPoint("location").getLatitude(), object.getParseGeoPoint("location").getLongitude(), object.getInt("type"), object.getString("info"), object.getString("address"));
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        List<InfoNode> values = ds.getAllInfoNodes();
+        values = ds.getAllInfoNodes();
 
         // Adapt the values to fit a ListView
-        ArrayAdapter<InfoNode> adapter =
+        adapter =
                 new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
         list.setAdapter(adapter);
+
     }
 
     public void onClick(View view) {
@@ -89,7 +77,7 @@ public class DeveloperActivity extends AppCompatActivity {
                 String addr = et_addr.getText().toString();
 
                 // save the new comment to the database
-                node = ds.createInfoNode(title, lat, lng, type, info, addr);
+                node = ds.createInfoNode(title, lat, lng, type, info, addr, 0);
                 adapter.add(node);
                 break;
             case R.id.b_DelEntry:
@@ -107,7 +95,7 @@ public class DeveloperActivity extends AppCompatActivity {
     public void onResume() {
         try {
             ds.open();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -140,5 +128,12 @@ public class DeveloperActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void valuesChanged(List<InfoNode> values) {
+        this.values = values;
+        adapter.clear();
+        adapter.addAll(values);
     }
 }

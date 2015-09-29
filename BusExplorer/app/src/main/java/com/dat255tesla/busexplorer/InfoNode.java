@@ -13,9 +13,10 @@ public class InfoNode {
     private final int type;
     private final String info;
     private final String addr;
+    private final long lastMod;
 
     public InfoNode(long id, String title, double lat, double lng, int type,
-                    String info, String addr) {
+                    String info, String addr, long lastMod) {
         this.id = id;
         this.title = title;
         this.lat = lat;
@@ -23,6 +24,7 @@ public class InfoNode {
         this.type = type;
         this.info = info;
         this.addr = addr;
+        this.lastMod = lastMod;
     }
 
     public long getId() {
@@ -51,6 +53,10 @@ public class InfoNode {
 
     public String getAddress() {
         return addr;
+    }
+
+    public long getLatestModified(){
+        return lastMod;
     }
 
     @Override
