@@ -48,75 +48,12 @@ public class DetailView extends AppCompatActivity {
 
         addImagesToGallery();
 
-//        TextView desc = (TextView) findViewById(R.id.dv_descriptiontest);
-//        desc.setText("Poseidon med brunnskar (eller Poseidonbrunnen) är en bronsskulptur som står på Götaplatsen i Göteborg. Statyn, som föreställer havsguden Poseidon, är skapad av Carl Milles och invigdes 1931. Den är ett av Göteborgs mest kända landmärken.");
-//        desc.append("\n\nDen sju meter höga skulpturen håller en fisk i höger hand och en snäcka i vänster hand.");
-//        desc.append("\n\nI brunnskaret återfinns sex mindre skulpturer och reliefer med olika vidunder, tritoner, najader, fiskar och sjöjungfrur. Brunskaret är 120 cm högt och själva poseidonskulpturen ytterligare 7 meter hög.[4] Statyn var från början tänkt att heta Neptunus, det romerska namnet på havets gud.[5] Brunskaret tillverkades vid Herman Bergmans bronsgjuteri i Stockholm men mittgrupperna med Poseidonskulpturen göts vid Lauriz Rasmussens Broncestøberi i Köpenhamn.");
-
         WebView description = (WebView) findViewById(R.id.dv_description);
-
-        description.loadData(getHtmlString(), "text/html; charset=utf-8", "UTF-8");
+        description.loadUrl("file:///android_asset/detailview/poseidon.html");
 
         // Retrieve and cache the system's default "short" animation time.
-        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
+        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
     }
-
-    private String getHtmlString() {
-        String html;
-        html =  "<html>"
-                + "<head>"
-                + "<style type=\"text/css\">"
-                + "body" + getBodyStyle()
-                + "p" + getPStyle()
-                + "div.happyhour" + getHappyHourStyle()
-                + "</style>"
-                + "</head>"
-                + "<body>"
-                + getHappyHour(Math.random() > 0.5)
-                + "<p>"
-                + getDescription()
-                + "</p>";
-        return html;
-    }
-
-    private String getHappyHourStyle() {
-        return "{background-color:#ff5722; " +
-                "color:white; " +
-                "padding: 5 5 5 5; " +
-                "font-weight:bold; " +
-                "font-size:20pt; " +
-                "border-radius: 23px; " +
-                "text-align:center;}";
-    }
-
-    private String getPStyle() {
-        return "{text-align:left;" +
-                "font-size:12pt;}";
-    }
-
-    private String getBodyStyle() {
-        return "{background-color: #eeeeee; " +
-                "margin: 0 0 0 0; " +
-                "padding: 0 0 0 0;}";
-    }
-
-    private String getDescription() {
-        String desc = "Poseidon med brunnskar (eller Poseidonbrunnen) är en bronsskulptur som står på Götaplatsen i Göteborg. Statyn, som föreställer havsguden Poseidon, är skapad av Carl Milles och invigdes 1931. Den är ett av Göteborgs mest kända landmärken.<br /><br />Den sju meter höga skulpturen håller en fisk i höger hand och en snäcka i vänster hand.<br /><br />I brunnskaret återfinns sex mindre skulpturer och reliefer med olika vidunder, tritoner, najader, fiskar och sjöjungfrur. Brunskaret är 120 cm högt och själva poseidonskulpturen ytterligare 7 meter hög.[4] Statyn var från början tänkt att heta Neptunus, det romerska namnet på havets gud.[5] Brunskaret tillverkades vid Herman Bergmans bronsgjuteri i Stockholm men mittgrupperna med Poseidonskulpturen göts vid Lauriz Rasmussens Broncestøberi i Köpenhamn.</body></html>";
-        return desc;
-    }
-
-    private String getHappyHour(boolean b) {
-        if (b) {
-            String hh = "<div class=\"happyhour\">"
-                    + "HAPPYHOUR TODAY !!!"
-                    + "</div>";
-            return hh;
-        } else {
-            return "";
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -143,21 +80,15 @@ public class DetailView extends AppCompatActivity {
      */
     private void addImagesToGallery() {
         LinearLayout imageGallery = (LinearLayout) findViewById(R.id.dv_imageGallery);
-//        for (Integer image : images) {
-//            imageGallery.addView(getImageView(image));
-//        }
         for (int i = 0; i < images.length; i++) {
             imageGallery.addView(getImageView(images[i], thumbs[i]));
         }
     }
 
     private View getImageView(final Integer image, Integer thumb) {
-        //final ImageView imageView = new ImageView(getApplicationContext());
         final com.dat255tesla.busexplorer.TouchHighlightImageButton imageButton = new com.dat255tesla.busexplorer.TouchHighlightImageButton(getApplicationContext());
-        //LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        //LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(500, 650);
-        int width = (int) Math.round(175 * (getResources().getDisplayMetrics().densityDpi/160));
-        int height = (int) Math.round(175 * (getResources().getDisplayMetrics().densityDpi/160));
+        int width = Math.round(175 * (getResources().getDisplayMetrics().densityDpi/160));
+        int height = Math.round(175 * (getResources().getDisplayMetrics().densityDpi/160));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(width, height);
         lp.setMargins(0, 0, 10, 0);
         imageButton.setLayoutParams(lp);
@@ -166,12 +97,7 @@ public class DetailView extends AppCompatActivity {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // ToDo: some code here
                 zoomImageFromThumb(imageButton, image);
-//                String filename = (String) getResources().getText(image);
-//                Toast.makeText( getApplicationContext(),
-//                        filename.substring(filename.lastIndexOf("/")+1) + " clicked",
-//                                Toast.LENGTH_SHORT).show();
             }
         });
         return imageButton;

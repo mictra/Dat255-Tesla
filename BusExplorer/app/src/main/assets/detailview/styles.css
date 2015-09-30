@@ -1,0 +1,21 @@
+@charset "UTF-8";
+body {
+    background-color: #eeeeee;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+
+p {
+    text-align: left;
+    font-size: 12pt;
+}
+
+div.happyhour {
+    background-color: #ff5722;
+    color: white;
+    padding: 5 5 5 5;
+    font-weight: bold;
+    font-size: 18pt;
+    border-radius: 23px;
+    text-align: center;
+}
