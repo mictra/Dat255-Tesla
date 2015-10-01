@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IValuesChangedListener {
     private GoogleMap mMap;
     private HashMap<Marker, InfoNode> markers;
     private InfoDataSource ds;
@@ -48,12 +48,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Establish database connection
         ds = new InfoDataSource(this);
+        ds.setValuesChangedListener(this);
 
         try {
             ds.open();
         } catch(SQLException e) {
             e.printStackTrace();
         }
+
+        ds.updateDatabaseIfNeeded();
 
         busStopOptions =  new MarkerOptions()
                 .alpha(0.8f)
@@ -184,5 +187,16 @@ public class MainActivity extends AppCompatActivity {
     private void openDetailView() {
         Intent intent = new Intent(this, DetailView.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void valuesChanged(List<InfoNode> values) {
+        // Add all markers from the internal database
+        values = ds.getAllInfoNodes();
+        markers.clear();
+
+        for (InfoNode node : values) {
+            addMarker(node);
+        }
     }
 }
