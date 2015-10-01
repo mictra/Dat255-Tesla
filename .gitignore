@@ -27,11 +27,13 @@ proguard/
 *.log
 
 # Files in .idea
-./BusExplorer/.idea/workspace.xml
-./BusExplorer/.idea/gradle.xml
-./BusExplorer/.idea/misc.xml
-./BusExplorer/.idea/runConfigurations.xml
-./BusExplorer/.idea/vcs.xml
-./BusExplorer/.idea/modules.xml
-./BusExplorer/.idea/compiler.xml
-./BusExplorer/.idea/encodings.xml
+BusExplorer/.idea/workspace.xml
+BusExplorer/.idea/gradle.xml
+BusExplorer/.idea/misc.xml
+BusExplorer/.idea/runConfigurations.xml
+BusExplorer/.idea/vcs.xml
+BusExplorer/.idea/modules.xml
+BusExplorer/.idea/compiler.xml
+BusExplorer/.idea/encodings.xml
+BusExplorer/.idea/dictionaries/
+BusExplorer/.idea/inspectionProfiles/
