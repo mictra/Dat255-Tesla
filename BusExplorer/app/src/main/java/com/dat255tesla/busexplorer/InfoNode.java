@@ -1,7 +1,5 @@
 package com.dat255tesla.busexplorer;
 
-import com.google.android.gms.maps.model.LatLng;
-
 /**
  * Created by roy lena on 2015-09-23.
  */
@@ -14,9 +12,10 @@ public class InfoNode {
     private final String info;
     private final String addr;
     private final long lastMod;
+    private final int nbrofimgs;
 
     public InfoNode(long id, String title, double lat, double lng, int type,
-                    String info, String addr, long lastMod) {
+                    String info, String addr, long lastMod, int nbrofimgs) {
         this.id = id;
         this.title = title;
         this.lat = lat;
@@ -25,6 +24,7 @@ public class InfoNode {
         this.info = info;
         this.addr = addr;
         this.lastMod = lastMod;
+        this.nbrofimgs = nbrofimgs;
     }
 
     public long getId() {
@@ -57,6 +57,10 @@ public class InfoNode {
 
     public long getLatestModified(){
         return lastMod;
+    }
+
+    public int getNbrofimgs(){
+        return nbrofimgs;
     }
 
     @Override

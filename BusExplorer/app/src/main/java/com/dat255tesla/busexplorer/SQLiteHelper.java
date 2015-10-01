@@ -18,6 +18,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_INFO = "info";
     public static final String COLUMN_ADDR = "addr";
     public static final String COLUMN_LASTMOD = "lastmod";
+    public static final String COLUMN_NBROFIMGS = "nbrofimgs";
 
     private static final String DATABASE_NAME = "markers.db";
     private static final int DATABASE_VERSION = 1;
@@ -32,6 +33,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             + " INTEGER NOT NULL, " + COLUMN_INFO
             + " TEXT NOT NULL, " + COLUMN_ADDR
             + " TEXT, " + COLUMN_LASTMOD
+            + " INTEGER NOT NULL, " + COLUMN_NBROFIMGS
             + " INTEGER NOT NULL"
             + ");";
 

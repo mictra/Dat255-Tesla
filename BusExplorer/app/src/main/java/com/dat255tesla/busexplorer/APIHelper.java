@@ -22,8 +22,8 @@ public class APIHelper extends AsyncTask<String, String, String> {
 
     private TextView tv;
     private boolean update;
-    private String vin = "Vin_Num_001"; // Use numbers like 100020, see dgw
-    private String sensor = "GPS";
+    private String vin = "100021"; // Use numbers like 100020, see dgw
+    private String sensor = "GPS2";
 
     public APIHelper(TextView tv) {
         this.tv = tv;
@@ -32,7 +32,7 @@ public class APIHelper extends AsyncTask<String, String, String> {
 
     private String doGet(String encoded) throws IOException, JSONException {
         long t2 = System.currentTimeMillis();
-        long t1 = t2 - (1000 * 60);
+        long t1 = t2 - (1000 * 10);
 
         StringBuffer response = new StringBuffer();
         //TODO Enter your base64 encoded Username:Password
@@ -64,11 +64,13 @@ public class APIHelper extends AsyncTask<String, String, String> {
 
         String printout = "";//TEMP TEST
 
+        /*
         JSONArray jsonArray = new JSONArray(response.toString());
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject object = jsonArray.getJSONObject(i);
             printout = printout + "\nNext stop: " + object.getString("value") + "\nTimestamp: " + new Date(object.getLong("timestamp"));
         }
+        */
 
         return response.toString(); // TODO: Parse printout string and print it instead of this
     }
