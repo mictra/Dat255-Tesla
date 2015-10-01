@@ -21,18 +21,29 @@ import android.widget.Toast;
 
 public class DetailView extends AppCompatActivity {
 
-    private Integer images[] = {R.drawable.poseidon1, R.drawable.poseidon2, R.drawable.poseidon3};
-    private Integer thumbs[] = {R.drawable.poseidon1_thumb, R.drawable.poseidon2_thumb, R.drawable.poseidon3_thumb};
+    private TextView headline;
+    private TextView subheadline;
+    private WebView description;
+    private LinearLayout imageGallery;
+
+    private Integer images[];
+    private Integer thumbs[];
+
+    private String title = "Poseidon";
+    private String address = "Götaplatsen";
+    private String imagename = "poseidon";
+    private int noimages = 3;
+    private String info = "poseidon.html";
+
     /**
      * Hold a reference to the current animator, so that it can be canceled mid-way.
      */
     private Animator mCurrentAnimator;
 
     /**
-     * The system "short" animation time duration, in milliseconds. This duration is ideal for
-     * subtle animations or animations that occur very frequently.
+     * The system animation time duration, in milliseconds.
      */
-    private int mShortAnimationDuration;
+    private int mAnimationDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,19 +51,16 @@ public class DetailView extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_detail_view);
 
-        TextView headline = (TextView) findViewById(R.id.dv_headline);
-        headline.setText("Poseidon");
+        headline = (TextView) findViewById(R.id.dv_headline);
+        subheadline = (TextView) findViewById(R.id.dv_subheadline);
+        description = (WebView) findViewById(R.id.dv_description);
+        imageGallery = (LinearLayout) findViewById(R.id.dv_imageGallery);
 
-        TextView subheadline = (TextView) findViewById(R.id.dv_subheadline);
-        subheadline.setText("(Götaplatsen 5b)");
+        setFields();
 
-        addImagesToGallery();
-
-        WebView description = (WebView) findViewById(R.id.dv_description);
-        description.loadUrl("file:///android_asset/detailview/poseidon.html");
-
-        // Retrieve and cache the system's default "short" animation time.
-        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
+        // Retrieve and cache the system's default animation time.
+        mAnimationDuration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
+        //mShortAnimationDuration = (getResources().getInteger(android.R.integer.config_shortAnimTime)+getResources().getInteger(android.R.integer.config_mediumAnimTime))/2;
     }
 
     @Override
@@ -75,11 +83,31 @@ public class DetailView extends AppCompatActivity {
         }
     }
 
+    private void setFields() {
+        headline.setText(title);
+        subheadline.setText(address);
+        if (noimages > 0) {
+            createArrays();
+            addImagesToGallery();
+        }
+        description.loadUrl("file:///android_asset/detailview/" + info);
+    }
+
+    private void createArrays() {
+        images = new Integer[noimages];
+        thumbs = new Integer[noimages];
+
+        for (int i = 0; i < noimages; i++) {
+            images[i] = getResources().getIdentifier(imagename + (i+1), "drawable", getPackageName());
+            thumbs[i] = getResources().getIdentifier(imagename + (i+1) + "_thumb", "drawable", getPackageName());
+        }
+
+    }
     /**
      * Building the image gallery
      */
     private void addImagesToGallery() {
-        LinearLayout imageGallery = (LinearLayout) findViewById(R.id.dv_imageGallery);
+        imageGallery.removeAllViews();
         for (int i = 0; i < images.length; i++) {
             imageGallery.addView(getImageView(images[i], thumbs[i]));
         }
@@ -98,6 +126,7 @@ public class DetailView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 zoomImageFromThumb(imageButton, image);
+                //Toast.makeText(getApplicationContext(), ""+test,Toast.LENGTH_SHORT).show();
             }
         });
         return imageButton;
@@ -169,7 +198,7 @@ public class DetailView extends AppCompatActivity {
                         finalBounds.top))
                 .with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_X, startScale, 1f))
                 .with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_Y, startScale, 1f));
-        set.setDuration(mShortAnimationDuration);
+        set.setDuration(mAnimationDuration);
         set.setInterpolator(new DecelerateInterpolator());
         set.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -205,7 +234,7 @@ public class DetailView extends AppCompatActivity {
                                 .ofFloat(expandedImageView, View.SCALE_X, startScaleFinal))
                         .with(ObjectAnimator
                                 .ofFloat(expandedImageView, View.SCALE_Y, startScaleFinal));
-                set.setDuration(mShortAnimationDuration);
+                set.setDuration(mAnimationDuration);
                 set.setInterpolator(new DecelerateInterpolator());
                 set.addListener(new AnimatorListenerAdapter() {
                     @Override
