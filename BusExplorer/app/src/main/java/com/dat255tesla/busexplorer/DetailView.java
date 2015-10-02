@@ -29,7 +29,7 @@ public class DetailView extends AppCompatActivity {
     private Integer images[];
     private Integer thumbs[];
 
-    private String title = "Poseidon";
+    private String title;
     private String address = "Götaplatsen";
     private String imagename = "poseidon";
     private int noimages = 3;
@@ -50,6 +50,9 @@ public class DetailView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_detail_view);
+
+        Intent intent = getIntent();
+        title = intent.getStringExtra("title");
 
         headline = (TextView) findViewById(R.id.dv_headline);
         subheadline = (TextView) findViewById(R.id.dv_subheadline);

@@ -21,8 +21,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.parse.Parse;
-import com.parse.ParseObject;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -74,9 +72,7 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(),
-                        (String) parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
-                        .show();
+                openDetailView((String) parent.getItemAtPosition(position));
             }
         });
 
@@ -101,9 +97,6 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case R.id.action_detailview:
-                openDetailView();
-                return true;
             case R.id.action_settings:
                 openSettings();
                 return true;
@@ -203,10 +196,12 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     /**
      * Open the DetailView
      * This is just a temporary method. Will be moved to ListView-listener once available.
+     * @param itemAtPosition
      */
 
-    private void openDetailView() {
+    private void openDetailView(String itemAtPosition) {
         Intent intent = new Intent(this, DetailView.class);
+        intent.putExtra("title", itemAtPosition);
         startActivity(intent);
     }
 
