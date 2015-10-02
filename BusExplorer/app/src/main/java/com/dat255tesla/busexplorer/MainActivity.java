@@ -9,6 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         setContentView(R.layout.activity_main);
 
         pretendLocation = new Location("pretend");
-        // (57.707373, 11.973864) - "Nära" (<2km) göteborgsmarkören
+        // (57.707373, 11.973864) - "Nara" (<2km) goteborgsmarkaren
         pretendLocation.setLatitude(57.707373);
         pretendLocation.setLongitude(11.973864);
         markers = new HashMap<>();
@@ -61,6 +65,20 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         busStopOptions =  new MarkerOptions()
                 .alpha(0.8f)
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_01));
+
+        // Temp-list below map
+        String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, sites);
+        ListView listView = (ListView) findViewById(R.id.listBelowMap);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(),
+                        (String) parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
 
         setUpMapIfNeeded();
     }
@@ -91,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
                 return true;
             case R.id.action_devmode:
                 openDevMode();
+                return true;
             case R.id.action_testcallapi:
                 openTestCallAPI();
                 return true;

@@ -13,10 +13,23 @@
         android:layout_weight="0.5"
         tools:context="com.dat255tesla.busexplorer.MainActivity" />
 
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="0.5">
-    </RelativeLayout>
 
+    <!-- ListBelowMap
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:gravity="center"
+        android:orientation="vertical">
+    -->
+        <ListView
+            android:id="@+id/listBelowMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </ListView>
+    </RelativeLayout>
 </LinearLayout>
