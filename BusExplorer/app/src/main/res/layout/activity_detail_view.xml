@@ -34,45 +34,45 @@
             android:layout_marginTop="-8dp"
             android:textStyle="normal"/>
 
-        <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
-            android:id="@+id/dv_imageScrollView"
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
             android:layout_below="@id/dv_subheadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/wholeScrollView"
             >
 
-            <LinearLayout
-                android:id="@+id/dv_imageGallery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        </HorizontalScrollView>
+                <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp"
+                    android:id="@+id/dv_imageScrollView"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/dv_imageGallery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+
+                </HorizontalScrollView>
 
 
-        <!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:orientation="vertical"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/dv_imageScrollView"-->
-        <!--android:id="@+id/textScrollView">-->
+                <WebView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/dv_description"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_below="@id/dv_imageScrollView"
+                    />
 
-        <!--<TextView-->
-        <!--android:id="@+id/dv_descriptiontest"-->
-        <!--android:text="@string/hello_world"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textSize="14dp"-->
-        <!--android:textStyle="normal"/>-->
-        <WebView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/dv_description"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:layout_below="@id/dv_imageScrollView"
-            />
+            </RelativeLayout>
 
-        <!--</ScrollView>-->
+        </ScrollView>
 
     </RelativeLayout>
 
