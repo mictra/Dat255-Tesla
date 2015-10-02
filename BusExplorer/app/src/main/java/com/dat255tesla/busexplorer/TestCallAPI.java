@@ -9,12 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class TestCallAPI extends AppCompatActivity {
+import com.google.android.gms.maps.model.LatLng;
+
+public class TestCallAPI extends AppCompatActivity implements IPositionChangedListener {
 
     private Button callButton;
     private TextView apiTxt;
-    private final String userPwd = "grp42:v9aD7MvAOG";
-    private String encoded;
     private APIHelper apiHelper;
 
     @Override
@@ -22,10 +22,8 @@ public class TestCallAPI extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_test_call_api);
-
-        encoded = Base64.encodeToString(userPwd.getBytes(), Base64.DEFAULT); //Encode to Base64 format
         apiTxt = (TextView) findViewById(R.id.apiTxt);
-        apiHelper = new APIHelper(apiTxt);
+        apiHelper = new APIHelper(this);
         callButton = (Button) findViewById(R.id.callAPIBtn);
 
     }
@@ -54,13 +52,19 @@ public class TestCallAPI extends AppCompatActivity {
 
     public void callApi(View v) {
         callButton.setEnabled(false); // Invoke only once, else exception
-        apiHelper.execute(encoded);
+        apiHelper.execute();
     }
 
     @Override
     public void onBackPressed() {
         apiHelper.setUpdate(false);
         super.onBackPressed();
+        finish();
+    }
+
+    @Override
+    public void positionChanged(LatLng pos) {
+        apiTxt.setText("\nLatitude: " + pos.latitude + "\nLongitude: " + pos.longitude);
     }
 
 }

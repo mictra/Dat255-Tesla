@@ -1,7 +1,5 @@
 package com.dat255tesla.busexplorer;
 
-import com.google.android.gms.maps.SupportMapFragment;
-
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -17,23 +15,25 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IValuesChangedListener {
+public class MainActivity extends AppCompatActivity implements IValuesChangedListener, IPositionChangedListener {
     private GoogleMap mMap;
+    private APIHelper apiHelper;
     private HashMap<Marker, InfoNode> markers;
     private InfoDataSource ds;
     private List<InfoNode> values;
 
     private MarkerOptions busStopOptions;
+    private MarkerOptions busPositionOptions;
 
     // examples
     private Location pretendLocation;
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        apiHelper = new APIHelper(this);
         pretendLocation = new Location("pretend");
         // (57.707373, 11.973864) - "Nara" (<2km) goteborgsmarkaren
         pretendLocation.setLatitude(57.707373);
@@ -55,15 +55,18 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
 
         try {
             ds.open();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
         ds.updateDatabaseIfNeeded();
 
-        busStopOptions =  new MarkerOptions()
+        busStopOptions = new MarkerOptions()
                 .alpha(0.8f)
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_01));
+        busPositionOptions = new MarkerOptions()
+                .alpha(0.8f)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02));
         setUpMapIfNeeded();
     }
 
@@ -71,6 +74,13 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        apiHelper.setUpdate(false);
+        finish();
     }
 
     @Override
@@ -134,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
      */
     private void setUpMap() {
         LatLng latlng = new LatLng(pretendLocation.getLatitude(), pretendLocation.getLongitude());
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 18));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 16));
 
         // Add all markers from the internal database
         values = ds.getAllInfoNodes();
@@ -156,18 +166,19 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                String title = markers.get(marker).getTitle();
+                String title = marker.getTitle();
                 Toast.makeText(getApplicationContext(), title, Toast.LENGTH_SHORT).show();
 
                 return false;
             }
         });
+        apiHelper.execute();
     }
 
     private void addMarker(InfoNode node) {
         LatLng pos = new LatLng(node.getLatitude(), node.getLongitude());
 
-        switch(node.getType()) {
+        switch (node.getType()) {
             case 1:
                 busStopOptions.position(pos)
                         .title(node.getTitle());
@@ -194,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     /**
      * Open the DetailView
      * This is just a temporary method. Will be moved to ListView-listener once available.
+     *
      * @param node
      */
 
@@ -223,4 +235,14 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         Intent intent = new Intent(this, TestCallAPI.class);
         startActivity(intent);
     }
+
+    @Override
+    public void positionChanged(LatLng pos) {
+        if (pos.latitude != 0 && pos.longitude != 0) { // Ugly solution for now
+            busPositionOptions.position(pos).title("SIMULATED BUS MOVING!");
+            mMap.addMarker(busPositionOptions);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 16));
+        }
+    }
+
 }

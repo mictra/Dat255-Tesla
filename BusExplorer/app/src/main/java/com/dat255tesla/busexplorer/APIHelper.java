@@ -1,7 +1,10 @@
 package com.dat255tesla.busexplorer;
 
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,21 +21,24 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by Michael on 2015-09-24.
  */
-public class APIHelper extends AsyncTask<String, String, String> {
+public class APIHelper extends AsyncTask<String, LatLng, String> {
 
-    private TextView tv;
+    private IPositionChangedListener pcl;
     private boolean update;
-    private String vin = "100021"; // Use numbers like 100020, see dgw
+    private final String userPwd = "grp42:v9aD7MvAOG";
+    private String encoded;
+    private String vin = "Vin_Num_001"; // Use numbers like 100021, see dgw
     private String sensor = "GPS2";
 
-    public APIHelper(TextView tv) {
-        this.tv = tv;
+    public APIHelper(IPositionChangedListener pcl) {
+        this.pcl = pcl;
         this.update = true;
+        this.encoded = Base64.encodeToString(userPwd.getBytes(), Base64.DEFAULT); //Encode to Base64 format
     }
 
-    private String doGet(String encoded) throws IOException, JSONException {
+    private LatLng doGet() throws IOException, JSONException {
         long t2 = System.currentTimeMillis();
-        long t1 = t2 - (1000 * 10);
+        long t1 = t2 - (1000 * 5);
 
         StringBuffer response = new StringBuffer();
         //TODO Enter your base64 encoded Username:Password
@@ -44,7 +50,7 @@ public class APIHelper extends AsyncTask<String, String, String> {
         HttpsURLConnection con = (HttpsURLConnection) requestURL
                 .openConnection();
         con.setRequestMethod("GET");
-        con.setRequestProperty("Authorization", "Basic " + key); //NICE WORK CYBERCOM FCKING SHIT!!!
+        con.setRequestProperty("Authorization", "Basic " + key);
 
         int responseCode = con.getResponseCode();
         System.out.println("\nThe key is: " + key);
@@ -60,28 +66,37 @@ public class APIHelper extends AsyncTask<String, String, String> {
             System.out.println("inputLine printout: " + inputLine);
         }
         in.close();
-        System.out.println(response.toString());
 
         String printout = "";//TEMP TEST
+        String responseString = response.toString();
+        // Ugly solution for now
+        double lat = 0;
+        double lon = 0;
 
-        /*
-        JSONArray jsonArray = new JSONArray(response.toString());
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject object = jsonArray.getJSONObject(i);
-            printout = printout + "\nNext stop: " + object.getString("value") + "\nTimestamp: " + new Date(object.getLong("timestamp"));
+        if (!responseString.isEmpty()) {
+            JSONArray jsonArray = new JSONArray(responseString);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject object = jsonArray.getJSONObject(i);
+                String spec = object.getString("resourceSpec");
+                if (spec.equals("Latitude2_Value")) {
+                    lat = object.getDouble("value");
+                    printout = printout + "\nLatitude: " + lat + "\t Date: " + new Date(object.getLong("timestamp"));
+                } else if (spec.equals("Longitude2_Value")) {
+                    lon = object.getDouble("value");
+                    printout = printout + "\nLongitude: " + lon + "\t Date: " + new Date(object.getLong("timestamp"));
+                }
+            }
         }
-        */
 
-        return response.toString(); // TODO: Parse printout string and print it instead of this
+        System.out.println(printout);
+        return new LatLng(lat, lon);
     }
 
     @Override
     protected String doInBackground(String... params) {
-        String info = "NO WORK :<";
         while (update) {
             try {
-                info = doGet(params[0]);
-                publishProgress(info);
+                publishProgress(doGet());
                 Thread.sleep(3000);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -92,17 +107,17 @@ public class APIHelper extends AsyncTask<String, String, String> {
             }
         }
 
-        return info;
+        return "FINISH ASYNCTASK!";
     }
 
     @Override
-    protected void onProgressUpdate(String... values) {
-        tv.setText(values[0]);
+    protected void onProgressUpdate(LatLng... pos) {
+        pcl.positionChanged(pos[0]);
     }
 
     @Override
     protected void onPostExecute(String s) {
-        tv.setText(s);
+        // TODO: Do something (FINALLY) after the task is done?
     }
 
     public void setUpdate(boolean update) {
