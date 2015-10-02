@@ -1,15 +1,22 @@
 <resources>
     <string name="app_name">BusExplorer</string>
-    <string name="TestBox">Testbox</string>
+
+
+    <string name="sightseeing">Sightseeing</string>
+    <string name="stores">Stores and shops</string>
+    <string name="misc">Miscellaneous</string>
+    <string name="visible">Locations visible on map</string>
+
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_devmode">Dev Mode</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_settings">Settings</string>
     <string name="app_settings">Settings</string>
     <string name="title_activity_detail_view">DetailView</string>
     <string name="action_detailview">DetailView</string>
     <string name="description_zoom_touch_close">Expanded image (touch to close)</string>
+    <string name="title_activity_developer">DeveloperActivity</string>
     <string name="title_activity_test_call_api">TestCallAPI</string>
     <string name="action_testcallapi">TestCallAPI</string>
-
 </resources>

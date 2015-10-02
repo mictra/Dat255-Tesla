@@ -6,10 +6,12 @@ import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class TestCallAPI extends AppCompatActivity {
 
+    private Button callButton;
     private TextView apiTxt;
     private final String userPwd = "grp42:v9aD7MvAOG";
     private String encoded;
@@ -24,6 +26,7 @@ public class TestCallAPI extends AppCompatActivity {
         encoded = Base64.encodeToString(userPwd.getBytes(), Base64.DEFAULT); //Encode to Base64 format
         apiTxt = (TextView) findViewById(R.id.apiTxt);
         apiHelper = new APIHelper(apiTxt);
+        callButton = (Button) findViewById(R.id.callAPIBtn);
 
     }
 
@@ -49,7 +52,15 @@ public class TestCallAPI extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void callApi(View v){
+    public void callApi(View v) {
+        callButton.setEnabled(false); // Invoke only once, else exception
         apiHelper.execute(encoded);
     }
+
+    @Override
+    public void onBackPressed() {
+        apiHelper.setUpdate(false);
+        super.onBackPressed();
+    }
+
 }

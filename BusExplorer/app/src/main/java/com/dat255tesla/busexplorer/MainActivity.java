@@ -17,30 +17,46 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.Parse;
+import com.parse.ParseObject;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IValuesChangedListener {
     private GoogleMap mMap;
     private HashMap<Marker, InfoNode> markers;
+    private InfoDataSource ds;
+    private List<InfoNode> values;
 
     private MarkerOptions busStopOptions;
 
     // examples
     private Location pretendLocation;
-    private InfoNode exampleNode; //TODO: Create all InfoNodes from file or db
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         pretendLocation = new Location("pretend");
         // (57.707373, 11.973864) - "Nära" (<2km) göteborgsmarkören
         pretendLocation.setLatitude(57.707373);
         pretendLocation.setLongitude(11.973864);
-        exampleNode = new InfoNode("test", "information");
         markers = new HashMap<>();
+
+        // Establish database connection
+        ds = new InfoDataSource(this);
+        ds.setValuesChangedListener(this);
+
+        try {
+            ds.open();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        ds.updateDatabaseIfNeeded();
 
         busStopOptions =  new MarkerOptions()
                 .alpha(0.8f)
@@ -73,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                 openSettings();
                 return true;
+            case R.id.action_devmode:
+                openDevMode();
             case R.id.action_testcallapi:
                 openTestCallAPI();
                 return true;
@@ -118,22 +136,12 @@ public class MainActivity extends AppCompatActivity {
         LatLng latlng = new LatLng(pretendLocation.getLatitude(), pretendLocation.getLongitude());
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 18));
 
-        // EXPERIMENTERING!!
-        // Bra att veta: det finns mer lyssnare (och callbacks) än bara OnMapClickListener()
-        // skriv GoogleMap.On utanför kommentaren och se alternativen!
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                addBusStop(latLng, exampleNode);
+        // Add all markers from the internal database
+        values = ds.getAllInfoNodes();
 
-                ArrayList<Marker> nearMyLocation =
-                        MapUtils.MarkersInRange(markers, pretendLocation, 5000);
-
-                Toast.makeText(getApplicationContext(),
-                        nearMyLocation.size() + " markers within 5000 meters (of cyan)",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        for (InfoNode node : values) {
+            addMarker(node);
+        }
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -146,16 +154,23 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Creates a new {@link Marker} which is used as a key with its information {@link InfoNode} as
-     * value in the busStops map.
-     * @param latLng    The position of the new bus stop in {@link LatLng} coordinates.
-     * @param info      Contains information about the bus stop.
-     */
-    private void addBusStop(LatLng latLng, InfoNode info) {
-        busStopOptions.position(latLng)
-                .title(info.getTitle());
-        markers.put(mMap.addMarker(busStopOptions), info);
+    private void addMarker(InfoNode node) {
+        LatLng pos = new LatLng(node.getLatitude(), node.getLongitude());
+
+        switch(node.getType()) {
+            case 1:
+                busStopOptions.position(pos)
+                        .title(node.getTitle());
+                markers.put(mMap.addMarker(busStopOptions), node);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void openDevMode() {
+        Intent intent = new Intent(this, DeveloperActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -174,6 +189,17 @@ public class MainActivity extends AppCompatActivity {
     private void openDetailView() {
         Intent intent = new Intent(this, DetailView.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void valuesChanged(List<InfoNode> values) {
+        // Add all markers from the internal database
+        values = ds.getAllInfoNodes();
+        markers.clear();
+
+        for (InfoNode node : values) {
+            addMarker(node);
+        }
     }
 
     /**
