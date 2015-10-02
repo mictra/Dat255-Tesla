@@ -21,8 +21,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.parse.Parse;
-import com.parse.ParseObject;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -66,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         busStopOptions =  new MarkerOptions()
                 .alpha(0.8f)
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_01));
-
         setUpMapIfNeeded();
     }
 
@@ -197,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     /**
      * Open the DetailView
      * This is just a temporary method. Will be moved to ListView-listener once available.
+     * @param node
      */
 
     private void openDetailView(InfoNode node) {

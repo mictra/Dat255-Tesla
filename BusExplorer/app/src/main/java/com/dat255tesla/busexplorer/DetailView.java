@@ -31,7 +31,7 @@ public class DetailView extends AppCompatActivity {
     private Integer images[];
     private Integer thumbs[];
 
-    private String title = "Poseidon";
+    private String title;
     private String address = "Götaplatsen";
     private String imagename = "poseidon";
     private int noimages = 3;
