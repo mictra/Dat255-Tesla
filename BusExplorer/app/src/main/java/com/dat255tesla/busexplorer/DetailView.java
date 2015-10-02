@@ -19,6 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+
 public class DetailView extends AppCompatActivity {
 
     private TextView headline;
@@ -50,6 +52,9 @@ public class DetailView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_detail_view);
+
+        InfoNode node = (InfoNode) getIntent().getSerializableExtra("InfoNode");
+        title = node.getTitle();
 
         headline = (TextView) findViewById(R.id.dv_headline);
         subheadline = (TextView) findViewById(R.id.dv_subheadline);

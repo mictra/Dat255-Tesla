@@ -25,6 +25,7 @@ import com.parse.Parse;
 import com.parse.ParseObject;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -66,20 +67,6 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
                 .alpha(0.8f)
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_01));
 
-        // Temp-list below map
-        String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, sites);
-        ListView listView = (ListView) findViewById(R.id.listBelowMap);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(),
-                        (String) parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
-
         setUpMapIfNeeded();
     }
 
@@ -101,9 +88,6 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case R.id.action_detailview:
-                openDetailView();
-                return true;
             case R.id.action_settings:
                 openSettings();
                 return true;
@@ -162,6 +146,16 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
             addMarker(node);
         }
 
+        ArrayAdapter<InfoNode> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
+        ListView listView = (ListView) findViewById(R.id.listBelowMap);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                openDetailView((InfoNode) parent.getItemAtPosition(position));
+            }
+        });
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -205,8 +199,9 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
      * This is just a temporary method. Will be moved to ListView-listener once available.
      */
 
-    private void openDetailView() {
+    private void openDetailView(InfoNode node) {
         Intent intent = new Intent(this, DetailView.class);
+        intent.putExtra("InfoNode", node);
         startActivity(intent);
     }
 

@@ -1,9 +1,11 @@
 package com.dat255tesla.busexplorer;
 
+import java.io.Serializable;
+
 /**
  * Created by roy lena on 2015-09-23.
  */
-public class InfoNode {
+public class InfoNode implements Serializable {
     private final long id;
     private final String title;
     private final double lat;
