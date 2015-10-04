@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private GoogleMap mMap;
     private Location pretendLocation;
 
+    private ListView belowMapList;
+    private boolean isListOpen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
         // Temp-list below map
         String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, sites);
-        ListView listView = (ListView) findViewById(R.id.listBelowMap);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        belowMapList = (ListView) findViewById(R.id.listBelowMap);
+        belowMapList.setAdapter(adapter);
+        belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getApplicationContext(),
@@ -51,6 +55,43 @@ public class MainActivity extends AppCompatActivity {
                         .show();
             }
         });
+
+        // List is hidden by default.
+        setListVisibility(false);
+
+        // Using an boolean to check if list is open, instead of checking its visibility.
+        isListOpen = false;
+        final Button listButton = (Button) findViewById(R.id.openListButton);
+        final View.OnClickListener openListListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+
+
+                // ---------------------------------------------------------------------------------- Variant 1
+                // Open list
+                if(!isListOpen){
+                    listButton.setText("Close list");
+                    setListVisibility(true);
+                    isListOpen = true;
+                }
+
+                // Close list
+                else {
+                    listButton.setText("Open list");
+                    setListVisibility(false);
+                    isListOpen = false;
+                }
+
+                // ---------------------------------------------------------------------------------- Variant 2
+//                String listStatus = (isListOpen) ? "Open List" : "Close List";
+//                listButton.setText(listStatus);
+//                setListVisibility(!isListOpen);
+//                isListOpen = !isListOpen;
+
+            }
+        };
+
+        listButton.setOnClickListener(openListListener);
 
         setUpMapIfNeeded();
     }
@@ -154,5 +195,13 @@ public class MainActivity extends AppCompatActivity {
     private void openSettings() {
         Intent intent = new Intent(this, Settings.class);
         startActivity(intent);
+    }
+
+    private void setListVisibility (boolean isVisible) {
+        getListView().setVisibility( isVisible ? View.VISIBLE : View.INVISIBLE );
+    }
+
+    private ListView getListView() {
+        return belowMapList;
     }
 }

@@ -18,13 +18,25 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.5"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
-        <ListView
+        <ExpandableListView
             android:id="@+id/listBelowMap"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </ListView>
+            android:layout_height="wrap_content"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_alignTop="@id/openListButton"
+            >
+        </ExpandableListView>
+
+        <Button
+            android:id="@+id/openListButton"
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:text="@string/list_bottom_default"
+            />
 
     </RelativeLayout>
 
