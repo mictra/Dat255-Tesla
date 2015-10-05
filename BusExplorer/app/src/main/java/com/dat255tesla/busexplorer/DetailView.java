@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DetailView extends AppCompatActivity {
 
@@ -30,6 +40,7 @@ public class DetailView extends AppCompatActivity {
 
     private Integer images[];
     private Integer thumbs[];
+    private List<Bitmap> imgs;
 
     private String title;
     private String address;
@@ -52,6 +63,29 @@ public class DetailView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_detail_view);
+        imgs = new ArrayList<>();
+        ParseQuery.getQuery("TestObject").getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if(e == null){
+                    try {
+                        for(ParseObject obj : parseObject.getRelation("files").getQuery().find()){
+                            ParseFile img = obj.getParseFile("image");
+                            byte[] data = img.getData();
+                            if(data == null){
+                                Toast.makeText(getApplicationContext(), "data is null", Toast.LENGTH_SHORT).show();
+                            }
+                            Bitmap bmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                            imgs.add(bmap);
+                        }
+                        String s = imgs.size() + "";
+                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
 
         InfoNode node = (InfoNode) getIntent().getSerializableExtra("InfoNode");
         title = node.getTitle();
@@ -94,7 +128,7 @@ public class DetailView extends AppCompatActivity {
         headline.setText(title);
         subheadline.setText(address);
         if (noimages > 0) {
-            createArrays();
+            //createArrays();
             addImagesToGallery();
         }
         description.loadUrl("file:///android_asset/detailview/" + info);
@@ -115,24 +149,28 @@ public class DetailView extends AppCompatActivity {
      */
     private void addImagesToGallery() {
         imageGallery.removeAllViews();
-        for (int i = 0; i < images.length; i++) {
-            imageGallery.addView(getImageView(images[i], thumbs[i]));
+//        for (int i = 0; i < images.length; i++) {
+//            imageGallery.addView(getImageView(images[i], thumbs[i]));
+//            imageGallery.addView(getImageView());
+//        }
+        for (Bitmap bmp : imgs) {
+            imageGallery.addView(getImageView(bmp));
         }
     }
 
-    private View getImageView(final Integer image, Integer thumb) {
+    private View getImageView(final Bitmap b) {
         final com.dat255tesla.busexplorer.TouchHighlightImageButton imageButton = new com.dat255tesla.busexplorer.TouchHighlightImageButton(getApplicationContext());
         int width = Math.round(175 * (getResources().getDisplayMetrics().densityDpi/160));
         int height = Math.round(175 * (getResources().getDisplayMetrics().densityDpi/160));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(width, height);
         lp.setMargins(0, 0, 10, 0);
         imageButton.setLayoutParams(lp);
-        imageButton.setImageResource(thumb);
+        imageButton.setImageBitmap(b);
         imageButton.setScaleType(TouchHighlightImageButton.ScaleType.CENTER_CROP);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                zoomImageFromThumb(imageButton, image);
+                //zoomImageFromThumb(imageButton, b);
                 //Toast.makeText(getApplicationContext(), ""+test,Toast.LENGTH_SHORT).show();
             }
         });
