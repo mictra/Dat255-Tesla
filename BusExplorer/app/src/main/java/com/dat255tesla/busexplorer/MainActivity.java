@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     private HashMap<Marker, InfoNode> markers;
     private InfoDataSource ds;
     private List<InfoNode> values;
+    private Marker busMarker;
 
     private MarkerOptions busStopOptions;
     private MarkerOptions busPositionOptions;
@@ -240,7 +241,11 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     public void positionChanged(LatLng pos) {
         if (pos.latitude != 0 && pos.longitude != 0) { // Ugly solution for now
             busPositionOptions.position(pos).title("SIMULATED BUS MOVING!");
-            mMap.addMarker(busPositionOptions);
+            if (busMarker == null) {
+                busMarker = mMap.addMarker(busPositionOptions);
+            } else {
+                busMarker.setPosition(pos);
+            }
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 16));
         }
     }
