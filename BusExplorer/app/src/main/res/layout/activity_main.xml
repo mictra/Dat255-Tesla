@@ -21,14 +21,12 @@
         android:orientation="vertical"
         >
 
-        <ExpandableListView
+        <ListView
             android:id="@+id/listBelowMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_alignTop="@id/openListButton"
             >
-        </ExpandableListView>
+        </ListView>
 
         <Button
             android:id="@+id/openListButton"
