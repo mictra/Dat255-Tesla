@@ -63,11 +63,10 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         ds.updateDatabaseIfNeeded();
 
         busStopOptions = new MarkerOptions()
-                .alpha(0.8f)
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_01));
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_mapmarker_bus));
         busPositionOptions = new MarkerOptions()
-                .alpha(0.8f)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
+                .anchor(0.5f,0.5f);
         setUpMapIfNeeded();
     }
 
