@@ -1,7 +1,5 @@
 package com.dat255tesla.busexplorer;
 
-import com.google.android.gms.maps.SupportMapFragment;
-
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -18,18 +16,29 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
-    private BusMap bMap;
+public class MainActivity extends AppCompatActivity implements IValuesChangedListener, IPositionChangedListener {
     private GoogleMap mMap;
-    private Location pretendLocation;
+    private APIHelper apiHelper;
+    private HashMap<Marker, InfoNode> markers;
+    private InfoDataSource ds;
+    private List<InfoNode> values;
+    private Marker busMarker;
 
+    private MarkerOptions busStopOptions;
+    private MarkerOptions busPositionOptions;
+
+    // examples
+    private Location pretendLocation;
     private ListView belowMapList;
     private boolean isListOpen;
 
@@ -37,61 +46,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        apiHelper = new APIHelper(this);
         pretendLocation = new Location("pretend");
         // (57.707373, 11.973864) - "Nara" (<2km) goteborgsmarkaren
         pretendLocation.setLatitude(57.707373);
         pretendLocation.setLongitude(11.973864);
+        markers = new HashMap<>();
 
-        // Temp-list below map
-        String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, sites);
-        belowMapList = (ListView) findViewById(R.id.listBelowMap);
-        belowMapList.setAdapter(adapter);
-        belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(),
-                        (String) parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
+        // Establish database connection
+        ds = new InfoDataSource(this);
+        ds.setValuesChangedListener(this);
+        
+        try {
+            ds.open();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-        // List is hidden by default.
-        setListVisibility(false);
+        ds.updateDatabaseIfNeeded();
 
-        // Using an boolean to check if list is open, instead of checking its visibility.
-        isListOpen = false;
-        final Button listButton = (Button) findViewById(R.id.openListButton);
-        final View.OnClickListener openListListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-
-
-                // ---------------------------------------------------------------------------------- Variant 1
-                // Open list
-                if(!isListOpen){
-                    listButton.setText("Close list");
-                    setListVisibility(true);
-                    isListOpen = true;
-                }
-
-                // Close list
-                else {
-                    listButton.setText("Open list");
-                    setListVisibility(false);
-                    isListOpen = false;
-                }
-
-                // ---------------------------------------------------------------------------------- Variant 2
-//                String listStatus = (isListOpen) ? "Open List" : "Close List";
-//                listButton.setText(listStatus);
-//                setListVisibility(!isListOpen);
-//                isListOpen = !isListOpen;
-
-            }
-        };
-
-        listButton.setOnClickListener(openListListener);
+        busStopOptions = new MarkerOptions()
+                .alpha(0.8f)
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_01));
+        busPositionOptions = new MarkerOptions()
+                .alpha(0.8f)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02));
 
         setUpMapIfNeeded();
     }
@@ -100,6 +79,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        apiHelper.setUpdate(false);
+        finish();
     }
 
     @Override
@@ -116,6 +102,12 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 openSettings();
+                return true;
+            case R.id.action_devmode:
+                openDevMode();
+                return true;
+            case R.id.action_testcallapi:
+                openTestCallAPI();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -151,42 +143,78 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
+     * This is where we can add markers or lines, add listeners or move the camera.
      * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        bMap = new BusMap(mMap);
-        bMap.addMarker(new LatLng(38.906734, 1.420598));
-        bMap.addMarker(new LatLng(57.708870, 11.974560));   // Goteborg
-        bMap.addMarker(new LatLng(51.507351, -0.127758));
-        bMap.addMarker(new LatLng(59.913869, 10.752245));
-
-        bMap.addMarker(new MarkerOptions().position(BusMap.LocToLatLng(pretendLocation))
-                .draggable(true)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
-
         LatLng latlng = new LatLng(pretendLocation.getLatitude(), pretendLocation.getLongitude());
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 18));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 16));
 
-        // EXPERIMENTERING!!
-        // Bra att veta: det finns mer lyssnare (och callbacks) an bara OnMapClickListener()
-        // skriv GoogleMap.On utanfor kommentaren och se alternativen!
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        // Add all markers from the internal database
+        values = ds.getAllInfoNodes();
+
+        for (InfoNode node : values) {
+            addMarker(node);
+        }
+
+        // List is hidden by default.
+        setListVisibility(false);
+
+        // Using an boolean to check if list is open, instead of checking its visibility.
+        isListOpen = false;
+        final Button listButton = (Button) findViewById(R.id.openListButton);
+        final View.OnClickListener openListListener = new View.OnClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {
-                bMap.addMarker(new MarkerOptions().position(latLng).draggable(true).icon(
-                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            public void onClick(View v){
+                String listStatus = (isListOpen) ? "Open List" : "Close List";
+                listButton.setText(listStatus);
+                setListVisibility(!isListOpen);
+                isListOpen = !isListOpen;
+            }
+        };
 
-                ArrayList<Marker> nearMyLocation =
-                        bMap.getMarkersInRange(pretendLocation, 5000);
+        listButton.setOnClickListener(openListListener);
 
-                Toast.makeText(getApplicationContext(),
-                        nearMyLocation.size() + " markers within 5000 meters (of cyan)",
-                        Toast.LENGTH_LONG).show();
+        ArrayAdapter<InfoNode> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
+        belowMapList = (ListView) findViewById(R.id.listBelowMap);
+        belowMapList.setAdapter(adapter);
+        belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                openDetailView((InfoNode) parent.getItemAtPosition(position));
             }
         });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                String title = marker.getTitle();
+                Toast.makeText(getApplicationContext(), title, Toast.LENGTH_SHORT).show();
+
+                return false;
+            }
+        });
+        apiHelper.execute();
+    }
+
+    private void addMarker(InfoNode node) {
+        LatLng pos = new LatLng(node.getLatitude(), node.getLongitude());
+
+        switch (node.getType()) {
+            case 1:
+                busStopOptions.position(pos)
+                        .title(node.getTitle());
+                markers.put(mMap.addMarker(busStopOptions), node);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void openDevMode() {
+        Intent intent = new Intent(this, DeveloperActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -204,4 +232,52 @@ public class MainActivity extends AppCompatActivity {
     private ListView getListView() {
         return belowMapList;
     }
+
+    /**
+     * Open the DetailView
+     * This is just a temporary method. Will be moved to ListView-listener once available.
+     *
+     * @param node
+     */
+
+    private void openDetailView(InfoNode node) {
+        Intent intent = new Intent(this, DetailView.class);
+        intent.putExtra("InfoNode", node);
+        startActivity(intent);
+    }
+
+    @Override
+    public void valuesChanged(List<InfoNode> values) {
+        // Add all markers from the internal database
+        values = ds.getAllInfoNodes();
+        markers.clear();
+
+        for (InfoNode node : values) {
+            addMarker(node);
+        }
+    }
+
+    /**
+     * Open the TestCallAPI
+     * This is just a temporary method. Will be removed.
+     */
+
+    private void openTestCallAPI() {
+        Intent intent = new Intent(this, TestCallAPI.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void positionChanged(LatLng pos) {
+        if (pos.latitude != 0 && pos.longitude != 0) { // Ugly solution for now
+            busPositionOptions.position(pos).title("SIMULATED BUS MOVING!");
+            if (busMarker == null) {
+                busMarker = mMap.addMarker(busPositionOptions);
+            } else {
+                busMarker.setPosition(pos);
+            }
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 16));
+        }
+    }
+
 }

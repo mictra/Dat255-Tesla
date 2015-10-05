@@ -13,6 +13,7 @@
         android:layout_weight="0.5"
         tools:context="com.dat255tesla.busexplorer.MainActivity" />
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +36,5 @@
             android:layout_height="wrap_content"
             android:text="@string/list_bottom_default"
             />
-
     </RelativeLayout>
-
 </LinearLayout>
