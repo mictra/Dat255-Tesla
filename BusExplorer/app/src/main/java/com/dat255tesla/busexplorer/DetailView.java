@@ -32,9 +32,9 @@ public class DetailView extends AppCompatActivity {
     private Integer thumbs[];
 
     private String title;
-    private String address = "Götaplatsen";
+    private String address;
     private String imagename = "poseidon";
-    private int noimages = 3;
+    private int noimages;
     private String info = "poseidon.html";
 
     /**
@@ -55,6 +55,8 @@ public class DetailView extends AppCompatActivity {
 
         InfoNode node = (InfoNode) getIntent().getSerializableExtra("InfoNode");
         title = node.getTitle();
+        address = node.getAddress();
+        noimages = node.getNbrofimgs();
 
         headline = (TextView) findViewById(R.id.dv_headline);
         subheadline = (TextView) findViewById(R.id.dv_subheadline);
