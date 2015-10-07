@@ -69,7 +69,9 @@
         <activity
             android:name=".About"
             android:label="@string/title_activity_about" >
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dat255tesla.busexplorer.MainActivity" />
         </activity>
     </application>
 
