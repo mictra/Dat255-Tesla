@@ -19,4 +19,10 @@
     <string name="title_activity_developer">DeveloperActivity</string>
     <string name="title_activity_test_call_api">TestCallAPI</string>
     <string name="action_testcallapi">TestCallAPI</string>
+    <string name="title_activity_about">About</string>
+    <string name="action_about">About</string>
+
+
+
+
 </resources>

@@ -62,10 +62,14 @@
             android:name=".DeveloperActivity"
             android:label="@string/title_activity_developer" >
         </activity>
-
         <activity
             android:name=".TestCallAPI"
             android:label="@string/title_activity_test_call_api" >
+        </activity>
+        <activity
+            android:name=".About"
+            android:label="@string/title_activity_about" >
+
         </activity>
     </application>
 

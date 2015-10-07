@@ -114,6 +114,9 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
             case R.id.action_testcallapi:
                 openTestCallAPI();
                 return true;
+            case R.id.action_about:
+                openAbout();
+            return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -199,6 +202,12 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
             default:
                 break;
         }
+    }
+    public void openAbout(){
+        Intent intent = new Intent(this, About.class);
+        startActivity(intent);
+
+
     }
 
     public void openDevMode() {
