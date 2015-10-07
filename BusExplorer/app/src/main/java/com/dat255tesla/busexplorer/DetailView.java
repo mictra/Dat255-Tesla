@@ -38,15 +38,8 @@ public class DetailView extends AppCompatActivity {
     private WebView description;
     private LinearLayout imageGallery;
 
-    private Integer images[];
-    private Integer thumbs[];
     private List<Bitmap> imgs;
 
-    private String title;
-    private String address;
-    private String imagename = "poseidon";
-    private int noimages;
-    private String info = "poseidon.html";
 
     /**
      * Hold a reference to the current animator, so that it can be canceled mid-way.
@@ -63,45 +56,43 @@ public class DetailView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_detail_view);
+
+        final InfoNode node = (InfoNode) getIntent().getSerializableExtra("InfoNode");
+
+        headline = (TextView) findViewById(R.id.dv_headline);
+        headline.setText(node.getTitle());
+        subheadline = (TextView) findViewById(R.id.dv_subheadline);
+        subheadline.setText(node.getAddress());
+        imageGallery = (LinearLayout) findViewById(R.id.dv_imageGallery);
+        description = (WebView) findViewById(R.id.dv_description);
+
         imgs = new ArrayList<>();
+
         ParseQuery.getQuery("TestObject").getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
-                if(e == null){
+                if (e == null) {
                     try {
-                        for(ParseObject obj : parseObject.getRelation("files").getQuery().find()){
+                        for (ParseObject obj : parseObject.getRelation("files").getQuery().find()) {
                             ParseFile img = obj.getParseFile("image");
                             byte[] data = img.getData();
-                            if(data == null){
+                            if (data == null) {
                                 Toast.makeText(getApplicationContext(), "data is null", Toast.LENGTH_SHORT).show();
                             }
                             Bitmap bmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                             imgs.add(bmap);
                         }
-                        String s = imgs.size() + "";
-                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
                     } catch (ParseException e1) {
                         e1.printStackTrace();
                     }
+                    addImagesToGallery();
+                    description.loadUrl("file:///android_asset/detailview/" + node.getInfo());
                 }
             }
         });
 
-        InfoNode node = (InfoNode) getIntent().getSerializableExtra("InfoNode");
-        title = node.getTitle();
-        address = node.getAddress();
-        noimages = node.getNbrofimgs();
-
-        headline = (TextView) findViewById(R.id.dv_headline);
-        subheadline = (TextView) findViewById(R.id.dv_subheadline);
-        description = (WebView) findViewById(R.id.dv_description);
-        imageGallery = (LinearLayout) findViewById(R.id.dv_imageGallery);
-
-        setFields();
-
-        // Retrieve and cache the system's default animation time.
+        // Retrieve and cache the system's default medium animation time.
         mAnimationDuration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
-        //mShortAnimationDuration = (getResources().getInteger(android.R.integer.config_shortAnimTime)+getResources().getInteger(android.R.integer.config_mediumAnimTime))/2;
     }
 
     @Override
@@ -124,26 +115,26 @@ public class DetailView extends AppCompatActivity {
         }
     }
 
-    private void setFields() {
-        headline.setText(title);
-        subheadline.setText(address);
-        if (noimages > 0) {
-            //createArrays();
-            addImagesToGallery();
-        }
-        description.loadUrl("file:///android_asset/detailview/" + info);
-    }
+//    private void setFields() {
+//        headline.setText(title);
+//        subheadline.setText(address);
+//        if (noimages > 0) {
+//            //createArrays();
+//            addImagesToGallery();
+//        }
+//        description.loadUrl("file:///android_asset/detailview/" + info);
+//    }
 
-    private void createArrays() {
-        images = new Integer[noimages];
-        thumbs = new Integer[noimages];
+//    private void createArrays() {
+//        images = new Integer[noimages];
+//        thumbs = new Integer[noimages];
+//
+//        for (int i = 0; i < noimages; i++) {
+//            images[i] = getResources().getIdentifier(imagename + (i+1), "drawable", getPackageName());
+//            thumbs[i] = getResources().getIdentifier(imagename + (i+1) + "_thumb", "drawable", getPackageName());
+//        }
+//    }
 
-        for (int i = 0; i < noimages; i++) {
-            images[i] = getResources().getIdentifier(imagename + (i+1), "drawable", getPackageName());
-            thumbs[i] = getResources().getIdentifier(imagename + (i+1) + "_thumb", "drawable", getPackageName());
-        }
-
-    }
     /**
      * Building the image gallery
      */
@@ -160,8 +151,8 @@ public class DetailView extends AppCompatActivity {
 
     private View getImageView(final Bitmap b) {
         final com.dat255tesla.busexplorer.TouchHighlightImageButton imageButton = new com.dat255tesla.busexplorer.TouchHighlightImageButton(getApplicationContext());
-        int width = Math.round(175 * (getResources().getDisplayMetrics().densityDpi/160));
-        int height = Math.round(175 * (getResources().getDisplayMetrics().densityDpi/160));
+        int width = Math.round(200 * (getResources().getDisplayMetrics().densityDpi/160));
+        int height = Math.round(200 * (getResources().getDisplayMetrics().densityDpi/160));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(width, height);
         lp.setMargins(0, 0, 10, 0);
         imageButton.setLayoutParams(lp);
@@ -170,14 +161,14 @@ public class DetailView extends AppCompatActivity {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //zoomImageFromThumb(imageButton, b);
+                zoomImageFromThumb(imageButton, b);
                 //Toast.makeText(getApplicationContext(), ""+test,Toast.LENGTH_SHORT).show();
             }
         });
         return imageButton;
     }
 
-    private void zoomImageFromThumb(final View thumbView, int imageResId) {
+    private void zoomImageFromThumb(final View thumbView, Bitmap imageResId) {
         // If there's an animation in progress, cancel it immediately and proceed with this one.
         if (mCurrentAnimator != null) {
             mCurrentAnimator.cancel();
@@ -185,7 +176,7 @@ public class DetailView extends AppCompatActivity {
 
         // Load the high-resolution "zoomed-in" image.
         final ImageView expandedImageView = (ImageView) findViewById(R.id.dv_expanded_image);
-        expandedImageView.setImageResource(imageResId);
+        expandedImageView.setImageBitmap(imageResId);
 
         // Calculate the starting and ending bounds for the zoomed-in image. This step
         // involves lots of math. Yay, math.
