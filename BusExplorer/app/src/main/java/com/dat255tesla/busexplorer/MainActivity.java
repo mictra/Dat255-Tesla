@@ -1,16 +1,26 @@
 package com.dat255tesla.busexplorer;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -169,6 +179,8 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
                 String title = marker.getTitle();
                 Toast.makeText(getApplicationContext(), title, Toast.LENGTH_SHORT).show();
 
+                showPopup(MainActivity.this);
+
                 return false;
             }
         });
@@ -213,6 +225,35 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         Intent intent = new Intent(this, DetailView.class);
         intent.putExtra("InfoNode", node);
         startActivity(intent);
+    }
+
+    private void showPopup(final Activity context) {
+        LinearLayout viewGroup = (LinearLayout) findViewById(R.id.popup_element);
+        LayoutInflater inflater = (LayoutInflater)
+                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.popup_layout, viewGroup);
+
+        final PopupWindow popup = new PopupWindow(context);
+        popup.setContentView(layout);
+        popup.setFocusable(true);
+        popup.setWidth(800);
+        popup.setHeight(900);
+        popup.showAtLocation(layout, Gravity.CENTER, 0, 0);
+
+        System.out.println("popup should show!");
+        System.out.println("popup should show!");
+        System.out.println("popup should show!");
+        System.out.println("popup should show!");
+        System.out.println("popup should show!");
+        System.out.println("popup should show!");
+
+        Button close = (Button) layout.findViewById(R.id.b_ClosePopup);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popup.dismiss();
+            }
+        });
     }
 
     @Override
