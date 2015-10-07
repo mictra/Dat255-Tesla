@@ -77,7 +77,7 @@ public class DeveloperActivity extends AppCompatActivity implements IValuesChang
                 String addr = et_addr.getText().toString();
 
                 // save the new comment to the database
-                node = ds.createInfoNode(title, lat, lng, type, info, addr, 0, 0);
+                node = ds.createInfoNode(title, lat, lng, type, info, addr, 0, "objectId");
                 adapter.add(node);
                 break;
             case R.id.b_DelEntry:

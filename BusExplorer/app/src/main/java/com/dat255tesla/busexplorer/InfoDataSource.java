@@ -33,7 +33,7 @@ public class InfoDataSource {
             SQLiteHelper.COLUMN_INFO,
             SQLiteHelper.COLUMN_ADDR,
             SQLiteHelper.COLUMN_LASTMOD,
-            SQLiteHelper.COLUMN_NBROFIMGS};
+            SQLiteHelper.COLUMN_OBJID};
 
     public InfoDataSource(Context context) {
         helper = new SQLiteHelper(context);
@@ -72,7 +72,7 @@ public class InfoDataSource {
 
     // Method for adding new InfoNodes
     public InfoNode createInfoNode(String title, double lat, double lng, int type,
-                                   String info, String addr, long date, int nbrofimgs) {
+                                   String info, String addr, long date, String objId) {
 
         ContentValues values = new ContentValues();
         values.put(SQLiteHelper.COLUMN_TITLE, title);
@@ -82,7 +82,7 @@ public class InfoDataSource {
         values.put(SQLiteHelper.COLUMN_INFO, info);
         values.put(SQLiteHelper.COLUMN_ADDR, addr);
         values.put(SQLiteHelper.COLUMN_LASTMOD, date);
-        values.put(SQLiteHelper.COLUMN_NBROFIMGS, nbrofimgs);
+        values.put(SQLiteHelper.COLUMN_OBJID, objId);
 
         // Insert values and grab the id of the new entry
         long insertId = db.insert(SQLiteHelper.TABLE_MARKERS, null, values);
@@ -127,7 +127,7 @@ public class InfoDataSource {
     private InfoNode cursorToInfo(Cursor cursor) {
         return new InfoNode(cursor.getInt(0), cursor.getString(1),
                 cursor.getDouble(2), cursor.getDouble(3), cursor.getInt(4),
-                cursor.getString(5), cursor.getString(6), cursor.getLong(7), cursor.getInt(8));
+                cursor.getString(5), cursor.getString(6), cursor.getLong(7), cursor.getString(8));
     }
 
     /*
@@ -182,8 +182,8 @@ public class InfoDataSource {
                         String info = object.getString("info");
                         String address = object.getString("address");
                         long lastMod = object.getUpdatedAt().getTime();
-                        int nbrofimgs = object.getInt("nbrofimgs");
-                        createInfoNode(title, location.getLatitude(), location.getLongitude(), type, info, address, lastMod, nbrofimgs);
+                        String objId = object.getObjectId();
+                        createInfoNode(title, location.getLatitude(), location.getLongitude(), type, info, address, lastMod, objId);
                     }
                     vcl.valuesChanged(getAllInfoNodes());
                 } else {

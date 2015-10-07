@@ -14,10 +14,10 @@ public class InfoNode implements Serializable {
     private final String info;
     private final String addr;
     private final long lastMod;
-    private final int nbrofimgs;
+    private final String objId;
 
     public InfoNode(long id, String title, double lat, double lng, int type,
-                    String info, String addr, long lastMod, int nbrofimgs) {
+                    String info, String addr, long lastMod, String objId) {
         this.id = id;
         this.title = title;
         this.lat = lat;
@@ -26,7 +26,7 @@ public class InfoNode implements Serializable {
         this.info = info;
         this.addr = addr;
         this.lastMod = lastMod;
-        this.nbrofimgs = nbrofimgs;
+        this.objId = objId;
     }
 
     public long getId() {
@@ -61,8 +61,8 @@ public class InfoNode implements Serializable {
         return lastMod;
     }
 
-    public int getNbrofimgs(){
-        return nbrofimgs;
+    public String getObjId(){
+        return objId;
     }
 
     @Override

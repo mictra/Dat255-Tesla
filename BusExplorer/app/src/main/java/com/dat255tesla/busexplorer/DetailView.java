@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -29,17 +30,21 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class DetailView extends AppCompatActivity {
 
+    private InfoNode node;
     private TextView headline;
     private TextView subheadline;
     private WebView description;
     private LinearLayout imageGallery;
 
     private List<Bitmap> imgs;
+    private List<Bitmap> thumbs;
 
+    private HashMap<String, Bitmap> imgMap;
 
     /**
      * Hold a reference to the current animator, so that it can be canceled mid-way.
@@ -52,12 +57,22 @@ public class DetailView extends AppCompatActivity {
     private int mAnimationDuration;
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_detail_view);
 
-        final InfoNode node = (InfoNode) getIntent().getSerializableExtra("InfoNode");
+        imgs = new ArrayList<>();
+        thumbs = new ArrayList<>();
+        imgMap = new HashMap<>();
+
+        node = (InfoNode) getIntent().getSerializableExtra("InfoNode");
 
         headline = (TextView) findViewById(R.id.dv_headline);
         headline.setText(node.getTitle());
@@ -66,33 +81,45 @@ public class DetailView extends AppCompatActivity {
         imageGallery = (LinearLayout) findViewById(R.id.dv_imageGallery);
         description = (WebView) findViewById(R.id.dv_description);
 
-        imgs = new ArrayList<>();
+        getImagesFromServer();
 
-        ParseQuery.getQuery("TestObject").getFirstInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
-                if (e == null) {
-                    try {
-                        for (ParseObject obj : parseObject.getRelation("files").getQuery().find()) {
-                            ParseFile img = obj.getParseFile("image");
-                            byte[] data = img.getData();
-                            if (data == null) {
-                                Toast.makeText(getApplicationContext(), "data is null", Toast.LENGTH_SHORT).show();
-                            }
-                            Bitmap bmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                            imgs.add(bmap);
-                        }
-                    } catch (ParseException e1) {
-                        e1.printStackTrace();
-                    }
-                    addImagesToGallery();
-                    description.loadUrl("file:///android_asset/detailview/" + node.getInfo());
-                }
-            }
-        });
+        description.loadUrl("file:///android_asset/detailview/" + node.getInfo()); //TODO: Store html file on server and retrieve it from there?
 
         // Retrieve and cache the system's default medium animation time.
         mAnimationDuration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
+    }
+
+    /*
+    Retrieves and displays images from server database.
+    This method has inner callback functions/methods and is done in the background.
+     */
+    private void getImagesFromServer() {
+        // Background method, displays images from server when its done retrieving them.
+        ParseQuery.getQuery("Marker").getInBackground(node.getObjId(), new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if (e == null) { // If there are no exceptions, continue
+
+                    parseObject.getRelation("imgs").getQuery().findInBackground(new FindCallback<ParseObject>() {
+                        @Override
+                        public void done(List<ParseObject> list, ParseException e) {
+                            try {
+                                for (ParseObject object : list) {
+                                    ParseFile img = object.getParseFile("image");
+                                    byte[] data = img.getData();
+                                    Bitmap bmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                                    imgMap.put(img.getName().substring(42), bmap); // Hard coded, lel
+                                }
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                            addImagesToGallery();
+                        }
+                    });
+
+                }
+            }
+        });
     }
 
     @Override
@@ -140,28 +167,26 @@ public class DetailView extends AppCompatActivity {
      */
     private void addImagesToGallery() {
         imageGallery.removeAllViews();
-//        for (int i = 0; i < images.length; i++) {
-//            imageGallery.addView(getImageView(images[i], thumbs[i]));
-//            imageGallery.addView(getImageView());
-//        }
-        for (Bitmap bmp : imgs) {
-            imageGallery.addView(getImageView(bmp));
+        for (String key : imgMap.keySet()) {
+            if (key.contains("thumb")) {
+                imageGallery.addView(getImageView(imgMap.get(key), imgMap.get(key.replace("_thumb", ""))));
+            }
         }
     }
 
-    private View getImageView(final Bitmap b) {
+    private View getImageView(final Bitmap thumb, final Bitmap img) {
         final com.dat255tesla.busexplorer.TouchHighlightImageButton imageButton = new com.dat255tesla.busexplorer.TouchHighlightImageButton(getApplicationContext());
-        int width = Math.round(200 * (getResources().getDisplayMetrics().densityDpi/160));
-        int height = Math.round(200 * (getResources().getDisplayMetrics().densityDpi/160));
+        int width = Math.round(200 * (getResources().getDisplayMetrics().densityDpi / 160));
+        int height = Math.round(200 * (getResources().getDisplayMetrics().densityDpi / 160));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(width, height);
         lp.setMargins(0, 0, 10, 0);
         imageButton.setLayoutParams(lp);
-        imageButton.setImageBitmap(b);
+        imageButton.setImageBitmap(thumb);
         imageButton.setScaleType(TouchHighlightImageButton.ScaleType.CENTER_CROP);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                zoomImageFromThumb(imageButton, b);
+                zoomImageFromThumb(imageButton, img);
                 //Toast.makeText(getApplicationContext(), ""+test,Toast.LENGTH_SHORT).show();
             }
         });
