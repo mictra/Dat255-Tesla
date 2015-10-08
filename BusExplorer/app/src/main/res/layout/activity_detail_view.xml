@@ -13,6 +13,18 @@
         android:paddingBottom="6dp"
         tools:context="dat255.tesla.delta_one.helloworld.DetailView">
 
+        <RelativeLayout
+            android:id="@+id/loadingPanel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center" >
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true" />
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/dv_headline"
             android:text="@string/hello_world"

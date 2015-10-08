@@ -9,8 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,9 +19,7 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -29,7 +27,6 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,9 +37,6 @@ public class DetailView extends AppCompatActivity {
     private TextView subheadline;
     private WebView description;
     private LinearLayout imageGallery;
-
-    private List<Bitmap> imgs;
-    private List<Bitmap> thumbs;
 
     private HashMap<String, Bitmap> imgMap;
 
@@ -68,8 +62,6 @@ public class DetailView extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_detail_view);
 
-        imgs = new ArrayList<>();
-        thumbs = new ArrayList<>();
         imgMap = new HashMap<>();
 
         node = (InfoNode) getIntent().getSerializableExtra("InfoNode");
@@ -95,6 +87,12 @@ public class DetailView extends AppCompatActivity {
      */
     private void getImagesFromServer() {
         // Background method, displays images from server when its done retrieving them.
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        /*
+        Options used to free up memory while required (deprecated, might need a better solution?).
+        Problem known for devices with low ram memory.
+         */
+        options.inPurgeable = true;
         ParseQuery.getQuery("Marker").getInBackground(node.getObjId(), new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
@@ -103,17 +101,20 @@ public class DetailView extends AppCompatActivity {
                     parseObject.getRelation("imgs").getQuery().findInBackground(new FindCallback<ParseObject>() {
                         @Override
                         public void done(List<ParseObject> list, ParseException e) {
-                            try {
-                                for (ParseObject object : list) {
-                                    ParseFile img = object.getParseFile("image");
-                                    byte[] data = img.getData();
-                                    Bitmap bmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                                    imgMap.put(img.getName().substring(42), bmap); // Hard coded, lel
+                            if (e == null) {
+                                try {
+                                    for (ParseObject object : list) {
+                                        ParseFile img = object.getParseFile("image");
+                                        byte[] data = img.getData();
+                                        Bitmap bmap = BitmapFactory.decodeByteArray(data, 0, data.length, options);
+                                        imgMap.put(img.getName().substring(42), bmap); // Hard coded, lel
+                                    }
+                                } catch (ParseException e1) {
+                                    e1.printStackTrace();
                                 }
-                            } catch (ParseException e1) {
-                                e1.printStackTrace();
                             }
                             addImagesToGallery();
+                            findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                         }
                     });
 
