@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     private InfoDataSource ds;
     private List<InfoNode> values;
     private Marker busMarker;
+    private ArrayAdapter<InfoNode> adapter;
+    private ListView listView;
 
     private MarkerOptions busStopOptions;
     private MarkerOptions busPositionOptions;
@@ -70,14 +72,13 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
             e.printStackTrace();
         }
 
-        ds.updateDatabaseIfNeeded();
-
         busStopOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_01));
         busPositionOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
                 .anchor(0.5f,0.5f);
         setUpMapIfNeeded();
+        ds.updateDatabaseIfNeeded();
     }
 
     @Override
@@ -166,8 +167,8 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
             addMarker(node);
         }
 
-        ArrayAdapter<InfoNode> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
-        ListView listView = (ListView) findViewById(R.id.listBelowMap);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
+        listView = (ListView) findViewById(R.id.listBelowMap);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -268,12 +269,13 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     @Override
     public void valuesChanged(List<InfoNode> values) {
         // Add all markers from the internal database
-        values = ds.getAllInfoNodes();
+        this.values = values;
         markers.clear();
-
         for (InfoNode node : values) {
             addMarker(node);
         }
+        adapter.clear();
+        adapter.addAll(values);
     }
 
     /**
