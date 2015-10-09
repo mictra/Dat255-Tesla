@@ -5,6 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_devmode">Dev Mode</string>
     <string name="title_activity_maps">Map</string>
+    <string name="list_bottom_default">Open List</string>
     <string name="title_activity_detail_view">DetailView</string>
     <string name="action_detailview">DetailView</string>
     <string name="description_zoom_touch_close">Expanded image (touch to close)</string>

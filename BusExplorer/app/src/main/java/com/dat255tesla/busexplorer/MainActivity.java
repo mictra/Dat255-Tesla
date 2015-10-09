@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
 
     // examples
     private Location pretendLocation;
+    private ListView belowMapList;
+    private boolean isListOpen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         // Establish database connection
         ds = new InfoDataSource(this);
         ds.setValuesChangedListener(this);
-
+        
         try {
             ds.open();
         } catch (SQLException e) {
@@ -166,11 +168,29 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         for (InfoNode node : values) {
             addMarker(node);
         }
+        // List is hidden by default.
+        setListVisibility(false);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
-        listView = (ListView) findViewById(R.id.listBelowMap);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // Using an boolean to check if list is open, instead of checking its visibility.
+        isListOpen = false;
+        final Button listButton = (Button) findViewById(R.id.openListButton);
+        final View.OnClickListener openListListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                String listStatus = (isListOpen) ? "Open List" : "Close List";
+                listButton.setText(listStatus);
+                setListVisibility(!isListOpen);
+                isListOpen = !isListOpen;
+            }
+        };
+
+        listButton.setOnClickListener(openListListener);
+
+        ArrayAdapter<InfoNode> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
+        belowMapList = (ListView) findViewById(R.id.listBelowMap);
+        belowMapList.setAdapter(adapter);
+        belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 openDetailView((InfoNode) parent.getItemAtPosition(position));
@@ -222,6 +242,14 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     private void openSettings() {
         Intent intent = new Intent(this, Settings.class);
         startActivity(intent);
+    }
+
+    private void setListVisibility (boolean isVisible) {
+        getListView().setVisibility( isVisible ? View.VISIBLE : View.INVISIBLE );
+    }
+
+    private ListView getListView() {
+        return belowMapList;
     }
 
     /**
