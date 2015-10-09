@@ -10,7 +10,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/sightseeing"
+        android:text="@string/settings_optSightseeing"
         android:id="@+id/checkBox"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -37,13 +37,13 @@
         android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/button"
         android:layout_alignEnd="@+id/button"
-        android:text="@string/visible"
+        android:text="@string/settings_filterHeader"
         android:textSize="25dp" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/stores"
+        android:text="@string/settings_optStores"
         android:id="@+id/checkBox2"
         android:layout_below="@+id/checkBox"
         android:layout_alignParentLeft="true"
@@ -52,7 +52,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/misc"
+        android:text="@string/settings_optMisc"
         android:id="@+id/checkBox3"
         android:layout_below="@+id/checkBox2"
         android:layout_alignParentLeft="true"

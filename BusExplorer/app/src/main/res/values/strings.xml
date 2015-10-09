@@ -2,16 +2,22 @@
     <string name="app_name">BusExplorer</string>
 
     // Unsorted strings
-    <string name="hello_world">Hello world!</string>
-    <string name="action_devmode">Dev Mode</string>
-    <string name="title_activity_maps">Map</string>
     <string name="list_bottom_default">Open List</string>
-    <string name="title_activity_detail_view">DetailView</string>
-    <string name="action_detailview">DetailView</string>
+    <string name="hello_world">Hello World!</string>
     <string name="description_zoom_touch_close">Expanded image (touch to close)</string>
-    <string name="title_activity_developer">DeveloperActivity</string>
-    <string name="title_activity_test_call_api">TestCallAPI</string>
+
+    // Activity Titles
+    <string name="title_activity_detail_view">DetailView</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_about">About</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    // Actions
     <string name="action_testcallapi">TestCallAPI</string>
+    <string name="action_detailview">DetailView</string>
+    <string name="action_about">About</string>
+    <string name="action_settings">Settings</string>
 
     // Strings in MainActivity
     <string name="main_refreshNoConn">No internet connection found... Yet!</string>
@@ -28,23 +34,20 @@
     <string name="main_ohgod">(replace me)</string>
 
     // Strings in AboutActivity
-    <string name="title_activity_about">About</string>
-    <string name="action_about">About</string>
-    <string name="aboutbusexplorer">About BusExplorer</string>
-    <string name="about">About...</string>
-    <string name="license">License</string>
-    <string name="licencetext">Icon made by www.flaticon.com/authors/daniel-bruce from flaticon.com and freepik.com/ from flaticon.com </string>
-    <string name="aboutus">About Us</string>
-    <string name="aboutussmall">About Us</string>
+    <string name="about_aboutHeader">About BusExplorer</string>
+    <string name="about_aboutText">About...</string>
+    <string name="about_licenseHeader">License</string>
+    <string name="about_licenseText">Icon made by www.flaticon.com/authors/daniel-bruce from flaticon.com and freepik.com/ from flaticon.com </string>
+    <string name="about_usHeader">About Us</string>
+    <string name="about_usText">We\'re great.</string>
 
     // Strings in SettingsActivity
-    <string name="sightseeing">Sightseeing</string>
-    <string name="stores">Stores and shops</string>
-    <string name="misc">Miscellaneous</string>
-    <string name="visible">Locations visible on map</string>
-    <string name="action_settings">Settings</string>
+    <string name="settings_optSightseeing">Sightseeing</string>
+    <string name="settings_optStores">Stores and shops</string>
+    <string name="settings_optMisc">Miscellaneous</string>
+    <string name="settings_filterHeader">Locations visible on map</string>
+
+    // Usage unknown
     <string name="app_settings">Settings</string>
-    <string name="title_activity_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
 
 </resources>
