@@ -50,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
             b.setCancelable(true);
             alertSemaphore = true;
 
-            System.out.println("GOT THIS FAR 1");
-
             // Check if online
             if (netInfo != null && netInfo.isAvailable() && netInfo.isConnected()) {
                 // Check connection type
@@ -63,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println(netInfo.getTypeName());
                     System.out.println(netInfo.getExtraInfo());
                 } else {
-                    System.out.println("GOT THIS FAR 3");
                     // This triggers with mobile & no WiFi
                     b.setTitle(getResources().getString(R.string.main_title_noWifi)
                             + " \uD83D\uDE0F");
@@ -86,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                             });
                 }
             } else {
-                System.out.println("GOT THIS FAR 4");
                 // This triggers with no internet connection
                 b.setTitle(getResources().getString(R.string.main_title_noConn)
                         + " \uD83D\uDE1E");
@@ -108,8 +104,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
             }
-
-            System.out.println("GOT THIS FAR 5");
 
             AlertDialog alert = b.create();
             alert.show();
