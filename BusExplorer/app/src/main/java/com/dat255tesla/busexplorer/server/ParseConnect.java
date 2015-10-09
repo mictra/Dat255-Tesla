@@ -1,4 +1,4 @@
-package com.dat255tesla.busexplorer;
+package com.dat255tesla.busexplorer.server;
 
 
 import android.app.Application;

@@ -1,4 +1,4 @@
-package com.dat255tesla.busexplorer;
+package com.dat255tesla.busexplorer.apirequest;
 
 import com.google.android.gms.maps.model.LatLng;
 

@@ -1,8 +1,7 @@
-package com.dat255tesla.busexplorer;
+package com.dat255tesla.busexplorer.apirequest;
 
 import android.os.AsyncTask;
 import android.util.Base64;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 

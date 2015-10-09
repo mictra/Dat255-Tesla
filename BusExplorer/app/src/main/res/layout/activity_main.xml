@@ -1,40 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.dat255tesla.busexplorer.main.MainActivity">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        tools:context="com.dat255tesla.busexplorer.MainActivity" />
+    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.5"
-        android:gravity="center"
-        android:orientation="vertical"
-        >
-
-        <ListView
-            android:id="@+id/listBelowMap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
-        </ListView>
-
-        <Button
-            android:id="@+id/openListButton"
-            android:layout_width="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content"
-            android:text="@string/list_bottom_default"
-            />
-    </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>

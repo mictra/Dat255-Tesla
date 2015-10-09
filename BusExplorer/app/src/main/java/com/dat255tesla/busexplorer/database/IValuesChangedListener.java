@@ -1,4 +1,4 @@
-package com.dat255tesla.busexplorer;
+package com.dat255tesla.busexplorer.database;
 
 import java.util.List;
 

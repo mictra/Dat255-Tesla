@@ -1,11 +1,13 @@
-package com.dat255tesla.busexplorer;
+package com.dat255tesla.busexplorer.aboutcontent;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class About extends AppCompatActivity {
+import com.dat255tesla.busexplorer.R;
+
+public class AboutActivity extends AppCompatActivity {
 
 
 

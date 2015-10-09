@@ -1,4 +1,4 @@
-package com.dat255tesla.busexplorer;
+package com.dat255tesla.busexplorer.settingscontent;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,7 +14,9 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-public class Settings extends AppCompatActivity implements View.OnClickListener {
+import com.dat255tesla.busexplorer.R;
+
+public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String PREFS_NAME = "MyPrefsFile";
 
@@ -135,7 +137,7 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
         savePreferences("CheckBox_Value2", checkbox2.isChecked());
         savePreferences("CheckBox_Value3", checkbox3.isChecked());
         finish();
-        Toast.makeText(getApplicationContext(), "Settings saved", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "SettingsActivity saved", Toast.LENGTH_LONG).show();
 
     }
 

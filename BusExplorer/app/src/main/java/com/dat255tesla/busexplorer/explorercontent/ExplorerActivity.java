@@ -1,14 +1,11 @@
-package com.dat255tesla.busexplorer;
+package com.dat255tesla.busexplorer.explorercontent;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +20,15 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.dat255tesla.busexplorer.apirequest.APIHelper;
+import com.dat255tesla.busexplorer.aboutcontent.AboutActivity;
+import com.dat255tesla.busexplorer.detailcontent.DetailActivity;
+import com.dat255tesla.busexplorer.apirequest.IPositionChangedListener;
+import com.dat255tesla.busexplorer.database.IValuesChangedListener;
+import com.dat255tesla.busexplorer.database.InfoDataSource;
+import com.dat255tesla.busexplorer.database.InfoNode;
+import com.dat255tesla.busexplorer.R;
+import com.dat255tesla.busexplorer.settingscontent.SettingsActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -35,7 +41,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IValuesChangedListener, IPositionChangedListener {
+public class ExplorerActivity extends AppCompatActivity implements IValuesChangedListener, IPositionChangedListener {
     private GoogleMap mMap;
     private APIHelper apiHelper;
     private HashMap<Marker, InfoNode> markers;
@@ -43,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     private List<InfoNode> values;
     private Marker busMarker;
     private ArrayAdapter<InfoNode> adapter;
-    private ListView listView;
 
     private MarkerOptions busStopOptions;
     private MarkerOptions busPositionOptions;
@@ -56,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_explorer);
         apiHelper = new APIHelper(this);
         pretendLocation = new Location("pretend");
         // (57.707373, 11.973864) - "Nara" (<2km) goteborgsmarkaren
@@ -100,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_activity_main, menu);
+        inflater.inflate(R.menu.menu_activity_explorer, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -110,12 +115,6 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         switch (item.getItemId()) {
             case R.id.action_settings:
                 openSettings();
-                return true;
-            case R.id.action_devmode:
-                openDevMode();
-                return true;
-            case R.id.action_testcallapi:
-                openTestCallAPI();
                 return true;
             case R.id.action_about:
                 openAbout();
@@ -168,8 +167,6 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         for (InfoNode node : values) {
             addMarker(node);
         }
-        // List is hidden by default.
-        setListVisibility(false);
 
         // Using an boolean to check if list is open, instead of checking its visibility.
         isListOpen = false;
@@ -186,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
 
         listButton.setOnClickListener(openListListener);
 
-        ArrayAdapter<InfoNode> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
         belowMapList = (ListView) findViewById(R.id.listBelowMap);
         belowMapList.setAdapter(adapter);
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -203,11 +200,13 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
                 String title = marker.getTitle();
                 Toast.makeText(getApplicationContext(), title, Toast.LENGTH_SHORT).show();
 
-                showPopup(MainActivity.this);
+                showPopup(ExplorerActivity.this);
 
                 return false;
             }
         });
+        // List is hidden by default.
+        setListVisibility(false);
         apiHelper.execute();
     }
 
@@ -225,22 +224,15 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         }
     }
     public void openAbout(){
-        Intent intent = new Intent(this, About.class);
-        startActivity(intent);
-
-
-    }
-
-    public void openDevMode() {
-        Intent intent = new Intent(this, DeveloperActivity.class);
+        Intent intent = new Intent(this, AboutActivity.class);
         startActivity(intent);
     }
 
     /**
-     * Open the Settings
+     * Open the SettingsActivity
      */
     private void openSettings() {
-        Intent intent = new Intent(this, Settings.class);
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 
@@ -253,14 +245,14 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
     }
 
     /**
-     * Open the DetailView
+     * Open the DetailActivity
      * This is just a temporary method. Will be moved to ListView-listener once available.
      *
      * @param node
      */
 
     private void openDetailView(InfoNode node) {
-        Intent intent = new Intent(this, DetailView.class);
+        Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra("InfoNode", node);
         startActivity(intent);
     }
@@ -304,16 +296,6 @@ public class MainActivity extends AppCompatActivity implements IValuesChangedLis
         }
         adapter.clear();
         adapter.addAll(values);
-    }
-
-    /**
-     * Open the TestCallAPI
-     * This is just a temporary method. Will be removed.
-     */
-
-    private void openTestCallAPI() {
-        Intent intent = new Intent(this, TestCallAPI.class);
-        startActivity(intent);
     }
 
     @Override

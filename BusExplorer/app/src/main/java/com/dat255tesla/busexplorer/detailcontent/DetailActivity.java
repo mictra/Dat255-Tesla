@@ -1,4 +1,4 @@
-package com.dat255tesla.busexplorer;
+package com.dat255tesla.busexplorer.detailcontent;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -20,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.dat255tesla.busexplorer.database.InfoNode;
+import com.dat255tesla.busexplorer.R;
+import com.dat255tesla.busexplorer.settingscontent.SettingsActivity;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -30,7 +33,7 @@ import com.parse.ParseQuery;
 import java.util.HashMap;
 import java.util.List;
 
-public class DetailView extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity {
 
     private InfoNode node;
     private TextView headline;
@@ -135,7 +138,7 @@ public class DetailView extends AppCompatActivity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Intent intent = new Intent(this, Settings.class);
+                Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
             default:
@@ -176,7 +179,7 @@ public class DetailView extends AppCompatActivity {
     }
 
     private View getImageView(final Bitmap thumb, final Bitmap img) {
-        final com.dat255tesla.busexplorer.TouchHighlightImageButton imageButton = new com.dat255tesla.busexplorer.TouchHighlightImageButton(getApplicationContext());
+        final TouchHighlightImageButton imageButton = new TouchHighlightImageButton(getApplicationContext());
         int width = Math.round(200 * (getResources().getDisplayMetrics().densityDpi / 160));
         int height = Math.round(200 * (getResources().getDisplayMetrics().densityDpi / 160));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(width, height);
