@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">BusExplorer</string>
 
+    // Unsorted strings
     <string name="hello_world">Hello world!</string>
     <string name="action_devmode">Dev Mode</string>
     <string name="title_activity_maps">Map</string>
@@ -12,8 +13,21 @@
     <string name="title_activity_test_call_api">TestCallAPI</string>
     <string name="action_testcallapi">TestCallAPI</string>
 
-    //String in About activity
+    // Strings in MainActivity
+    <string name="main_refreshNoConn">No internet connection found... Yet!</string>
+    <string name="main_refreshYesConn">Detected an internet connection!</string>
+    <string name="main_refreshButton">Refresh</string>
 
+    <string name="main_title_noWifi">Just letting you know...</string>
+    <string name="main_text_noWifi">The ElectriCity buses provide free WiFi!</string>
+
+    <string name="main_title_noConn">No network found!</string>
+    <string name="main_text_noConn">Could not detect an internet connection!
+        An internet connection is required to use</string>
+
+    <string name="main_ohgod">(replace me)</string>
+
+    // Strings in AboutActivity
     <string name="title_activity_about">About</string>
     <string name="action_about">About</string>
     <string name="aboutbusexplorer">About BusExplorer</string>
@@ -23,8 +37,7 @@
     <string name="aboutus">About Us</string>
     <string name="aboutussmall">About Us</string>
 
-    //Strings in settings
-
+    // Strings in SettingsActivity
     <string name="sightseeing">Sightseeing</string>
     <string name="stores">Stores and shops</string>
     <string name="misc">Miscellaneous</string>
