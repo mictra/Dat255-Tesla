@@ -322,7 +322,8 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             if (busMarker == null) {
                 busMarker = mMap.addMarker(busPositionOptions);
             } else {
-                busMarker.setPosition(pos);
+                MapUtils.animateMarker(busMarker, pos, mMap);
+                //busMarker.setPosition(pos);
             }
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 16));
         }
