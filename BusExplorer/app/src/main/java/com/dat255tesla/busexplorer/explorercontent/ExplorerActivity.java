@@ -50,7 +50,10 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     private Marker busMarker;
     private ArrayAdapter<InfoNode> adapter;
 
-    private MarkerOptions busStopOptions;
+    private MarkerOptions opt_sights;
+    private MarkerOptions opt_stores;
+    private MarkerOptions opt_misc;
+
     private MarkerOptions busPositionOptions;
 
     // examples
@@ -79,8 +82,13 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             e.printStackTrace();
         }
 
-        busStopOptions = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_01));
+        opt_sights = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_triangle));
+        opt_stores = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_square));
+        opt_misc = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_circle));
+
         busPositionOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
                 .anchor(0.5f,0.5f);
@@ -215,12 +223,21 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
 
         switch (node.getType()) {
             case 1:
-                busStopOptions.position(pos)
+                opt_sights.position(pos)
                         .title(node.getTitle());
-                markers.put(mMap.addMarker(busStopOptions), node);
-                break;
+                markers.put(mMap.addMarker(opt_sights), node);
+                return;
+            case 2:
+                opt_stores.position(pos)
+                        .title(node.getTitle());
+                markers.put(mMap.addMarker(opt_stores), node);
+                return;
+            case 3:
+                opt_misc.position(pos)
+                        .title(node.getTitle());
+                markers.put(mMap.addMarker(opt_misc), node);
             default:
-                break;
+                return;
         }
     }
     public void openAbout(){

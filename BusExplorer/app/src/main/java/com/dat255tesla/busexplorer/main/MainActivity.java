@@ -135,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
     public void openExplorer() {
         Intent intent = new Intent(this, ExplorerActivity.class);
         startActivity(intent);
+        finish();
     }
 
     @Override
