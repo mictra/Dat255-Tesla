@@ -14,7 +14,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by roy lena on 2015-09-23.
@@ -25,7 +30,7 @@ public class MapUtils {
      * Will animate the movement of a Marker from its current position to its 'toPosition'.
      * This is a slightly shortened version of the same method given in the Google Maps V2 Demo app.
      *
-     * @param marker Marker to be animated
+     * @param marker     Marker to be animated
      * @param toPosition The final position of the marker after its animation
      */
     public static void animateMarker(final Marker marker, final LatLng toPosition, GoogleMap mMap) {
@@ -60,8 +65,8 @@ public class MapUtils {
         });
     }
 
-    public static ArrayList<Marker> MarkersInRange(HashMap<Marker, InfoNode> map, Location center,
-                                                   int maxDist) {
+    public static List<Marker> MarkersInRange(HashMap<Marker, InfoNode> map, Location center,
+                                              int maxDist) {
 
         ArrayList<Marker> out = new ArrayList<>();
         Location tempLoc;
@@ -83,11 +88,11 @@ public class MapUtils {
      * Useful for easily switching between the normal Location class used by Android and the LatLng
      * class that is used by the Google Maps V2 API.
      *
-     * @param loc   An existing object with a latitude and longitude
-     * @return      A new LatLng instance at provided Location.
-     * @see         LatLng
+     * @param loc An existing object with a latitude and longitude
+     * @return A new LatLng instance at provided Location.
+     * @see LatLng
      */
-    public static LatLng LocToLatLng (Location loc) {
+    public static LatLng LocToLatLng(Location loc) {
         return new LatLng(loc.getLatitude(), loc.getLongitude());
     }
 
@@ -99,13 +104,68 @@ public class MapUtils {
      *
      * @param latlng An existing object with a latitude and longitude
      * @param name   A name/identifier used by the Location class
-     * @return       A new Location instance at provided LatLng
-     * @see          Location
+     * @return A new Location instance at provided LatLng
+     * @see Location
      */
-    public static Location LatLngToLoc (LatLng latlng, String name) {
+    public static Location LatLngToLoc(LatLng latlng, String name) {
         Location loc = new Location(name);
         loc.setLatitude(latlng.latitude);
         loc.setLongitude(latlng.longitude);
         return loc;
     }
+
+    public static List<InfoNode> sortByDistance(List<InfoNode> values, String nextStop) {
+        InfoNode node = null;
+        for (InfoNode infoNode : values) {
+            if (infoNode.getTitle().equals(nextStop)) {
+                node = infoNode;
+                values.remove(infoNode);
+                break;
+            }
+        }
+
+        if (node != null) {
+            HashMap<InfoNode, Float> map = new HashMap<>();
+            float[] dist = new float[1];
+            double lati = node.getLatitude();
+            double longi = node.getLongitude();
+            for (InfoNode infoNode : values) {
+                Location.distanceBetween(lati, longi, infoNode.getLatitude(), infoNode.getLongitude(), dist);
+                map.put(infoNode, dist[0]);
+            }
+            return sortByComparator(map);
+        } else {
+            return null;
+        }
+
+    }
+
+    private static List<InfoNode> sortByComparator(Map<InfoNode, Float> unsortedMap) {
+
+        // Convert Map to List
+        List<Map.Entry<InfoNode, Float>> list = new LinkedList<>(unsortedMap.entrySet());
+
+        Collections.sort(list, new Comparator<Map.Entry<InfoNode, Float>>() {
+            public int compare(Map.Entry<InfoNode, Float> o1, Map.Entry<InfoNode, Float> o2) {
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+        // Print out sorted list
+        printMap(list);
+
+        List<InfoNode> sortedList = new ArrayList<>();
+        for (Map.Entry<InfoNode, Float> entry : list) {
+            sortedList.add(entry.getKey());
+        }
+        return sortedList;
+    }
+
+    public static void printMap(List<Map.Entry<InfoNode, Float>> list) {
+        for (Map.Entry<InfoNode, Float> entry : list) {
+            System.out.println("\n-------------[InfoNode title (marker name)] : " + entry.getKey().getTitle()
+                    + " [Value (distance in meters)] : " + entry.getValue());
+        }
+    }
+
 }

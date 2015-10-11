@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.dat255tesla.busexplorer.apirequest.APIHelper;
 import com.dat255tesla.busexplorer.aboutcontent.AboutActivity;
 import com.dat255tesla.busexplorer.detailcontent.DetailActivity;
-import com.dat255tesla.busexplorer.apirequest.IPositionChangedListener;
+import com.dat255tesla.busexplorer.apirequest.IAPIListener;
 import com.dat255tesla.busexplorer.database.IValuesChangedListener;
 import com.dat255tesla.busexplorer.database.InfoDataSource;
 import com.dat255tesla.busexplorer.database.InfoNode;
@@ -41,7 +41,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
-public class ExplorerActivity extends AppCompatActivity implements IValuesChangedListener, IPositionChangedListener {
+public class ExplorerActivity extends AppCompatActivity implements IValuesChangedListener, IAPIListener {
     private GoogleMap mMap;
     private APIHelper apiHelper;
     private HashMap<Marker, InfoNode> markers;
@@ -49,6 +49,7 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     private List<InfoNode> values;
     private Marker busMarker;
     private ArrayAdapter<InfoNode> adapter;
+    private String nextStop;
 
     private MarkerOptions opt_sights;
     private MarkerOptions opt_stores;
@@ -71,11 +72,12 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         pretendLocation.setLatitude(57.707373);
         pretendLocation.setLongitude(11.973864);
         markers = new HashMap<>();
+        nextStop = "";
 
         // Establish database connection
         ds = new InfoDataSource(this);
         ds.setValuesChangedListener(this);
-        
+
         try {
             ds.open();
         } catch (SQLException e) {
@@ -91,7 +93,7 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
 
         busPositionOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
-                .anchor(0.5f,0.5f);
+                .anchor(0.5f, 0.5f);
         setUpMapIfNeeded();
         ds.updateDatabaseIfNeeded();
     }
@@ -100,12 +102,22 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        if (apiHelper.isCancelled()) {
+            apiHelper = new APIHelper(this);
+            apiHelper.execute();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        apiHelper.cancel(true);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        apiHelper.setUpdate(false);
+        apiHelper.cancel(true);
         finish();
     }
 
@@ -126,7 +138,7 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
                 return true;
             case R.id.action_about:
                 openAbout();
-            return true;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -181,7 +193,7 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         final Button listButton = (Button) findViewById(R.id.openListButton);
         final View.OnClickListener openListListener = new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 String listStatus = (isListOpen) ? "Open List" : "Close List";
                 listButton.setText(listStatus);
                 setListVisibility(!isListOpen);
@@ -216,6 +228,7 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         // List is hidden by default.
         setListVisibility(false);
         apiHelper.execute();
+        //nextStopChanged("Poseidon"); //TODO: Enable to see result in terminal.
     }
 
     private void addMarker(InfoNode node) {
@@ -240,7 +253,8 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
                 return;
         }
     }
-    public void openAbout(){
+
+    public void openAbout() {
         Intent intent = new Intent(this, AboutActivity.class);
         startActivity(intent);
     }
@@ -253,8 +267,8 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         startActivity(intent);
     }
 
-    private void setListVisibility (boolean isVisible) {
-        getListView().setVisibility( isVisible ? View.VISIBLE : View.INVISIBLE );
+    private void setListVisibility(boolean isVisible) {
+        getListView().setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
     }
 
     private ListView getListView() {
@@ -326,6 +340,16 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
                 //busMarker.setPosition(pos);
             }
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 16));
+        }
+    }
+
+    @Override
+    public void nextStopChanged(String nextStop) {
+        if(!this.nextStop.equals(nextStop)){
+            List<InfoNode> sortedValues = MapUtils.sortByDistance(values, nextStop);
+            //valuesChanged(sortedValues); //TODO: Enable later when we get real values
+            this.nextStop = nextStop;
+            Toast.makeText(getApplicationContext(), "nextStop changed!", Toast.LENGTH_SHORT).show();
         }
     }
 
