@@ -31,20 +31,20 @@ public class MainActivity extends AppCompatActivity {
         cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         netInfo = cm.getActiveNetworkInfo();
 
-        doStuff();
+        connectionDialog();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        doStuff();
+        connectionDialog();
     }
 
     /**
      * Please rename me.
      */
-    public void doStuff() {
+    public void connectionDialog() {
         if(!alertSemaphore) {
             AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
             b.setCancelable(true);
