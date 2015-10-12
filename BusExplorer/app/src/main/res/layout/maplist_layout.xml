@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/poseidon1_thumb" />
+
+    <!--android:layout_alignEnd="@id/favButton"-->
+    <!--android:layout_alignRight="@id/favButton"-->
+
+    <TextView
+        android:id="@+id/listIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/icon"
+        android:layout_toRightOf="@id/icon"
+        android:textSize="20sp"
+        android:paddingTop="5dp"/>
+
+    <!-- For the Favorite Icon-->
+    <ImageButton
+        android:id="@+id/favButton"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/poseidon2_thumb" />
+
+    <!--<ListView-->
+    <!--android:id="@+id/listBelowMap"-->
+    <!--android:layout_above="@id/openListButton"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:divider="@color/transparent"-->
+    <!--android:dividerHeight="10dp"-->
+    <!--android:drawSelectorOnTop="true"-->
+    <!--android:footerDividersEnabled="false"-->
+    <!--android:padding="10dp"-->
+    <!--android:scrollbarStyle="outsideOverlay"-->
+    <!-->-->
+    <!--</ListView>-->
+</RelativeLayout>

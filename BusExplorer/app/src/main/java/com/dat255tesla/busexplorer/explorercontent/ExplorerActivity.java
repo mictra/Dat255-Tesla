@@ -84,16 +84,16 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             e.printStackTrace();
         }
 
-        opt_sights = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_triangle));
-        opt_stores = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_square));
-        opt_misc = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_circle));
-
-        busPositionOptions = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
-                .anchor(0.5f, 0.5f);
+//        opt_sights = new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_triangle));
+//        opt_stores = new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_square));
+//        opt_misc = new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_circle));
+//
+//        busPositionOptions = new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
+//                .anchor(0.5f, 0.5f);
         setUpMapIfNeeded();
         ds.updateDatabaseIfNeeded();
     }
@@ -188,31 +188,64 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             addMarker(node);
         }
 
+//        MapList mapList = new MapList();
+//        mapList.onCreate();
+
+        // Temp-list below map
+        String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, sites);
+        belowMapList = (ListView) findViewById(R.id.listBelowMap);
+        belowMapList.setAdapter(new ArrayAdapter<>(
+                this, R.layout.maplist_layout,
+                R.id.listIcon,sites));
+        belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(),
+                        parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        // List is hidden by default.
+        setListVisibility(false);
+
         // Using an boolean to check if list is open, instead of checking its visibility.
         isListOpen = false;
+
+        // Button to open and close list.
         final Button listButton = (Button) findViewById(R.id.openListButton);
         final View.OnClickListener openListListener = new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v){
+
                 String listStatus = (isListOpen) ? "Open List" : "Close List";
                 listButton.setText(listStatus);
                 setListVisibility(!isListOpen);
                 isListOpen = !isListOpen;
+
             }
         };
-
         listButton.setOnClickListener(openListListener);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
-        belowMapList = (ListView) findViewById(R.id.listBelowMap);
-        belowMapList.setAdapter(adapter);
-        belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                openDetailView((InfoNode) parent.getItemAtPosition(position));
-            }
-        });
+//        isFavorite = false;
+//        // Button to favorite an list-object.
+//        final ImageButton imgButton = (ImageButton) findViewById(R.id.favButton);
+//        final View.OnClickListener favItemListener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if(isFavorite){
+//                    v.setBackgroundResource(R.drawable.poseidon2_thumb);
+//
+//                } else {
+//                    v.setBackgroundResource(R.drawable.poseidon3_thumb);
+//                }
+//
+//                isFavorite = !isFavorite;
+//            }
+//        };
+//        imgButton.setOnClickListener(favItemListener);
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override

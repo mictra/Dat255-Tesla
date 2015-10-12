@@ -1,40 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
         tools:context="com.dat255tesla.busexplorer.explorercontent.ExplorerActivity" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:gravity="center"
+        android:text="MAP"
+        android:textSize="42sp" />
 
 
     <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="0.5"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    >
+
+    <Button
+        android:id="@+id/openListButton"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/list_bottom_default"
+        />
+
+    <ListView
+        android:id="@+id/listBelowMap"
+        android:layout_above="@id/openListButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.5"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:divider="@color/transparent"
+        android:dividerHeight="10dp"
+        android:drawSelectorOnTop="true"
+        android:footerDividersEnabled="false"
+        android:padding="10dp"
+        android:scrollbarStyle="outsideOverlay"
         >
+    </ListView>
 
-        <ListView
-            android:id="@+id/listBelowMap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
-        </ListView>
-
-        <Button
-            android:id="@+id/openListButton"
-            android:layout_width="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content"
-            android:text="@string/list_bottom_default"
-            />
-    </RelativeLayout>
+</RelativeLayout>
 </LinearLayout>
