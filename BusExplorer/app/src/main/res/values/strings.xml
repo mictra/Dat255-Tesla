@@ -35,7 +35,7 @@
 
     // Strings in AboutActivity
     <string name="about_aboutHeader">About BusExplorer</string>
-    <string name="about_aboutText">About...</string>
+    <string name="about_aboutText">BusExplorer was created for the ElectriCity Innovation Challange. Etc etc</string>
     <string name="about_licenseHeader">License</string>
     <string name="about_licenseText">Icon made by www.flaticon.com/authors/daniel-bruce from flaticon.com and freepik.com/ from flaticon.com </string>
     <string name="about_usHeader">About Us</string>
@@ -43,9 +43,9 @@
 
     // Strings in SettingsActivity
     <string name="settings_optSightseeing">Sightseeing</string>
-    <string name="settings_optStores">Stores and shops</string>
+    <string name="settings_optStores">Shopping</string>
     <string name="settings_optMisc">Miscellaneous</string>
-    <string name="settings_filterHeader">Locations visible on map</string>
+    <string name="settings_filterHeader">Filter Map</string>
 
     // Usage unknown
     <string name="app_settings">Settings</string>
