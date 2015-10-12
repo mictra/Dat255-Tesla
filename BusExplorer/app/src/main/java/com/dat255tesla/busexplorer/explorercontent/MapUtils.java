@@ -83,17 +83,11 @@ public class MapUtils {
         String ns = parts[4];
         String ew = parts[6];
 
-        Double seconds =
-                Double.parseDouble(lat.substring(5,7) + "." + lat.substring(7));
         Double newLat = Double.parseDouble(lat.substring(0,2)) +
-                (Double.parseDouble(lat.substring(2,4)) / 60) +
-                seconds / 3600;
+                (Double.parseDouble(lat.substring(2)) / 60);
 
-        seconds =
-                Double.parseDouble(lng.substring(6,8) + "." + lng.substring(8));
         Double newLng = Double.parseDouble(lng.substring(0,3)) +
-                (Double.parseDouble(lng.substring(3,5)) / 60) +
-                seconds / 3600;
+                (Double.parseDouble(lng.substring(3)) / 60);
 
         // If south of equator
         if (ns.equals('S')) {
