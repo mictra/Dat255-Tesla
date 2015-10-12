@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -60,7 +61,10 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     // examples
     private Location pretendLocation;
     private ListView belowMapList;
-    private boolean isListOpen;
+
+    // Using an boolean to check, instead of checking its visibility or a status.
+    private boolean isListOpen = false;
+    private boolean isFavorite = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +87,76 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+//        MapList mapList = new MapList();
+//        mapList.createList();
+        createList();
+
+//        // Temp-list below map
+//        String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
+//        belowMapList = (ListView) findViewById(R.id.listBelowMap);
+//        belowMapList.setAdapter(new ArrayAdapter<>(
+//                this, R.layout.maplist_layout,
+//                R.id.listIcon, sites));
+//        belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Toast.makeText(getApplicationContext(),
+//                        parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
+//                        .show();
+//            }
+//        });
+//
+//        // List is hidden by default.
+//        setListVisibility(false);
+//
+//        // Button to open and close list.
+//        final Button listButton = (Button) findViewById(R.id.openListButton);
+//        final View.OnClickListener openListListener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v){
+//
+//                String listStatus = (isListOpen) ? "Open List" : "Close List";
+//                listButton.setText(listStatus);
+//                setListVisibility(!isListOpen);
+//                isListOpen = !isListOpen;
+//
+//            }
+//        };
+//        listButton.setOnClickListener(openListListener);
+//
+////        // Button to favorite an list-object.
+////        final ImageButton favButton = (ImageButton) findViewById(R.id.favButton);
+////        final View.OnClickListener favItemListener = new View.OnClickListener() {
+////            @Override
+////            public void onClick(View v) {
+////
+////                if(isFavorite){
+////                    v.setBackgroundResource(R.drawable.poseidon2_thumb);
+////
+////                } else {
+////                    v.setBackgroundResource(R.drawable.poseidon3_thumb);
+////                }
+////
+////                isFavorite = !isFavorite;
+////            }
+////        };
+////        favButton.setOnClickListener(favItemListener);
+//
+////        favButton.setOnClickListener(new View.OnClickListener() {
+////            @Override
+////            public void onClick(View v) {
+////
+////                if(isFavorite){
+////                    v.setBackgroundResource(R.drawable.poseidon2_thumb);
+////
+////                } else {
+////                    v.setBackgroundResource(R.drawable.poseidon3_thumb);
+////                }
+////
+////                isFavorite = !isFavorite;
+////            }
+////        });
 
 //        opt_sights = new MarkerOptions()
 //                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_triangle));
@@ -188,65 +262,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             addMarker(node);
         }
 
-//        MapList mapList = new MapList();
-//        mapList.onCreate();
-
-        // Temp-list below map
-        String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, sites);
-        belowMapList = (ListView) findViewById(R.id.listBelowMap);
-        belowMapList.setAdapter(new ArrayAdapter<>(
-                this, R.layout.maplist_layout,
-                R.id.listIcon,sites));
-        belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(),
-                        parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
-
-        // List is hidden by default.
-        setListVisibility(false);
-
-        // Using an boolean to check if list is open, instead of checking its visibility.
-        isListOpen = false;
-
-        // Button to open and close list.
-        final Button listButton = (Button) findViewById(R.id.openListButton);
-        final View.OnClickListener openListListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-
-                String listStatus = (isListOpen) ? "Open List" : "Close List";
-                listButton.setText(listStatus);
-                setListVisibility(!isListOpen);
-                isListOpen = !isListOpen;
-
-            }
-        };
-        listButton.setOnClickListener(openListListener);
-
-//        isFavorite = false;
-//        // Button to favorite an list-object.
-//        final ImageButton imgButton = (ImageButton) findViewById(R.id.favButton);
-//        final View.OnClickListener favItemListener = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if(isFavorite){
-//                    v.setBackgroundResource(R.drawable.poseidon2_thumb);
-//
-//                } else {
-//                    v.setBackgroundResource(R.drawable.poseidon3_thumb);
-//                }
-//
-//                isFavorite = !isFavorite;
-//            }
-//        };
-//        imgButton.setOnClickListener(favItemListener);
-
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -298,14 +313,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     private void openSettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
-    }
-
-    private void setListVisibility(boolean isVisible) {
-        getListView().setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    private ListView getListView() {
-        return belowMapList;
     }
 
     /**
@@ -386,4 +393,95 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         }
     }
 
+    private void createList(){
+
+        // Temp-list below map
+        String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
+        belowMapList = (ListView) findViewById(R.id.listBelowMap);
+        belowMapList.setAdapter(new ArrayAdapter<>(
+                this, R.layout.maplist_layout,
+                R.id.listIcon, sites));
+        belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(),
+                        parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        // List is hidden by default.
+        setListVisibility(false);
+
+        // Button to open and close list.
+        final Button listButton = (Button) findViewById(R.id.openListButton);
+        final View.OnClickListener openListListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+
+                String listStatus = (isListOpen) ? "Open List" : "Close List";
+                listButton.setText(listStatus);
+                setListVisibility(!isListOpen);
+                isListOpen = !isListOpen;
+
+            }
+        };
+        listButton.setOnClickListener(openListListener);
+
+        View inflatedView = getLayoutInflater().inflate(R.layout.maplist_layout, null);
+
+        // Button to favorite an list-object.
+        final ImageButton favButton = (ImageButton) inflatedView.findViewById(R.id.favButton);
+        final View.OnClickListener favItemListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("Test....................................................................");
+                if(isFavorite){
+                    v.setBackgroundResource(R.drawable.poseidon2_thumb);
+
+                } else {
+                    v.setBackgroundResource(R.drawable.poseidon3_thumb);
+                }
+
+                isFavorite = !isFavorite;
+            }
+        };
+        favButton.setOnClickListener(favItemListener);
+
+//        favButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if(isFavorite){
+//                    v.setBackgroundResource(R.drawable.poseidon2_thumb);
+//
+//                } else {
+//                    v.setBackgroundResource(R.drawable.poseidon3_thumb);
+//                }
+//
+//                isFavorite = !isFavorite;
+//            }
+//        });
+    }
+
+    public void favoriteClickHandle(View v) {
+        System.out.println("Bengtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+
+        if(isFavorite){
+            v.setBackgroundResource(R.drawable.poseidon2_thumb);
+
+        } else {
+            v.setBackgroundResource(R.drawable.poseidon3_thumb);
+        }
+
+        isFavorite = !isFavorite;
+    }
+
+    private void setListVisibility(boolean isVisible) {
+        getListView().setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private ListView getListView() {
+        return belowMapList;
+    }
 }
