@@ -15,10 +15,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.dat255tesla.busexplorer.apirequest.APIHelper;
@@ -33,14 +34,19 @@ import com.dat255tesla.busexplorer.settingscontent.SettingsActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 public class ExplorerActivity extends AppCompatActivity implements IValuesChangedListener, IAPIListener {
     private GoogleMap mMap;
@@ -66,6 +72,9 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     private boolean isListOpen = false;
     private boolean isFavorite = false;
 
+    // our empty arrayList
+    private List<String> favoriteList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,76 +97,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             e.printStackTrace();
         }
 
-//        MapList mapList = new MapList();
-//        mapList.createList();
-        createList();
-
-//        // Temp-list below map
-//        String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
-//        belowMapList = (ListView) findViewById(R.id.listBelowMap);
-//        belowMapList.setAdapter(new ArrayAdapter<>(
-//                this, R.layout.maplist_layout,
-//                R.id.listIcon, sites));
-//        belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(getApplicationContext(),
-//                        parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
-//                        .show();
-//            }
-//        });
-//
-//        // List is hidden by default.
-//        setListVisibility(false);
-//
-//        // Button to open and close list.
-//        final Button listButton = (Button) findViewById(R.id.openListButton);
-//        final View.OnClickListener openListListener = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v){
-//
-//                String listStatus = (isListOpen) ? "Open List" : "Close List";
-//                listButton.setText(listStatus);
-//                setListVisibility(!isListOpen);
-//                isListOpen = !isListOpen;
-//
-//            }
-//        };
-//        listButton.setOnClickListener(openListListener);
-//
-////        // Button to favorite an list-object.
-////        final ImageButton favButton = (ImageButton) findViewById(R.id.favButton);
-////        final View.OnClickListener favItemListener = new View.OnClickListener() {
-////            @Override
-////            public void onClick(View v) {
-////
-////                if(isFavorite){
-////                    v.setBackgroundResource(R.drawable.poseidon2_thumb);
-////
-////                } else {
-////                    v.setBackgroundResource(R.drawable.poseidon3_thumb);
-////                }
-////
-////                isFavorite = !isFavorite;
-////            }
-////        };
-////        favButton.setOnClickListener(favItemListener);
-//
-////        favButton.setOnClickListener(new View.OnClickListener() {
-////            @Override
-////            public void onClick(View v) {
-////
-////                if(isFavorite){
-////                    v.setBackgroundResource(R.drawable.poseidon2_thumb);
-////
-////                } else {
-////                    v.setBackgroundResource(R.drawable.poseidon3_thumb);
-////                }
-////
-////                isFavorite = !isFavorite;
-////            }
-////        });
-
 //        opt_sights = new MarkerOptions()
 //                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_triangle));
 //        opt_stores = new MarkerOptions()
@@ -170,6 +109,8 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
 //                .anchor(0.5f, 0.5f);
         setUpMapIfNeeded();
         ds.updateDatabaseIfNeeded();
+
+        createList();
     }
 
     @Override
@@ -398,9 +339,16 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         // Temp-list below map
         String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
         belowMapList = (ListView) findViewById(R.id.listBelowMap);
+
+//        belowMapList.setAdapter(new ArrayAdapter<>(
+//                this, R.layout.maplist_layout,
+//                R.id.listString, sites));
+
+//        System.out.println("------------------------------------------------------------------ " + values.size());
         belowMapList.setAdapter(new ArrayAdapter<>(
                 this, R.layout.maplist_layout,
-                R.id.listIcon, sites));
+                R.id.listString, values));
+
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -430,23 +378,24 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
 
         View inflatedView = getLayoutInflater().inflate(R.layout.maplist_layout, null);
 
-        // Button to favorite an list-object.
-        final ImageButton favButton = (ImageButton) inflatedView.findViewById(R.id.favButton);
-        final View.OnClickListener favItemListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("Test....................................................................");
-                if(isFavorite){
-                    v.setBackgroundResource(R.drawable.poseidon2_thumb);
-
-                } else {
-                    v.setBackgroundResource(R.drawable.poseidon3_thumb);
-                }
-
-                isFavorite = !isFavorite;
-            }
-        };
-        favButton.setOnClickListener(favItemListener);
+//        // Button to favorite an list-object.
+//        final ImageView favButton = (ImageView) inflatedView.findViewById(R.id.favButton);
+//        final View.OnClickListener favItemListener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                System.out.println("Test....................................................................");
+//                if(isFavorite){
+//                    ((ImageView) v).setImageResource(R.drawable.star_unfilled);
+//
+//                } else {
+//                    ((ImageView) v).setImageResource(R.drawable.star_filled);
+//                }
+//
+//                isFavorite = !isFavorite;
+//                v.invalidate();
+//            }
+//        };
+//        favButton.setOnClickListener(favItemListener);
 
 //        favButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -465,14 +414,23 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     }
 
     public void favoriteClickHandle(View v) {
-        System.out.println("Bengtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+
+        //get the row the clicked button is in
+        RelativeLayout vwParentRow = (RelativeLayout)v.getParent();
+
+        ImageView favButt = (ImageView)vwParentRow.getChildAt(2);
+
+        favoriteList = new ArrayList<>();
 
         if(isFavorite){
-            v.setBackgroundResource(R.drawable.poseidon2_thumb);
+
+            favButt.setImageResource(R.drawable.star_unfilled);
+
 
         } else {
-            v.setBackgroundResource(R.drawable.poseidon3_thumb);
+            favButt.setImageResource(R.drawable.star_filled);
         }
+        vwParentRow.refreshDrawableState();
 
         isFavorite = !isFavorite;
     }
@@ -483,5 +441,26 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
 
     private ListView getListView() {
         return belowMapList;
+    }
+
+    private void updateFavList(){
+        favoriteList = new ArrayList<>();
+
+        Scanner sc = null;
+        try {
+            sc = new Scanner(new BufferedReader(new FileReader("favorites.txt")));
+
+            while (sc.hasNext()) {
+                favoriteList.add(sc.nextLine());
+            }
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(sc != null) {
+                sc.close();
+            }
+        }
     }
 }
