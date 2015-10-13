@@ -65,6 +65,44 @@ public class MapUtils {
         });
     }
 
+    /**
+     * Parses an RMC string returning its latitude and longitude.
+     * What a shitty format. Seriously.
+     *
+     * @param gprmc The string to be decoded
+     * @return A {@link LatLng} containing the coordinates given in the RMC string.
+     */
+    public static LatLng ParseRMC(String gprmc) {
+        LatLng latlng;
+
+        // TODO null checks, size checks, etc
+
+        String[] parts = gprmc.split(",");
+        String lat = parts[3];
+        String lng = parts[5];
+        String ns = parts[4];
+        String ew = parts[6];
+
+        Double newLat = Double.parseDouble(lat.substring(0,2)) +
+                (Double.parseDouble(lat.substring(2)) / 60);
+
+        Double newLng = Double.parseDouble(lng.substring(0,3)) +
+                (Double.parseDouble(lng.substring(3)) / 60);
+
+        // If south of equator
+        if (ns.equals('S')) {
+            newLat *= -1;
+        }
+
+        // If west of greenwich
+        if (ew.equals('W')) {
+            newLng *= -1;
+        }
+
+        latlng = new LatLng(newLat, newLng);
+        return latlng;
+    }
+
     public static List<Marker> MarkersInRange(HashMap<Marker, InfoNode> map, Location center,
                                               int maxDist) {
 
