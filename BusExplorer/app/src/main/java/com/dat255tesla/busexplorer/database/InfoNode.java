@@ -67,7 +67,6 @@ public class InfoNode implements Serializable {
 
     @Override
     public String toString() {
-        return title + " at " + addr + " (" + lat + ", " + lng +
-                ") with type " + type;
+        return title;
     }
 }
