@@ -33,6 +33,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -50,15 +51,15 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     private Marker busMarker;
     private ArrayAdapter<InfoNode> adapter;
     private String nextStop;
+    private boolean isLockedToBus = true;
 
+    private MarkerOptions opt_stops;
     private MarkerOptions opt_sights;
     private MarkerOptions opt_stores;
     private MarkerOptions opt_misc;
 
     private MarkerOptions busPositionOptions;
 
-    // examples
-    private Location pretendLocation;
     private ListView belowMapList;
     private boolean isListOpen;
 
@@ -67,10 +68,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explorer);
         apiHelper = new APIHelper(this);
-        pretendLocation = new Location("pretend");
-        // (57.707373, 11.973864) - "Nara" (<2km) goteborgsmarkaren
-        pretendLocation.setLatitude(57.707373);
-        pretendLocation.setLongitude(11.973864);
         markers = new HashMap<>();
         nextStop = "";
 
@@ -84,6 +81,8 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             e.printStackTrace();
         }
 
+        opt_stops = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_stop));
         opt_sights = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_triangle));
         opt_stores = new MarkerOptions()
@@ -178,9 +177,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        LatLng latlng = new LatLng(pretendLocation.getLatitude(), pretendLocation.getLongitude());
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 16));
-
         // Add all markers from the internal database
         values = ds.getAllInfoNodes();
 
@@ -214,17 +210,34 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             }
         });
 
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                if (isLockedToBus)
+                    isLockedToBus = false;
+            }
+        });
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                String title = marker.getTitle();
-                Toast.makeText(getApplicationContext(), title, Toast.LENGTH_SHORT).show();
+                if (marker.getTitle().equals("Buss"))
+                    isLockedToBus = true;
+
+                if (marker.getTitle().equals("Regnbågsgatan")) {
+                    busMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_03));
+                }
 
                 showPopup(ExplorerActivity.this);
 
                 return false;
             }
         });
+
+        // Start location
+        LatLng startloc = new LatLng(57.704874, 11.965345);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(startloc, 8));
+
         // List is hidden by default.
         setListVisibility(false);
         apiHelper.execute();
@@ -235,6 +248,11 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         LatLng pos = new LatLng(node.getLatitude(), node.getLongitude());
 
         switch (node.getType()) {
+            case 0:
+                opt_stops.position(pos)
+                        .title(node.getTitle());
+                markers.put(mMap.addMarker(opt_stops), node);
+                return;
             case 1:
                 opt_sights.position(pos)
                         .title(node.getTitle());
@@ -301,13 +319,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         popup.setHeight(900);
         popup.showAtLocation(layout, Gravity.CENTER, 0, 0);
 
-        System.out.println("popup should show!");
-        System.out.println("popup should show!");
-        System.out.println("popup should show!");
-        System.out.println("popup should show!");
-        System.out.println("popup should show!");
-        System.out.println("popup should show!");
-
         Button close = (Button) layout.findViewById(R.id.b_ClosePopup);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -332,14 +343,15 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     @Override
     public void positionChanged(LatLng pos) {
         if (pos.latitude != 0 && pos.longitude != 0) { // Ugly solution for now
-            busPositionOptions.position(pos).title("SIMULATED BUS MOVING!");
+            busPositionOptions.position(pos).title("Buss");
             if (busMarker == null) {
                 busMarker = mMap.addMarker(busPositionOptions);
             } else {
                 MapUtils.animateMarker(busMarker, pos, mMap);
-                //busMarker.setPosition(pos);
             }
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 16));
+
+            if (isLockedToBus)
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 16));
         }
     }
 
@@ -352,5 +364,4 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             Toast.makeText(getApplicationContext(), "nextStop changed!", Toast.LENGTH_SHORT).show();
         }
     }
-
 }
