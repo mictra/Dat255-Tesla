@@ -15,6 +15,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.dat255tesla.busexplorer.R;
+import com.dat255tesla.busexplorer.database.InfoNode;
+import com.dat255tesla.busexplorer.explorercontent.ExplorerActivity;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -24,6 +26,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     CheckBox checkbox2;
     CheckBox checkbox3;
     Button button;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -38,6 +42,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         checkbox3 = (CheckBox) findViewById(R.id.checkBox3);
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(this);
+
         loadSavedPreferences();
 
 
@@ -47,6 +52,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                 if(checkbox.isChecked()) {
                     Toast.makeText(getApplicationContext(), "Checked", Toast.LENGTH_SHORT).show();
+
+
+
                     /*
                     Function here
                      */
@@ -62,6 +70,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(checkbox2.isChecked()) {
                     Toast.makeText(getApplicationContext(), "Checked", Toast.LENGTH_SHORT).show();
+
+
+
+
                      /*
                     Function here
                      */
@@ -97,9 +109,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
-        boolean checkBoxValue = sharedPreferences.getBoolean("CheckBox_Value", false);
-        boolean checkBoxValue2 = sharedPreferences.getBoolean("CheckBox_Value2", false);
-        boolean checkBoxValue3 = sharedPreferences.getBoolean("CheckBox_Value3", false);
+        boolean checkBoxValue = sharedPreferences.getBoolean("CheckBox_Value", true);
+        boolean checkBoxValue2 = sharedPreferences.getBoolean("CheckBox_Value2", true);
+        boolean checkBoxValue3 = sharedPreferences.getBoolean("CheckBox_Value3", true);
 
         if (checkBoxValue) {
             checkbox.setChecked(true);

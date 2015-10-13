@@ -15,7 +15,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="47dp" />
+        android:layout_marginTop="47dp"
+        android:checked="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -47,7 +48,8 @@
         android:id="@+id/checkBox2"
         android:layout_below="@+id/checkBox"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:checked="true" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -56,7 +58,8 @@
         android:id="@+id/checkBox3"
         android:layout_below="@+id/checkBox2"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:checked="true" />
 
     <Spinner
         android:layout_width="wrap_content"
