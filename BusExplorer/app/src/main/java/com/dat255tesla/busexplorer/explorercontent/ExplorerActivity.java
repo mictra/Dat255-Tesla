@@ -44,6 +44,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -337,17 +338,17 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     private void createList(){
 
         // Temp-list below map
-        String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
+//        String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
+//        ArrayList<String> sites = new ArrayList<String>(
+//                Arrays.asList("Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"));
+
         belowMapList = (ListView) findViewById(R.id.listBelowMap);
 
-//        belowMapList.setAdapter(new ArrayAdapter<>(
-//                this, R.layout.maplist_layout,
-//                R.id.listString, sites));
-
-//        System.out.println("------------------------------------------------------------------ " + values.size());
         belowMapList.setAdapter(new ArrayAdapter<>(
                 this, R.layout.maplist_layout,
                 R.id.listString, values));
+
+//        belowMapList.setAdapter(new ListArrayAdapter(this, sites, values));
 
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -375,47 +376,12 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             }
         };
         listButton.setOnClickListener(openListListener);
-
-        View inflatedView = getLayoutInflater().inflate(R.layout.maplist_layout, null);
-
-//        // Button to favorite an list-object.
-//        final ImageView favButton = (ImageView) inflatedView.findViewById(R.id.favButton);
-//        final View.OnClickListener favItemListener = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                System.out.println("Test....................................................................");
-//                if(isFavorite){
-//                    ((ImageView) v).setImageResource(R.drawable.star_unfilled);
-//
-//                } else {
-//                    ((ImageView) v).setImageResource(R.drawable.star_filled);
-//                }
-//
-//                isFavorite = !isFavorite;
-//                v.invalidate();
-//            }
-//        };
-//        favButton.setOnClickListener(favItemListener);
-
-//        favButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if(isFavorite){
-//                    v.setBackgroundResource(R.drawable.poseidon2_thumb);
-//
-//                } else {
-//                    v.setBackgroundResource(R.drawable.poseidon3_thumb);
-//                }
-//
-//                isFavorite = !isFavorite;
-//            }
-//        });
     }
 
     public void favoriteClickHandle(View v) {
 
         //get the row the clicked button is in
+        //------------------------------------------------------------------------------------------------Kim skall lösa detta.
         RelativeLayout vwParentRow = (RelativeLayout)v.getParent();
 
         ImageView favButt = (ImageView)vwParentRow.getChildAt(2);
@@ -443,24 +409,24 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         return belowMapList;
     }
 
-    private void updateFavList(){
-        favoriteList = new ArrayList<>();
-
-        Scanner sc = null;
-        try {
-            sc = new Scanner(new BufferedReader(new FileReader("favorites.txt")));
-
-            while (sc.hasNext()) {
-                favoriteList.add(sc.nextLine());
-            }
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        finally {
-            if(sc != null) {
-                sc.close();
-            }
-        }
-    }
+//    private void updateFavList(){
+//        favoriteList = new ArrayList<>();
+//
+//        Scanner sc = null;
+//        try {
+//            sc = new Scanner(new BufferedReader(new FileReader("favorites.txt")));
+//
+//            while (sc.hasNext()) {
+//                favoriteList.add(sc.nextLine());
+//            }
+//        }
+//        catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        finally {
+//            if(sc != null) {
+//                sc.close();
+//            }
+//        }
+//    }
 }
