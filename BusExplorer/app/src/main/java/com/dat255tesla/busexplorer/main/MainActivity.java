@@ -14,30 +14,39 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dat255tesla.busexplorer.R;
+import com.dat255tesla.busexplorer.apirequest.CheckBusWifi;
+import com.dat255tesla.busexplorer.apirequest.IBusWifiListener;
 import com.dat255tesla.busexplorer.explorercontent.ExplorerActivity;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements IBusWifiListener {
     ConnectivityManager cm;
     NetworkInfo netInfo;
     static boolean alertSemaphore = false;
+    private CheckBusWifi cbw;
+    private String busSystemId = "0";
+    private String dgw = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        cbw = new CheckBusWifi(this);
         cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         netInfo = cm.getActiveNetworkInfo();
-
-        connectionDialog();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         connectionDialog();
     }
 
@@ -45,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
      * Please rename me.
      */
     public void connectionDialog() {
-        if(!alertSemaphore) {
+        if (!alertSemaphore) {
             AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
             b.setCancelable(true);
             alertSemaphore = true;
@@ -57,9 +66,12 @@ public class MainActivity extends AppCompatActivity {
                     // This triggers with WiFI connection
                     // We can check the WiFi name here, to see if it's the same name as the bus wifi
                     // If we care. netInfo.getExtraInfo() will return the WiFi name
-                    MainActivity.this.openExplorer();
-                    System.out.println(netInfo.getTypeName());
-                    System.out.println(netInfo.getExtraInfo());
+                    //cbw.execute(); // Call the AsyncTask and get the system id of the bus.
+                    //new CheckBusWifi(this).execute(); // TODO: Enable when in a bus or testing...
+
+                    dgw = "Vin_Num_001";
+                    getAccess();
+
                 } else {
                     // This triggers with mobile & no WiFi
                     b.setTitle(getResources().getString(R.string.main_title_noWifi)
@@ -104,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
             }
-
+            alertSemaphore = false;
             AlertDialog alert = b.create();
             alert.show();
         }
@@ -112,8 +124,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshClick(View view) {
         netInfo = cm.getActiveNetworkInfo();
-
-        if(netInfo != null && netInfo.isAvailable() && netInfo.isConnected()) {
+        connectionDialog();
+        /*
+        if (netInfo != null && netInfo.isAvailable() && netInfo.isConnected()) {
             TextView text = (TextView) findViewById(R.id.tv_refreshText);
             text.setText(getResources().getText(R.string.main_refreshYesConn));
 
@@ -125,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }, 200);
         }
+        */
     }
 
     public void openWiFiSettings() {
@@ -134,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openExplorer() {
         Intent intent = new Intent(this, ExplorerActivity.class);
+        intent.putExtra("dgw", dgw);
         startActivity(intent);
         finish();
     }
@@ -159,4 +174,55 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void getAccess() {
+        MainActivity.this.openExplorer();
+        System.out.println(netInfo.getTypeName());
+        System.out.println(netInfo.getExtraInfo());
+    }
+
+    private void getDgwFromBus(final String systemId) {
+        ParseQuery.getQuery("Bus").findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                boolean getAccess = false;
+                if (e == null) {
+                    for (ParseObject object : list) {
+                        if (systemId.equals(object.getString("systemID")) &&
+                                object.getBoolean("isActive")) {
+                            dgw = object.getNumber("dgw").toString();
+                            getAccess = true;
+                            break;
+                        }
+                    }
+                    if (getAccess) {
+                        getAccess();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "You're in a bus and connected" +
+                                " to its wifi, but this bus doesn't" +
+                                " share data :(", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Failed to connect to " +
+                            "the server database", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void notifySystemId(String systemId) {
+        if (!systemId.equals("0")) {
+            busSystemId = systemId;
+            System.out.println("*******SystemId of Bus: " + systemId);
+            getDgwFromBus(systemId);
+            // Check if the Bus is active and get its dgw to know
+            // which "API" to call (this data is on the server database).
+        } else {
+            Toast.makeText(getApplicationContext(), "ERROR: You're either not connected " +
+                    "to the bus wifi or on the wrong bus!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

@@ -24,12 +24,16 @@ import javax.xml.parsers.ParserConfigurationException;
 /**
  * Created by Michael on 2015-10-13.
  */
-public class CheckBusWIFI extends AsyncTask<Void, Void, Void> {
+public class CheckBusWifi extends AsyncTask<Void, Void, Void> {
 
-    String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <system version=\"-1.0\"> <system_id type=\"integer\">10062621</system_id> </system>";
+    private IBusWifiListener bwl;
+    private String bus_system_id = "0";
+
+    public CheckBusWifi(IBusWifiListener bwl) {
+        this.bwl = bwl;
+    }
 
     private void getBusSystemID() throws IOException {
-        /*
         String url = "https://ombord.info/api/xml/system/";
         URL requestURL = new URL(url);
         HttpsURLConnection con = (HttpsURLConnection) requestURL
@@ -46,26 +50,23 @@ public class CheckBusWIFI extends AsyncTask<Void, Void, Void> {
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
-            System.out.println("\ninputLine printout: " + inputLine);
         }
+
         in.close();
 
         String responseString = response.toString();
-        System.out.println("!!!!!!!!!RESPONSE FROM ICOMERA API!!!!!!!!!!:\n" + responseString);
-        */
+        System.out.println("!!!!!!!!!RESPONSE FROM ICOMERA API!!!!!!!!!!: " + responseString);
 
         try {
-            parseSystemIDXML(xml);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
+            bus_system_id = parseSystemIDXML(responseString);
+        } catch (ParserConfigurationException | SAXException e) {
             e.printStackTrace();
         }
 
     }
 
     private String parseSystemIDXML(String xml) throws ParserConfigurationException, IOException, SAXException {
-        String system_id = "";
+        String system_id = "0";
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource();
@@ -76,20 +77,22 @@ public class CheckBusWIFI extends AsyncTask<Void, Void, Void> {
             Element e = (Element) nodeList.item(i);
             NodeList systemId = e.getElementsByTagName("system_id");
             Element line = (Element) systemId.item(0);
-            system_id = getCharacterDataFromElement(line);
-            System.out.println("----------------SystemID: " + system_id);
+            if (line != null) {
+                system_id = getCharacterDataFromElement(line);
+            }
         }
 
+        System.out.println("----------------SystemID: " + system_id);
         return system_id;
     }
 
-    public static String getCharacterDataFromElement(Element e) {
+    private String getCharacterDataFromElement(Element e) {
         Node child = e.getFirstChild();
         if (child instanceof CharacterData) {
             CharacterData cd = (CharacterData) child;
             return cd.getData();
         }
-        return "";
+        return "0";
     }
 
     @Override
@@ -98,8 +101,13 @@ public class CheckBusWIFI extends AsyncTask<Void, Void, Void> {
             getBusSystemID();
         } catch (IOException e) {
             e.printStackTrace();
+            //TODO: Dialog to notify that you're not connected to Bus WIFI? Use notifySystemId();
         }
         return null;
     }
 
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        bwl.notifySystemId(bus_system_id);
+    }
 }
