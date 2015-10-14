@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/settings_optSightseeing"
-        android:id="@+id/checkBox"
+        android:id="@+id/checkBox_sightseeing"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -45,8 +45,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/settings_optStores"
-        android:id="@+id/checkBox2"
-        android:layout_below="@+id/checkBox"
+        android:id="@+id/checkBox_shopping"
+        android:layout_below="@+id/checkBox_sightseeing"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:checked="true" />
@@ -55,8 +55,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/settings_optMisc"
-        android:id="@+id/checkBox3"
-        android:layout_below="@+id/checkBox2"
+        android:id="@+id/checkBox_misc"
+        android:layout_below="@+id/checkBox_shopping"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:checked="true" />
@@ -65,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/spinner"
-        android:layout_below="@+id/checkBox3"
+        android:layout_below="@+id/checkBox_misc"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 

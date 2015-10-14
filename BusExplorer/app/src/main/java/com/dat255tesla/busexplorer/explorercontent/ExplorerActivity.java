@@ -3,7 +3,9 @@ package com.dat255tesla.busexplorer.explorercontent;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,14 +21,14 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import com.dat255tesla.busexplorer.apirequest.APIHelper;
+import com.dat255tesla.busexplorer.R;
 import com.dat255tesla.busexplorer.aboutcontent.AboutActivity;
-import com.dat255tesla.busexplorer.detailcontent.DetailActivity;
+import com.dat255tesla.busexplorer.apirequest.APIHelper;
 import com.dat255tesla.busexplorer.apirequest.IBusDataListener;
 import com.dat255tesla.busexplorer.database.IValuesChangedListener;
 import com.dat255tesla.busexplorer.database.InfoDataSource;
 import com.dat255tesla.busexplorer.database.InfoNode;
-import com.dat255tesla.busexplorer.R;
+import com.dat255tesla.busexplorer.detailcontent.DetailActivity;
 import com.dat255tesla.busexplorer.settingscontent.SettingsActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,7 +48,7 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     private APIHelper apiHelper;
     private HashMap<Marker, InfoNode> markers;
     private InfoDataSource ds;
-    private List<InfoNode> values;
+    private List<InfoNode> originalValues;
     private Marker busMarker;
     private ArrayAdapter<InfoNode> adapter;
     private String nextStop;
@@ -63,6 +65,10 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     private boolean isListOpen;
 
     private String dgw;
+    private boolean checkBoxValue_sight;
+    private boolean checkBoxValue_shop;
+    private boolean checkBoxValue_misc;
+    private boolean[] typeFilters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +78,15 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         apiHelper = new APIHelper(this, dgw);
         markers = new HashMap<>();
         nextStop = "";
+
+        // Retrieve settings data
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        checkBoxValue_sight = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
+        checkBoxValue_shop = sharedPreferences.getBoolean("CheckBox_shopping", true);
+        checkBoxValue_misc = sharedPreferences.getBoolean("CheckBox_misc", true);
+
+        typeFilters = new boolean[]{checkBoxValue_sight, checkBoxValue_shop, checkBoxValue_misc};
 
         // Establish database connection
         ds = new InfoDataSource(this);
@@ -102,7 +117,22 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     @Override
     protected void onResume() {
         super.onResume();
-        setUpMapIfNeeded();
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        checkBoxValue_sight = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
+        checkBoxValue_shop = sharedPreferences.getBoolean("CheckBox_shopping", true);
+        checkBoxValue_misc = sharedPreferences.getBoolean("CheckBox_misc", true);
+        System.out.println("-----------------1: " + checkBoxValue_sight + " 2: " + checkBoxValue_shop + " 3: " + checkBoxValue_misc);
+        typeFilters = new boolean[]{checkBoxValue_sight, checkBoxValue_shop, checkBoxValue_misc};
+        //setUpMapIfNeeded();
+        if (!nextStop.equals("")) {
+            visibleValuesChanged(MapUtils.
+                    filterValues(MapUtils.
+                            sortByDistance(originalValues, nextStop), typeFilters));
+        } else {
+            visibleValuesChanged(MapUtils.
+                    filterValues(originalValues, typeFilters));
+        }
         if (apiHelper.isCancelled()) {
             apiHelper = new APIHelper(this, dgw);
             apiHelper.execute();
@@ -180,11 +210,9 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
      */
     private void setUpMap() {
         // Add all markers from the internal database
-        values = ds.getAllInfoNodes();
+        originalValues = ds.getAllInfoNodes();
 
-        for (InfoNode node : values) {
-            addMarker(node);
-        }
+        List<InfoNode> filteredValues = MapUtils.filterValues(originalValues, typeFilters);
 
         // Using an boolean to check if list is open, instead of checking its visibility.
         isListOpen = false;
@@ -201,9 +229,10 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
 
         listButton.setOnClickListener(openListListener);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList());
         belowMapList = (ListView) findViewById(R.id.listBelowMap);
         belowMapList.setAdapter(adapter);
+        visibleValuesChanged(filteredValues);
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -330,23 +359,27 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     }
 
     @Override
-    public void valuesChanged(List<InfoNode> values) {
-        // Add all markers from the internal database
+    public void originalValuesChanged(List<InfoNode> values) {
+        this.originalValues = values;
+    }
+
+    public void visibleValuesChanged(List<InfoNode> values) {
         if (values != null) {
-            List<InfoNode> originalValues = new ArrayList(this.values);
+            for (Marker marker : markers.keySet()) {
+                marker.remove();
+            }
             markers.clear();
             for (InfoNode node : values) {
                 addMarker(node);
             }
             adapter.clear();
-            adapter.addAll(values); // This mutates this.values variable.
-            this.values = originalValues;
+            adapter.addAll(values); // This mutates this.originalValues variable.
         }
     }
 
     @Override
     public void positionChanged(LatLng pos) {
-        if (pos != null && pos.latitude != 0 && pos.longitude != 0) { // Ugly solution for now
+        if (pos != null && pos.latitude != 0 && pos.longitude != 0) {
             busPositionOptions.position(pos).title("Buss");
             if (busMarker == null) {
                 busMarker = mMap.addMarker(busPositionOptions);
@@ -362,8 +395,9 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     @Override
     public void nextStopChanged(String nextStop) {
         if (!this.nextStop.equals(nextStop) && !nextStop.equals("")) {
-            List<InfoNode> sortedValues = MapUtils.sortByDistance(values, nextStop); //TODO: Call this in separate AsyncTask?
-            valuesChanged(sortedValues);
+            List<InfoNode> sortedValues = MapUtils.sortByDistance(originalValues, nextStop); //TODO: Call this in separate AsyncTask?
+            List<InfoNode> filteredValues = MapUtils.filterValues(sortedValues, typeFilters);
+            visibleValuesChanged(filteredValues);
             this.nextStop = nextStop;
             Toast.makeText(getApplicationContext(), "nextStop changed, list should be sorted!", Toast.LENGTH_SHORT).show();
         }

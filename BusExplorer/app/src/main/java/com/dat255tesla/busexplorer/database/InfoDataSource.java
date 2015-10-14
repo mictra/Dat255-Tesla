@@ -184,7 +184,7 @@ public class InfoDataSource {
                         String objId = object.getObjectId();
                         createInfoNode(title, location.getLatitude(), location.getLongitude(), type, info, address, lastMod, objId);
                     }
-                    vcl.valuesChanged(getAllInfoNodes());
+                    vcl.originalValuesChanged(getAllInfoNodes());
                 } else {
                     e.printStackTrace();
                     // TODO: Error message, failed to retrieve database from server

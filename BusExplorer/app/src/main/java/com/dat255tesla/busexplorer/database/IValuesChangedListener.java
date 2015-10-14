@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface IValuesChangedListener {
 
-    void valuesChanged(List<InfoNode> values);
+    void originalValuesChanged(List<InfoNode> values);
 
 }

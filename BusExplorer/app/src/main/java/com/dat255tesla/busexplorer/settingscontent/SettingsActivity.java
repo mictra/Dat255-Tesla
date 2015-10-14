@@ -1,10 +1,9 @@
 package com.dat255tesla.busexplorer.settingscontent;
 
-import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,24 +11,21 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.dat255tesla.busexplorer.R;
-import com.dat255tesla.busexplorer.database.InfoNode;
-import com.dat255tesla.busexplorer.explorercontent.ExplorerActivity;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String PREFS_NAME = "MyPrefsFile";
 
-    CheckBox checkbox;
-    CheckBox checkbox2;
-    CheckBox checkbox3;
+    CheckBox checkBox_sightseeing;
+    CheckBox checkBox_shopping;
+    CheckBox checkBox_misc;
     Button button;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         assert getSupportActionBar() != null;
@@ -37,130 +33,105 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         setContentView(R.layout.activity_settings);
 
-        checkbox = (CheckBox) findViewById(R.id.checkBox);
-        checkbox2 = (CheckBox) findViewById(R.id.checkBox2);
-        checkbox3 = (CheckBox) findViewById(R.id.checkBox3);
+        checkBox_sightseeing = (CheckBox) findViewById(R.id.checkBox_sightseeing);
+        checkBox_shopping = (CheckBox) findViewById(R.id.checkBox_shopping);
+        checkBox_misc = (CheckBox) findViewById(R.id.checkBox_misc);
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(this);
 
         loadSavedPreferences();
 
 
-        checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        checkBox_sightseeing.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if(checkbox.isChecked()) {
+                if (checkBox_sightseeing.isChecked()) {
                     Toast.makeText(getApplicationContext(), "Checked", Toast.LENGTH_SHORT).show();
-
-
-
                     /*
                     Function here
                      */
-                }
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Unchecked", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        checkbox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        checkBox_shopping.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(checkbox2.isChecked()) {
-                    Toast.makeText(getApplicationContext(), "Checked", Toast.LENGTH_SHORT).show();
-
-
-
-
-                     /*
-                    Function here
-                     */
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "Unchecked", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        checkbox3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(checkbox3.isChecked()) {
+                if (checkBox_shopping.isChecked()) {
                     Toast.makeText(getApplicationContext(), "Checked", Toast.LENGTH_SHORT).show();
                      /*
                     Function here
                      */
-                }
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Unchecked", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-
-
-
-
+        checkBox_misc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (checkBox_misc.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "Checked", Toast.LENGTH_SHORT).show();
+                     /*
+                    Function here
+                     */
+                } else {
+                    Toast.makeText(getApplicationContext(), "Unchecked", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void loadSavedPreferences() {
 
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
-        boolean checkBoxValue = sharedPreferences.getBoolean("CheckBox_Value", true);
-        boolean checkBoxValue2 = sharedPreferences.getBoolean("CheckBox_Value2", true);
-        boolean checkBoxValue3 = sharedPreferences.getBoolean("CheckBox_Value3", true);
+        boolean checkBoxValue_sight = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
+        boolean checkBoxValue_shop = sharedPreferences.getBoolean("CheckBox_shopping", true);
+        boolean checkBoxValue_misc = sharedPreferences.getBoolean("CheckBox_misc", true);
 
-        if (checkBoxValue) {
-            checkbox.setChecked(true);
+        if (checkBoxValue_sight) {
+            checkBox_sightseeing.setChecked(true);
         } else {
-            checkbox.setChecked(false);
+            checkBox_sightseeing.setChecked(false);
         }
-        if(checkBoxValue2){
-            checkbox2.setChecked(true);
+        if (checkBoxValue_shop) {
+            checkBox_shopping.setChecked(true);
+        } else {
+            checkBox_shopping.setChecked(false);
         }
-        else{
-            checkbox2.setChecked(false);
-        }
-        if(checkBoxValue3){
-            checkbox3.setChecked(true);
-        }
-        else{
-            checkbox3.setChecked(false);
+        if (checkBoxValue_misc) {
+            checkBox_misc.setChecked(true);
+        } else {
+            checkBox_misc.setChecked(false);
         }
 
     }
 
     private void savePreferences(String key, boolean value) {
-
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(key, value);
-        editor.commit();
-
+        editor.apply();
     }
 
-
     public void onClick(View v) {
-        savePreferences("CheckBox_Value", checkbox.isChecked());
-        savePreferences("CheckBox_Value2", checkbox2.isChecked());
-        savePreferences("CheckBox_Value3", checkbox3.isChecked());
-        finish();
+        savePreferences("CheckBox_sightseeing", checkBox_sightseeing.isChecked());
+        savePreferences("CheckBox_shopping", checkBox_shopping.isChecked());
+        savePreferences("CheckBox_misc", checkBox_misc.isChecked());
         Toast.makeText(getApplicationContext(), "SettingsActivity saved", Toast.LENGTH_LONG).show();
-
+        finish();
     }
 
 
     @Override
-    public void onPause()
-    {
-
-
+    public void onPause() {
         super.onPause();
-
     }
 
 

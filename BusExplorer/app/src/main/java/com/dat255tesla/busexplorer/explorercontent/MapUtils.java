@@ -75,8 +75,6 @@ public class MapUtils {
     public static LatLng ParseRMC(String gprmc) {
         LatLng latlng;
 
-        // TODO null checks, size checks, etc
-
         String[] parts = gprmc.replaceAll("^[,\\s]+", "").split("[,\\s]+");
         if (5 < parts.length) {
             String lat = parts[3];
@@ -157,8 +155,28 @@ public class MapUtils {
         return loc;
     }
 
+    public static List<InfoNode> filterValues(final List<InfoNode> values, boolean[] typeFilters) {
+        List<InfoNode> valuesCopy = new ArrayList(values);
+        List<InfoNode> filteredValues = new ArrayList();
+        for (int i = 0; i < typeFilters.length; i++) {
+            if (typeFilters[i]) {
+                for (InfoNode node : valuesCopy) {
+                    if (node.getType() == (i + 1)) {
+                        filteredValues.add(node);
+                    }
+                }
+            }
+        }
+
+        return filteredValues;
+    }
+
+    /*
+    Given a string (nextStop) and list of InfoNode, returns a sorted list by distance if there's a
+    next stop matching one of the bus stations. Returns the same list received otherwise.
+    OBS: Always use this method before filtering, since sorting takes all InfoNode's into account.
+     */
     public static List<InfoNode> sortByDistance(final List<InfoNode> values, String nextStop) {
-        System.out.println("+++++++++++++++++++++++LENGTH OF LIST: " + values.size());
         List<InfoNode> valuesCopy = new ArrayList(values);
         InfoNode node = null;
         for (InfoNode infoNode : valuesCopy) {
@@ -180,7 +198,7 @@ public class MapUtils {
             }
             return sortByComparator(map);
         } else {
-            return null;
+            return values;
         }
 
     }

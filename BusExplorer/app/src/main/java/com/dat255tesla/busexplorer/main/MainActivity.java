@@ -30,7 +30,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements IBusWifiListener {
     ConnectivityManager cm;
     NetworkInfo netInfo;
-    static boolean alertSemaphore = false;
     private CheckBusWifi cbw;
     private String busSystemId = "0";
     private String dgw = "0";
@@ -50,76 +49,81 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         connectionDialog();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
     /**
      * Please rename me.
      */
     public void connectionDialog() {
-        if (!alertSemaphore) {
-            AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
-            b.setCancelable(true);
-            alertSemaphore = true;
+        // Check if online
+        if (netInfo != null && netInfo.isAvailable() && netInfo.isConnected()) {
+            // Check connection type
+            if (netInfo.getTypeName().equals("WIFI")) {
+                // This triggers with WiFI connection
+                // We can check the WiFi name here, to see if it's the same name as the bus wifi
+                // If we care. netInfo.getExtraInfo() will return the WiFi name
+                //cbw.execute(); // Call the AsyncTask and get the system id of the bus.
+                //new CheckBusWifi(this).execute(); // TODO: Enable when in a bus or testing...
 
-            // Check if online
-            if (netInfo != null && netInfo.isAvailable() && netInfo.isConnected()) {
-                // Check connection type
-                if (netInfo.getTypeName().equals("WIFI")) {
-                    // This triggers with WiFI connection
-                    // We can check the WiFi name here, to see if it's the same name as the bus wifi
-                    // If we care. netInfo.getExtraInfo() will return the WiFi name
-                    //cbw.execute(); // Call the AsyncTask and get the system id of the bus.
-                    //new CheckBusWifi(this).execute(); // TODO: Enable when in a bus or testing...
+                dgw = "Vin_Num_001";
+                getAccess();
 
-                    dgw = "Vin_Num_001";
-                    getAccess();
-
-                } else {
-                    // This triggers with mobile & no WiFi
-                    b.setTitle(getResources().getString(R.string.main_title_noWifi)
-                            + " \uD83D\uDE0F");
-                    b.setMessage(getResources().getString(R.string.main_text_noWifi));
-
-                    b.setPositiveButton("Ok",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    MainActivity.this.openExplorer();
-                                }
-                            });
-                    b.setNegativeButton("Settings",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    MainActivity.this.openWiFiSettings();
-                                    alertSemaphore = false;
-                                }
-                            });
-                }
             } else {
-                // This triggers with no internet connection
-                b.setTitle(getResources().getString(R.string.main_title_noConn)
-                        + " \uD83D\uDE1E");
-                b.setMessage(getResources().getString(R.string.main_text_noConn)
-                        + " " + getResources().getString(R.string.app_name));
+                AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
+                b.setCancelable(true);
+                // This triggers with mobile & no WiFi
+                b.setTitle(getResources().getString(R.string.main_title_noWifi)
+                        + " \uD83D\uDE0F");
+                b.setMessage(getResources().getString(R.string.main_text_noWifi));
 
                 b.setPositiveButton("Ok",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
+                                MainActivity.this.openExplorer();
                             }
                         });
-                b.setNegativeButton("Exit",
+                b.setNegativeButton("Settings",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                System.exit(0);
+                                MainActivity.this.openWiFiSettings();
                             }
                         });
+                AlertDialog alert = b.create();
+                alert.show();
             }
-            alertSemaphore = false;
+        } else {
+            // This triggers with no internet connection
+            AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
+            b.setCancelable(true);
+            b.setTitle(getResources().getString(R.string.main_title_noConn)
+                    + " \uD83D\uDE1E");
+            b.setMessage(getResources().getString(R.string.main_text_noConn)
+                    + " " + getResources().getString(R.string.app_name));
+
+            b.setPositiveButton("Ok",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+            b.setNegativeButton("Exit",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            System.exit(0);
+                        }
+                    });
             AlertDialog alert = b.create();
             alert.show();
         }
+
     }
 
     public void refreshClick(View view) {
@@ -176,9 +180,9 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     }
 
     private void getAccess() {
-        MainActivity.this.openExplorer();
         System.out.println(netInfo.getTypeName());
         System.out.println(netInfo.getExtraInfo());
+        MainActivity.this.openExplorer();
     }
 
     private void getDgwFromBus(final String systemId) {
