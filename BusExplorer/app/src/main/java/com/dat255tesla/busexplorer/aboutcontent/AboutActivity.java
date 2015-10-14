@@ -10,8 +10,7 @@ import com.dat255tesla.busexplorer.R;
 import com.dat255tesla.busexplorer.apirequest.CheckBusWifi;
 import com.dat255tesla.busexplorer.apirequest.IBusWifiListener;
 
-public class AboutActivity extends AppCompatActivity implements IBusWifiListener {
-
+public class AboutActivity extends AppCompatActivity {
 
 
     @Override
@@ -19,10 +18,7 @@ public class AboutActivity extends AppCompatActivity implements IBusWifiListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-        CheckBusWifi c = new CheckBusWifi(this);
-        c.execute();
     }
-
 
 
     @Override
@@ -47,9 +43,4 @@ public class AboutActivity extends AppCompatActivity implements IBusWifiListener
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void notifySystemId(String systemId) {
-        // If systemId is 0, we can notify an error! (in this case it will be)
-        Toast.makeText(getApplicationContext(), systemId, Toast.LENGTH_SHORT).show();
-    }
 }

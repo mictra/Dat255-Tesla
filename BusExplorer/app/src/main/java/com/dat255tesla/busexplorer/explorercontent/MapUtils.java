@@ -77,29 +77,34 @@ public class MapUtils {
 
         // TODO null checks, size checks, etc
 
-        String[] parts = gprmc.split(",");
-        String lat = parts[3];
-        String lng = parts[5];
-        String ns = parts[4];
-        String ew = parts[6];
+        String[] parts = gprmc.replaceAll("^[,\\s]+", "").split("[,\\s]+");
+        if (5 < parts.length) {
+            String lat = parts[3];
+            String lng = parts[5];
+            String ns = parts[4];
+            String ew = parts[6];
 
-        Double newLat = Double.parseDouble(lat.substring(0,2)) +
-                (Double.parseDouble(lat.substring(2)) / 60);
+            Double newLat = Double.parseDouble(lat.substring(0, 2)) +
+                    (Double.parseDouble(lat.substring(2)) / 60);
 
-        Double newLng = Double.parseDouble(lng.substring(0,3)) +
-                (Double.parseDouble(lng.substring(3)) / 60);
+            Double newLng = Double.parseDouble(lng.substring(0, 3)) +
+                    (Double.parseDouble(lng.substring(3)) / 60);
 
-        // If south of equator
-        if (ns.equals('S')) {
-            newLat *= -1;
+            // If south of equator
+            if (ns.equals('S')) {
+                newLat *= -1;
+            }
+
+            // If west of greenwich
+            if (ew.equals('W')) {
+                newLng *= -1;
+            }
+
+            latlng = new LatLng(newLat, newLng);
+        } else {
+            latlng = new LatLng(0, 0);
         }
 
-        // If west of greenwich
-        if (ew.equals('W')) {
-            newLng *= -1;
-        }
-
-        latlng = new LatLng(newLat, newLng);
         return latlng;
     }
 
@@ -152,12 +157,14 @@ public class MapUtils {
         return loc;
     }
 
-    public static List<InfoNode> sortByDistance(List<InfoNode> values, String nextStop) {
+    public static List<InfoNode> sortByDistance(final List<InfoNode> values, String nextStop) {
+        System.out.println("+++++++++++++++++++++++LENGTH OF LIST: " + values.size());
+        List<InfoNode> valuesCopy = new ArrayList(values);
         InfoNode node = null;
-        for (InfoNode infoNode : values) {
-            if (infoNode.getTitle().equals(nextStop)) {
+        for (InfoNode infoNode : valuesCopy) {
+            if (nextStop.toLowerCase().contains(infoNode.getTitle().toLowerCase())) {
                 node = infoNode;
-                values.remove(infoNode);
+                valuesCopy.remove(infoNode);
                 break;
             }
         }
@@ -167,7 +174,7 @@ public class MapUtils {
             float[] dist = new float[1];
             double lati = node.getLatitude();
             double longi = node.getLongitude();
-            for (InfoNode infoNode : values) {
+            for (InfoNode infoNode : valuesCopy) {
                 Location.distanceBetween(lati, longi, infoNode.getLatitude(), infoNode.getLongitude(), dist);
                 map.put(infoNode, dist[0]);
             }

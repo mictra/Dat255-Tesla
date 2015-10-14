@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -242,7 +243,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         // List is hidden by default.
         setListVisibility(false);
         apiHelper.execute();
-        //nextStopChanged("Poseidon"); //TODO: Enable to see result in terminal.
     }
 
     private void addMarker(InfoNode node) {
@@ -332,13 +332,16 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     @Override
     public void valuesChanged(List<InfoNode> values) {
         // Add all markers from the internal database
-        this.values = values;
-        markers.clear();
-        for (InfoNode node : values) {
-            addMarker(node);
+        if (values != null) {
+            List<InfoNode> originalValues = new ArrayList(this.values);
+            markers.clear();
+            for (InfoNode node : values) {
+                addMarker(node);
+            }
+            adapter.clear();
+            adapter.addAll(values); // This mutates this.values variable.
+            this.values = originalValues;
         }
-        adapter.clear();
-        adapter.addAll(values);
     }
 
     @Override
@@ -358,11 +361,11 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
 
     @Override
     public void nextStopChanged(String nextStop) {
-        if(!this.nextStop.equals(nextStop)){
-            List<InfoNode> sortedValues = MapUtils.sortByDistance(values, nextStop);
-            //valuesChanged(sortedValues); //TODO: Enable later when we get real values
+        if (!this.nextStop.equals(nextStop) && !nextStop.equals("")) {
+            List<InfoNode> sortedValues = MapUtils.sortByDistance(values, nextStop); //TODO: Call this in separate AsyncTask?
+            valuesChanged(sortedValues);
             this.nextStop = nextStop;
-            Toast.makeText(getApplicationContext(), "nextStop changed!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "nextStop changed, list should be sorted!", Toast.LENGTH_SHORT).show();
         }
     }
 }

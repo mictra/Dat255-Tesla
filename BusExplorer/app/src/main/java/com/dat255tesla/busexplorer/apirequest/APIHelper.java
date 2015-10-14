@@ -90,6 +90,7 @@ public class APIHelper extends AsyncTask<Void, Void, Void> {
                 String spec = object.getString("resourceSpec");
                 if (spec.equals("RMC_Value")) {
                     position = MapUtils.ParseRMC(object.getString("value"));
+                    break;
                 }
                 /*
                 if (spec.equals("Latitude2_Value")) {
@@ -119,6 +120,7 @@ public class APIHelper extends AsyncTask<Void, Void, Void> {
                 if (spec.equals("Bus_Stop_Name_Value")) {
                     nextStop = object.getString("value");
                     printout = printout + "\n************Next_Stop: " + nextStop + "\t Date: " + new Date(object.getLong("timestamp"));
+                    break;
                 }
             }
         }
@@ -133,12 +135,10 @@ public class APIHelper extends AsyncTask<Void, Void, Void> {
                 getBusData();
                 publishProgress();
                 Thread.sleep(2000);
-            } catch (JSONException e) {
+            } catch (JSONException | IOException | InterruptedException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                cancel(true);
+                //TODO: Possibly notify error (i.e wrong dgw number of bus?)
             }
         }
 
@@ -148,7 +148,7 @@ public class APIHelper extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onProgressUpdate(Void... voids) {
         bdl.positionChanged(position);
-        //bdl.nextStopChanged(nextStop); // TODO: Enable when we got real bus stops in server database!
+        bdl.nextStopChanged(nextStop);
     }
 
     @Override
