@@ -33,11 +33,11 @@
     <group
         android:id="@+id/navdrawer_menubottom"
         android:checkableBehavior="none">
-        <item
-            android:id="@+id/navdrawer_settings"
-            android:checked="false"
-            android:icon="@drawable/ic_setting_light"
-            android:title="@string/app_settings" />
+        <!--<item-->
+            <!--android:id="@+id/navdrawer_settings"-->
+            <!--android:checked="false"-->
+            <!--android:icon="@drawable/ic_setting_light"-->
+            <!--android:title="@string/app_settings" />-->
         <item
             android:id="@+id/navdrawer_about"
             android:checked="false"

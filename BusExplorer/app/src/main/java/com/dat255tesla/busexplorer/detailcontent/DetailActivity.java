@@ -11,10 +11,14 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -35,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends Fragment {
 
     private InfoNode node;
     private TextView headline;
@@ -55,28 +59,27 @@ public class DetailActivity extends AppCompatActivity {
      */
     private int mAnimationDuration;
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
+    private View v;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setContentView(R.layout.activity_detail_view);
+        node = (InfoNode) getArguments().getSerializable("InfoNode");
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        v = inflater.inflate(R.layout.activity_detail_view,container,false);
 
         imgMap = new HashMap<>();
 
-        node = (InfoNode) getIntent().getSerializableExtra("InfoNode");
-
-        headline = (TextView) findViewById(R.id.dv_headline);
+        headline = (TextView) v.findViewById(R.id.dv_headline);
         headline.setText(node.getTitle());
-        subheadline = (TextView) findViewById(R.id.dv_subheadline);
+        subheadline = (TextView) v.findViewById(R.id.dv_subheadline);
         subheadline.setText(node.getAddress());
-        imageGallery = (LinearLayout) findViewById(R.id.dv_imageGallery);
-        description = (WebView) findViewById(R.id.dv_description);
+        imageGallery = (LinearLayout) v.findViewById(R.id.dv_imageGallery);
+        description = (WebView) v.findViewById(R.id.dv_description);
 
         getImagesFromServer();
 
@@ -84,6 +87,8 @@ public class DetailActivity extends AppCompatActivity {
 
         // Retrieve and cache the system's default medium animation time.
         mAnimationDuration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
+
+        return v;
     }
 
     /*
@@ -119,7 +124,7 @@ public class DetailActivity extends AppCompatActivity {
                                 }
                             }
                             addImagesToGallery();
-                            findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                            v.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                         }
                     });
 
@@ -174,7 +179,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private View getImageView(final Bitmap thumb, final Bitmap img) {
-        final TouchHighlightImageButton imageButton = new TouchHighlightImageButton(getApplicationContext());
+        final TouchHighlightImageButton imageButton = new TouchHighlightImageButton(getActivity().getApplicationContext());
         int width = Math.round(200 * (getResources().getDisplayMetrics().densityDpi / 160));
         int height = Math.round(200 * (getResources().getDisplayMetrics().densityDpi / 160));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(width, height);
@@ -199,7 +204,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         // Load the high-resolution "zoomed-in" image.
-        final ImageView expandedImageView = (ImageView) findViewById(R.id.dv_expanded_image);
+        final ImageView expandedImageView = (ImageView) v.findViewById(R.id.dv_expanded_image);
         expandedImageView.setImageBitmap(imageResId);
 
         // Calculate the starting and ending bounds for the zoomed-in image. This step
@@ -213,7 +218,7 @@ public class DetailActivity extends AppCompatActivity {
         // set the container view's offset as the origin for the bounds, since that's
         // the origin for the positioning animation properties (X, Y).
         thumbView.getGlobalVisibleRect(startBounds);
-        findViewById(R.id.container).getGlobalVisibleRect(finalBounds, globalOffset);
+        v.findViewById(R.id.container).getGlobalVisibleRect(finalBounds, globalOffset);
         startBounds.offset(-globalOffset.x, -globalOffset.y);
         finalBounds.offset(-globalOffset.x, -globalOffset.y);
 

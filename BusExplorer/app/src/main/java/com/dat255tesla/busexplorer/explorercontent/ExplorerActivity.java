@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -50,7 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-public class ExplorerActivity extends AppCompatActivity implements IValuesChangedListener, IBusDataListener {
+public class ExplorerActivity extends Fragment implements IValuesChangedListener, IBusDataListener {
     private GoogleMap mMap;
     private APIHelper apiHelper;
     private HashMap<Marker, InfoNode> markers;
@@ -83,18 +86,27 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     private boolean checkBoxValue_misc;
     private boolean[] typeFilters;
 
+    private View v;
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_explorer);
-        dgw = getIntent().getStringExtra("dgw");
+        dgw = getArguments().getString("dgw");
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        v = inflater.inflate(R.layout.activity_explorer,container,false);
+
         apiHelper = new APIHelper(this, dgw);
         markers = new HashMap<>();
         nextStop = "";
 
         // Retrieve settings data
         SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(this);
+                .getDefaultSharedPreferences(getActivity());
         checkBoxValue_sight = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
         checkBoxValue_shop = sharedPreferences.getBoolean("CheckBox_shopping", true);
         checkBoxValue_misc = sharedPreferences.getBoolean("CheckBox_misc", true);
@@ -102,7 +114,7 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         typeFilters = new boolean[]{checkBoxValue_sight, checkBoxValue_shop, checkBoxValue_misc};
 
         // Establish database connection
-        ds = new InfoDataSource(this);
+        ds = new InfoDataSource(getActivity());
         ds.setValuesChangedListener(this);
 
         try {
@@ -127,13 +139,15 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         ds.updateDatabaseIfNeeded();
 
         createList();
+
+        return v;
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(this);
+                .getDefaultSharedPreferences(getActivity());
         checkBoxValue_sight = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
         checkBoxValue_shop = sharedPreferences.getBoolean("CheckBox_shopping", true);
         checkBoxValue_misc = sharedPreferences.getBoolean("CheckBox_misc", true);
@@ -155,16 +169,9 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         apiHelper.cancel(true);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        apiHelper.cancel(true);
-        finish();
     }
 
 
@@ -188,7 +195,7 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+            mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map))
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
@@ -218,7 +225,7 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
                     busMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_03));
                 }
 
-                showPopup(ExplorerActivity.this);
+                showPopup(getActivity());
 
                 return false;
             }
@@ -258,18 +265,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         }
     }
 
-    public void openAbout() {
-        Intent intent = new Intent(this, AboutActivity.class);
-        startActivity(intent);
-    }
-
-    /**
-     * Open the SettingsActivity
-     */
-    private void openSettings() {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
-    }
 
     /**
      * Open the DetailActivity
@@ -279,13 +274,18 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
      */
 
     private void openDetailView(InfoNode node) {
-        Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra("InfoNode", node);
-        startActivity(intent);
+        DetailActivity fragment = new DetailActivity();
+        Bundle args = new Bundle();
+        args.putSerializable("InfoNode", node);
+        fragment.setArguments(args);
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     private void showPopup(final Activity context) {
-        LinearLayout viewGroup = (LinearLayout) findViewById(R.id.popup_element);
+        LinearLayout viewGroup = (LinearLayout) v.findViewById(R.id.popup_element);
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.popup_layout, viewGroup);
@@ -321,7 +321,7 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
                 addMarker(node);
             }
             //adapter.clear();
-            adapter.addAll(values); // This mutates this.originalValues variable.
+            //adapter.addAll(values); // This mutates this.originalValues variable.
         }
     }
 
@@ -347,12 +347,12 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             List<InfoNode> filteredValues = MapUtils.filterValues(sortedValues, typeFilters);
             visibleValuesChanged(filteredValues);
             this.nextStop = nextStop;
-            Toast.makeText(getApplicationContext(), "nextStop changed, list should be sorted!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getApplicationContext(), "nextStop changed, list should be sorted!", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void createList(){
-        belowMapList = (ListView) findViewById(R.id.listBelowMap);
+        belowMapList = (ListView) v.findViewById(R.id.listBelowMap);
 
 //        // Temp-list below map
 //        ArrayList<String> sites = new ArrayList<>(
@@ -373,19 +373,19 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
 //                this, R.layout.maplist_layout,
 //                R.id.listString, ourSites));
 
-        belowMapList.setAdapter(new ListArrayAdapter(this, sites, originalValues));
+        belowMapList.setAdapter(new ListArrayAdapter(getActivity(), sites, originalValues));
 
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(),
+                Toast.makeText(getActivity().getApplicationContext(),
                         parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
                         .show();
             }
         });
 
         // Button to open and close list.
-        final Button listButton = (Button) findViewById(R.id.openListButton);
+        final Button listButton = (Button) v.findViewById(R.id.openListButton);
         final View.OnClickListener openListListener = new View.OnClickListener() {
             @Override
             public void onClick(View v){

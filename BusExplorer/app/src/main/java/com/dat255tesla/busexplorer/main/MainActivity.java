@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -59,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         netInfo = cm.getActiveNetworkInfo();
 
         categories = new boolean[3];
-        categories[0] = true;
 
         connectionDialog();
     }
@@ -74,10 +75,10 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     public void onBackPressed() {
         // Check, if active fragment is of class DetailActivity
         // If it is, we go back to the map. Otherwise we ask to exit.
-//        Fragment f = getSupportFragmentManager().findFragmentById(R.id.frame);
-//        if (f instanceof DetailActivity) {
-//            openExplorerActivity();
-//        } else {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.frame);
+        if (f instanceof DetailActivity) {
+            openExplorer();
+        } else {
             AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
             b.setCancelable(true);
             b.setTitle("\ud83d\ude22 \uD83D\uDE22 \uD83D\uDE22 \uD83D\uDE22");
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
 
             AlertDialog alert = b.create();
             alert.show();
-//        }
+        }
 
     }
 
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
      * Please rename me.
      */
     public void connectionDialog() {
- /*       // Check if online
+        // Check if online
         if (netInfo != null && netInfo.isAvailable() && netInfo.isConnected()) {
             // Check connection type
             if (netInfo.getTypeName().equals("WIFI")) {
@@ -170,9 +171,20 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                     });
             AlertDialog alert = b.create();
             alert.show();
-        }*/
+        }
 
+
+        loadSavedPreferences();
         initNavDrawer();
+        //setNavDrawerIcons();
+    }
+
+    private void loadSavedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        categories[0] = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
+        categories[1] = sharedPreferences.getBoolean("CheckBox_shopping", true);
+        categories[2] = sharedPreferences.getBoolean("CheckBox_misc", true);
     }
 
     private void initNavDrawer() {
@@ -200,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()){
                     case R.id.navdrawer_map:
-                        openExplorerActivity();
+                        openExplorer();
                         drawerLayout.closeDrawers();
                         return true;
                     case R.id.navdrawer_category_1:
@@ -211,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                             categories[0] = false;
                             menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_triangle_nofill));
                         }
+                        savePreferences("CheckBox_sightseeing", categories[0]);
                         return true;
                     case R.id.navdrawer_category_2:
                         if (!categories[1]) {
@@ -220,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                             categories[1] = false;
                             menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_square_nofill));
                         }
+                        savePreferences("CheckBox_shopping", categories[1]);
                         return true;
                     case R.id.navdrawer_category_3:
                         if (!categories[2]) {
@@ -229,11 +243,12 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                             categories[2] = false;
                             menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_circle_nofill));
                         }
+                        savePreferences("CheckBox_misc", categories[2]);
                         return true;
-                    case R.id.navdrawer_settings:
-                        openSettings();
-                        drawerLayout.closeDrawers();
-                        return true;
+//                    case R.id.navdrawer_settings:
+//                        openSettings();
+//                        drawerLayout.closeDrawers();
+//                        return true;
                     case R.id.navdrawer_about:
                         openAbout();
                         drawerLayout.closeDrawers();
@@ -271,9 +286,41 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         actionBarDrawerToggle.syncState();
 
         //Start the next activity
-        //openExplorerActivity();
-        openAbout();
+        openExplorer();
+        //openAbout();
 
+    }
+
+    private void setNavDrawerIcons() {
+        MenuItem menuItem1 = (MenuItem) findViewById(R.id.navdrawer_category_1);
+
+        if (categories[0]) {
+            menuItem1.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_triangle_fill));
+        } else {
+            menuItem1.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_triangle_nofill));
+        }
+
+        MenuItem menuItem2 = (MenuItem) findViewById(R.id.navdrawer_category_2);
+        if (categories[1]) {
+            menuItem2.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_square_fill));
+        } else {
+            menuItem2.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_square_nofill));
+        }
+
+        MenuItem menuItem3 = (MenuItem) findViewById(R.id.navdrawer_category_3);
+        if (categories[2]) {
+            menuItem3.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_circle_fill));
+        } else {
+            menuItem3.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_circle_nofill));
+        }
+    }
+
+    private void savePreferences(String key, boolean value) {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(key, value);
+        editor.apply();
     }
 
     private void openAbout() {
@@ -284,24 +331,23 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         fragmentTransaction.commit();
     }
 
-    private void openSettings() {
-        SettingsActivity fragment = new SettingsActivity();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frame, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-
-    private void openExplorerActivity() {
-        //        Intent intent = new Intent(this, ExplorerActivity.class);
-//        intent.putExtra("dgw", dgw);
-//        startActivity(intent);
-
-//        ExplorerActivity fragment = new ExplorerActivity();
+//    private void openSettings() {
+//        SettingsActivity fragment = new SettingsActivity();
 //        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//        fragmentTransaction.replace(R.id.frame, fragment, "ExplorerActivity");
+//        fragmentTransaction.replace(R.id.frame, fragment);
 //        fragmentTransaction.addToBackStack(null);
 //        fragmentTransaction.commit();
+//    }
+
+    private void openExplorer() {
+        ExplorerActivity fragment = new ExplorerActivity();
+        Bundle args = new Bundle();
+        args.putString("dgw", dgw);
+        fragment.setArguments(args);
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame, fragment, "ExplorerActivity");
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     public void refreshClick(View view) {
@@ -328,12 +374,12 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         startActivity(intent);
     }
 
-    public void openExplorer() {
+ //   public void openExplorer() {
 //        Intent intent = new Intent(this, ExplorerActivity.class);
 //        intent.putExtra("dgw", dgw);
 //        startActivity(intent);
 //        finish();
-    }
+//    }
 
 
     private void getAccess() {
