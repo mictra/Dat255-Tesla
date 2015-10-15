@@ -167,28 +167,7 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         finish();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_activity_explorer, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                openSettings();
-                return true;
-            case R.id.action_about:
-                openAbout();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
@@ -341,7 +320,7 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             for (InfoNode node : values) {
                 addMarker(node);
             }
-            adapter.clear();
+            //adapter.clear();
             adapter.addAll(values); // This mutates this.originalValues variable.
         }
     }

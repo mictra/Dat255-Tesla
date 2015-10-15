@@ -33,6 +33,10 @@
 
     <string name="main_ohgod">(replace me)</string>
 
+    <string name="main_cancel">Cancel</string>
+    <string name="main_exit">Exit</string>
+    <string name="main_wanttoexit">Do you really want to exit ?</string>
+
     // Strings in AboutActivity
     <string name="about_aboutHeader">About BusExplorer</string>
     <string name="about_aboutText">BusExplorer was created for the ElectriCity Innovation Challange. Etc etc</string>
@@ -46,6 +50,10 @@
     <string name="settings_optStores">Shopping</string>
     <string name="settings_optMisc">Miscellaneous</string>
     <string name="settings_filterHeader">Filter Map</string>
+
+    // Strings in NavigationDrawer
+    <string name="openDrawer">Navigation View</string>
+    <string name="closeDrawer">Navigation View Closed</string>
 
     // Usage unknown
     <string name="app_settings">Settings</string>

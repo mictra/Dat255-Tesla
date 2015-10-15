@@ -7,17 +7,26 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.Settings;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.dat255tesla.busexplorer.R;
+import com.dat255tesla.busexplorer.aboutcontent.AboutActivity;
 import com.dat255tesla.busexplorer.apirequest.CheckBusWIFI;
 import com.dat255tesla.busexplorer.apirequest.IBusWifiListener;
+import com.dat255tesla.busexplorer.detailcontent.DetailActivity;
 import com.dat255tesla.busexplorer.explorercontent.ExplorerActivity;
+import com.dat255tesla.busexplorer.settingscontent.SettingsActivity;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -31,14 +40,28 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     private CheckBusWIFI cbw;
     private String busSystemId = "0";
     private String dgw = "0";
+    private Toolbar toolbar;
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
+    private boolean[] categories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initializing Toolbar and setting it as the actionbar
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         cbw = new CheckBusWIFI(this);
         cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         netInfo = cm.getActiveNetworkInfo();
+
+        categories = new boolean[3];
+        categories[0] = true;
+
+        connectionDialog();
     }
 
     @Override
@@ -49,15 +72,42 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        // Check, if active fragment is of class DetailActivity
+        // If it is, we go back to the map. Otherwise we ask to exit.
+//        Fragment f = getSupportFragmentManager().findFragmentById(R.id.frame);
+//        if (f instanceof DetailActivity) {
+//            openExplorerActivity();
+//        } else {
+            AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
+            b.setCancelable(true);
+            b.setTitle("\ud83d\ude22 \uD83D\uDE22 \uD83D\uDE22 \uD83D\uDE22");
+            b.setMessage(getResources().getText(R.string.main_wanttoexit));
+            b.setPositiveButton(getResources().getText(R.string.main_exit),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            System.exit(0);
+                        }
+                    });
+            b.setNegativeButton(getResources().getText(R.string.main_cancel),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+            AlertDialog alert = b.create();
+            alert.show();
+//        }
+
     }
 
     /**
      * Please rename me.
      */
     public void connectionDialog() {
-        // Check if online
+ /*       // Check if online
         if (netInfo != null && netInfo.isAvailable() && netInfo.isConnected()) {
             // Check connection type
             if (netInfo.getTypeName().equals("WIFI")) {
@@ -120,8 +170,134 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                     });
             AlertDialog alert = b.create();
             alert.show();
-        }
+        }*/
 
+        initNavDrawer();
+    }
+
+    private void initNavDrawer() {
+        //Initializing NavigationView
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+
+        //Allow natural icon colors
+        navigationView.setItemIconTintList(null);
+
+        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+            // This method will trigger on item Click of navigation menu
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+
+                //Checking if the item is in checked state or not, if not make it in checked state
+                //menuItem.setChecked(menuItem.isChecked() ? false : true);
+
+                //Closing drawer on item click
+                //drawerLayout.closeDrawers();
+
+
+                //Check to see which item was being clicked and perform appropriate action
+                switch (menuItem.getItemId()){
+                    case R.id.navdrawer_map:
+                        openExplorerActivity();
+                        drawerLayout.closeDrawers();
+                        return true;
+                    case R.id.navdrawer_category_1:
+                        if (!categories[0]) {
+                            categories[0] = true;
+                            menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_triangle_fill));
+                        } else {
+                            categories[0] = false;
+                            menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_triangle_nofill));
+                        }
+                        return true;
+                    case R.id.navdrawer_category_2:
+                        if (!categories[1]) {
+                            categories[1] = true;
+                            menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_square_fill));
+                        } else {
+                            categories[1] = false;
+                            menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_square_nofill));
+                        }
+                        return true;
+                    case R.id.navdrawer_category_3:
+                        if (!categories[2]) {
+                            categories[2] = true;
+                            menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_circle_fill));
+                        } else {
+                            categories[2] = false;
+                            menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_circle_nofill));
+                        }
+                        return true;
+                    case R.id.navdrawer_settings:
+                        openSettings();
+                        drawerLayout.closeDrawers();
+                        return true;
+                    case R.id.navdrawer_about:
+                        openAbout();
+                        drawerLayout.closeDrawers();
+                        return true;
+                    default:
+                        Toast.makeText(getApplicationContext(),"SOMETHING.IS.WRONG.",Toast.LENGTH_SHORT).show();
+                        return true;
+
+                }
+            }
+        });
+
+        // Initializing Drawer Layout and ActionBarToggle
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.openDrawer, R.string.closeDrawer){
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
+
+                super.onDrawerOpened(drawerView);
+            }
+        };
+
+        //Setting the actionbarToggle to drawer layout
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+
+        //calling sync state is necessary or else your hamburger icon wont show up
+        actionBarDrawerToggle.syncState();
+
+        //Start the next activity
+        //openExplorerActivity();
+        openAbout();
+
+    }
+
+    private void openAbout() {
+        AboutActivity fragment = new AboutActivity();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    private void openSettings() {
+//        SettingsActivity fragment = new SettingsActivity();
+//        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//        fragmentTransaction.replace(R.id.frame, fragment);
+//        fragmentTransaction.addToBackStack(null);
+//        fragmentTransaction.commit();
+    }
+
+    private void openExplorerActivity() {
+//        ExplorerActivity fragment = new ExplorerActivity();
+//        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//        fragmentTransaction.replace(R.id.frame, fragment, "ExplorerActivity");
+//        fragmentTransaction.addToBackStack(null);
+//        fragmentTransaction.commit();
     }
 
     public void refreshClick(View view) {
@@ -155,27 +331,6 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         finish();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     private void getAccess() {
         System.out.println(netInfo.getTypeName());

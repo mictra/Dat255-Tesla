@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Colors according to http://www.google.com/design/spec/style/color.html#color-color-palette -->
 <resources>
-    <color name="accent">#82aefe</color>
-    <color name="actionbar_end">@color/accent</color>
-    <color name="actionbar_start">@color/primary</color>
+    <color name="AccentColor">#82aefe</color>
     <color name="amber">#ffc107</color>
     <color name="black">#000000</color>
     <color name="blue">#2196f3</color>
@@ -21,8 +19,8 @@
     <color name="lightgreen">#8bc34a</color>
     <color name="lime">#cddc39</color>
     <color name="orange">#ff9800</color>
-    <color name="primary">#7553fd</color>
-    <color name="primarydark">#5642c9</color>
+    <color name="PrimaryColor">#7553fd</color>
+    <color name="PrimaryDarkColor">#5642c9</color>
     <color name="purple">#9c27b0</color>
     <color name="red">#f44336</color>
     <color name="teal">#009688</color>

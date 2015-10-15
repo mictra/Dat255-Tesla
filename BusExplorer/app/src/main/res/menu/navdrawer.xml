@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/navdrawer_menutop"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/navdrawer_map"
+            android:checked="false"
+            android:icon="@drawable/ic_info"
+            android:title="To The Map" />
+        <item
+            android:title="Categories">
+            <menu>
+                <item
+                    android:id="@+id/navdrawer_category_1"
+                    android:checked="false"
+                    android:icon="@drawable/marker_triangle_fill"
+                    android:title="@string/settings_optSightseeing" />
+                <item
+                    android:id="@+id/navdrawer_category_2"
+                    android:checked="false"
+                    android:icon="@drawable/marker_square_nofill"
+                    android:title="@string/settings_optStores" />
+                <item
+                    android:id="@+id/navdrawer_category_3"
+                    android:checked="false"
+                    android:icon="@drawable/marker_circle_nofill"
+                    android:title="@string/settings_optMisc" />
+            </menu>
+        </item>
+    </group>
+
+    <group
+        android:id="@+id/navdrawer_menubottom"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/navdrawer_settings"
+            android:checked="false"
+            android:icon="@drawable/ic_setting_light"
+            android:title="@string/app_settings" />
+        <item
+            android:id="@+id/navdrawer_about"
+            android:checked="false"
+            android:icon="@drawable/ic_info"
+            android:title="@string/about_aboutHeader" />
+    </group>
+       
+
+</menu>
