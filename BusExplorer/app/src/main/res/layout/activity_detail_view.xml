@@ -46,6 +46,18 @@
             android:layout_marginTop="-8dp"
             android:textStyle="normal"/>
 
+        <ImageButton
+            android:id="@+id/dv_mapButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/googlemaps"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:paddingTop="12dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:onClick="directionsButton"/>
+
         <View
             android:id="@+id/dv_seperator1"
             android:layout_width="fill_parent"
