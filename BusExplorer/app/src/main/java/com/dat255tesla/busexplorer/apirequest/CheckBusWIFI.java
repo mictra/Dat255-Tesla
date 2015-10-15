@@ -24,12 +24,12 @@ import javax.xml.parsers.ParserConfigurationException;
 /**
  * Created by Michael on 2015-10-13.
  */
-public class CheckBusWifi extends AsyncTask<Void, Void, Void> {
+public class CheckBusWIFI extends AsyncTask<Void, Void, Void> {
 
     private IBusWifiListener bwl;
     private String bus_system_id = "0";
 
-    public CheckBusWifi(IBusWifiListener bwl) {
+    public CheckBusWIFI(IBusWifiListener bwl) {
         this.bwl = bwl;
     }
 

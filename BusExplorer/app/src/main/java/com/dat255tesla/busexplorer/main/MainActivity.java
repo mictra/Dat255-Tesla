@@ -6,18 +6,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dat255tesla.busexplorer.R;
-import com.dat255tesla.busexplorer.apirequest.CheckBusWifi;
+import com.dat255tesla.busexplorer.apirequest.CheckBusWIFI;
 import com.dat255tesla.busexplorer.apirequest.IBusWifiListener;
 import com.dat255tesla.busexplorer.explorercontent.ExplorerActivity;
 import com.parse.FindCallback;
@@ -30,7 +28,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements IBusWifiListener {
     ConnectivityManager cm;
     NetworkInfo netInfo;
-    private CheckBusWifi cbw;
+    private CheckBusWIFI cbw;
     private String busSystemId = "0";
     private String dgw = "0";
 
@@ -38,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        cbw = new CheckBusWifi(this);
+        cbw = new CheckBusWIFI(this);
         cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         netInfo = cm.getActiveNetworkInfo();
     }
@@ -67,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                 // We can check the WiFi name here, to see if it's the same name as the bus wifi
                 // If we care. netInfo.getExtraInfo() will return the WiFi name
                 //cbw.execute(); // Call the AsyncTask and get the system id of the bus.
-                //new CheckBusWifi(this).execute(); // TODO: Enable when in a bus or testing...
+                //new CheckBusWIFI(this).execute(); // TODO: Enable when in a bus or testing...
 
                 dgw = "Vin_Num_001";
                 getAccess();

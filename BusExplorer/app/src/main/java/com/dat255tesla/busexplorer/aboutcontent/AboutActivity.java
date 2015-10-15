@@ -4,11 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.dat255tesla.busexplorer.R;
-import com.dat255tesla.busexplorer.apirequest.CheckBusWifi;
-import com.dat255tesla.busexplorer.apirequest.IBusWifiListener;
 
 public class AboutActivity extends AppCompatActivity {
 
