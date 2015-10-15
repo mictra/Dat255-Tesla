@@ -216,8 +216,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
                 return false;
             }
         });
-        // List is hidden by default.
-        setListVisibility(false);
         apiHelper.execute();
         //nextStopChanged("Poseidon"); //TODO: Enable to see result in terminal.
     }
