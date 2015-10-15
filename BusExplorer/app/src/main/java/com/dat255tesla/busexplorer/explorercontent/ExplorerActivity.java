@@ -34,6 +34,7 @@ import com.dat255tesla.busexplorer.settingscontent.SettingsActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -336,26 +337,28 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     }
 
     private void createList(){
+        belowMapList = (ListView) findViewById(R.id.listBelowMap);
 
-        // Temp-list below map
-        ArrayList<String> sites = new ArrayList<>(
-                Arrays.asList("Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"));
-
-        ArrayList<String> ourSites = new ArrayList<>();
-        for (InfoNode node : values) {
-            ourSites.add(node.getTitle());
-        }
-
-//        ArrayList<String> ourSites = new ArrayList<>(
+//        // Temp-list below map
+//        ArrayList<String> sites = new ArrayList<>(
 //                Arrays.asList("Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"));
 
-        belowMapList = (ListView) findViewById(R.id.listBelowMap);
+//        ArrayList<InfoNode> valuesClone = new ArrayList<>();
+//        for(int i = 0; i < sites.size(); i++){
+//            InfoNode node = new InfoNode(0, sites.get(0), 0.0, 0.0, 1, "info", "Adr", 0, "objID");
+//            valuesClone.add(node);
+//        }
+
+        ArrayList<String> sites = new ArrayList<>();
+        for (InfoNode node : values) {
+            sites.add(node.getTitle());
+        }
 
 //        belowMapList.setAdapter(new ArrayAdapter<>(
 //                this, R.layout.maplist_layout,
 //                R.id.listString, ourSites));
 
-        belowMapList.setAdapter(new ListArrayAdapter(this, ourSites, values));
+        belowMapList.setAdapter(new ListArrayAdapter(this, sites, values));
 
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -365,9 +368,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
                         .show();
             }
         });
-
-//        // List is hidden by default.
-//        setListVisibility(false);
 
         // Button to open and close list.
         final Button listButton = (Button) findViewById(R.id.openListButton);
@@ -383,21 +383,18 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             }
         };
         listButton.setOnClickListener(openListListener);
+
+        // List is hidden by default.
+        setListVisibility(false);
     }
 
     public void favoriteClickHandle(View v) {
-
-//        RelativeLayout vwParentRow = (RelativeLayout)v.getParent();
-//        ImageView favButt = (ImageView)vwParentRow.getChildAt(2);
-
         ImageView favButt = (ImageView)v;
 
         favoriteList = new ArrayList<>();
 
         if(isFavorite){
-
             favButt.setImageResource(R.drawable.star_unfilled);
-
 
         } else {
             favButt.setImageResource(R.drawable.star_filled);
@@ -415,7 +412,8 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     }
 
     /*
-        Method to read/write to an favorite.txt.
+        Method to read/write to an favorite.txt, which will be used to be excluded when our
+        "listBelowMap is being refreshed and removing things to far away, then favorites will still be shown.
      */
 //    private void updateFavList(){
 //        favoriteList = new ArrayList<>();

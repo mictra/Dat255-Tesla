@@ -43,14 +43,18 @@ public class ListArrayAdapter extends ArrayAdapter<String> {
         String stringObj = stringList.get(position);
         InfoNode currNode = findNode(stringObj);
 
+        imageView.setImageResource(R.drawable.marker_triangle);
+
         switch (currNode.getType()) {
             case 1:
                 imageView.setImageResource(R.drawable.marker_triangle);
+                break;
             case 2:
                 imageView.setImageResource(R.drawable.marker_square);
+                break;
             case 3:
                 imageView.setImageResource(R.drawable.marker_circle);
-            default:
+                break;
         }
         return rowView;
     }
