@@ -285,14 +285,18 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     }
 
     private void openSettings() {
-//        SettingsActivity fragment = new SettingsActivity();
-//        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//        fragmentTransaction.replace(R.id.frame, fragment);
-//        fragmentTransaction.addToBackStack(null);
-//        fragmentTransaction.commit();
+        SettingsActivity fragment = new SettingsActivity();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     private void openExplorerActivity() {
+        //        Intent intent = new Intent(this, ExplorerActivity.class);
+//        intent.putExtra("dgw", dgw);
+//        startActivity(intent);
+
 //        ExplorerActivity fragment = new ExplorerActivity();
 //        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 //        fragmentTransaction.replace(R.id.frame, fragment, "ExplorerActivity");
@@ -325,10 +329,10 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     }
 
     public void openExplorer() {
-        Intent intent = new Intent(this, ExplorerActivity.class);
-        intent.putExtra("dgw", dgw);
-        startActivity(intent);
-        finish();
+//        Intent intent = new Intent(this, ExplorerActivity.class);
+//        intent.putExtra("dgw", dgw);
+//        startActivity(intent);
+//        finish();
     }
 
 
