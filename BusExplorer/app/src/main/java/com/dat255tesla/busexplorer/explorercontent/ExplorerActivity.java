@@ -16,9 +16,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.dat255tesla.busexplorer.R;
@@ -38,10 +40,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 public class ExplorerActivity extends AppCompatActivity implements IValuesChangedListener, IBusDataListener {
     private GoogleMap mMap;
@@ -62,7 +69,13 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     private MarkerOptions busPositionOptions;
 
     private ListView belowMapList;
-    private boolean isListOpen;
+
+    // Using an boolean to check, instead of checking its visibility or a status.
+    private boolean isListOpen = false;
+    private boolean isFavorite = false;
+
+    // our empty arrayList
+    private List<String> favoriteList;
 
     private String dgw;
     private boolean checkBoxValue_sight;
@@ -112,6 +125,8 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
                 .anchor(0.5f, 0.5f);
         setUpMapIfNeeded();
         ds.updateDatabaseIfNeeded();
+
+        createList();
     }
 
     @Override
@@ -214,41 +229,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
 
         List<InfoNode> filteredValues = MapUtils.filterValues(originalValues, typeFilters);
 
-        // Using an boolean to check if list is open, instead of checking its visibility.
-        isListOpen = false;
-        final Button listButton = (Button) findViewById(R.id.openListButton);
-        final View.OnClickListener openListListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String listStatus = (isListOpen) ? "Open List" : "Close List";
-                listButton.setText(listStatus);
-                setListVisibility(!isListOpen);
-                isListOpen = !isListOpen;
-            }
-        };
-
-        listButton.setOnClickListener(openListListener);
-
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList());
-        belowMapList = (ListView) findViewById(R.id.listBelowMap);
-        belowMapList.setAdapter(adapter);
-        visibleValuesChanged(filteredValues);
-        belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                openDetailView((InfoNode) parent.getItemAtPosition(position));
-            }
-        });
-
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                if (isLockedToBus)
-                    isLockedToBus = false;
-            }
-        });
-
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -268,9 +248,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         // Start location
         LatLng startloc = new LatLng(57.704874, 11.965345);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(startloc, 8));
-
-        // List is hidden by default.
-        setListVisibility(false);
         apiHelper.execute();
     }
 
@@ -313,14 +290,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     private void openSettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
-    }
-
-    private void setListVisibility(boolean isVisible) {
-        getListView().setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    private ListView getListView() {
-        return belowMapList;
     }
 
     /**
@@ -402,4 +371,104 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             Toast.makeText(getApplicationContext(), "nextStop changed, list should be sorted!", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void createList(){
+        belowMapList = (ListView) findViewById(R.id.listBelowMap);
+
+//        // Temp-list below map
+//        ArrayList<String> sites = new ArrayList<>(
+//                Arrays.asList("Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"));
+
+//        ArrayList<InfoNode> valuesClone = new ArrayList<>();
+//        for(int i = 0; i < sites.size(); i++){
+//            InfoNode node = new InfoNode(0, sites.get(0), 0.0, 0.0, 1, "info", "Adr", 0, "objID");
+//            valuesClone.add(node);
+//        }
+
+        ArrayList<String> sites = new ArrayList<>();
+        for (InfoNode node : originalValues) {
+            sites.add(node.getTitle());
+        }
+
+//        belowMapList.setAdapter(new ArrayAdapter<>(
+//                this, R.layout.maplist_layout,
+//                R.id.listString, ourSites));
+
+        belowMapList.setAdapter(new ListArrayAdapter(this, sites, originalValues));
+
+        belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(),
+                        parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        // Button to open and close list.
+        final Button listButton = (Button) findViewById(R.id.openListButton);
+        final View.OnClickListener openListListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+
+                String listStatus = (isListOpen) ? "Open List" : "Close List";
+                listButton.setText(listStatus);
+                setListVisibility(!isListOpen);
+                isListOpen = !isListOpen;
+
+            }
+        };
+        listButton.setOnClickListener(openListListener);
+
+        // List is hidden by default.
+        setListVisibility(false);
+    }
+
+    public void favoriteClickHandle(View v) {
+        ImageView favButt = (ImageView)v;
+
+        favoriteList = new ArrayList<>();
+
+        if(isFavorite){
+            favButt.setImageResource(R.drawable.star_unfilled);
+
+        } else {
+            favButt.setImageResource(R.drawable.star_filled);
+        }
+
+        isFavorite = !isFavorite;
+    }
+
+    private void setListVisibility(boolean isVisible) {
+        getListView().setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private ListView getListView() {
+        return belowMapList;
+    }
+
+    /*
+        Method to read/write to an favorite.txt, which will be used to be excluded when our
+        "listBelowMap is being refreshed and removing things to far away, then favorites will still be shown.
+     */
+//    private void updateFavList(){
+//        favoriteList = new ArrayList<>();
+//
+//        Scanner sc = null;
+//        try {
+//            sc = new Scanner(new BufferedReader(new FileReader("favorites.txt")));
+//
+//            while (sc.hasNext()) {
+//                favoriteList.add(sc.nextLine());
+//            }
+//        }
+//        catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        finally {
+//            if(sc != null) {
+//                sc.close();
+//            }
+//        }
+//    }
 }
