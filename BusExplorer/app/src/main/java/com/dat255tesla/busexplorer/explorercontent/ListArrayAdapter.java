@@ -1,5 +1,8 @@
 package com.dat255tesla.busexplorer.explorercontent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,23 +14,19 @@ import android.widget.TextView;
 import com.dat255tesla.busexplorer.R;
 import com.dat255tesla.busexplorer.database.InfoNode;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 /*
-    Class used to make a custom-list-view to be able to show a unique icon for each list-category.
+    Class used to make a custom-list-view(Adapter) to be able to show a unique icon for each list-category.
  */
 public class ListArrayAdapter extends ArrayAdapter<String> {
     private final Context context;
-    private final ArrayList<String> values;
-    private final List<InfoNode> nodes;
+    private final ArrayList<String> stringList;
+    private final List<InfoNode> values;
 
-    public ListArrayAdapter(Context context, ArrayList<String> values, List<InfoNode> nodes) {
-        super(context, R.layout.maplist_layout, values);
+    public ListArrayAdapter(Context context, ArrayList<String> stringList, List<InfoNode> values) {
+        super(context, R.layout.maplist_layout, stringList);
         this.context = context;
+        this.stringList = stringList;
         this.values = values;
-        this.nodes = nodes;
     }
 
     @Override
@@ -36,27 +35,34 @@ public class ListArrayAdapter extends ArrayAdapter<String> {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View rowView = inflater.inflate(R.layout.maplist_layout, parent, false);
-        TextView textView = (TextView) rowView.findViewById(R.id.listString);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.list_icon);
-        textView.setText(values.get(position));
+        TextView textView = (TextView) rowView.findViewById(R.id.listString);
+        textView.setText(stringList.get(position));
 
         // Change icon based on name
-        String stringObj = values.get(position);
+        String stringObj = stringList.get(position);
+        InfoNode currNode = findNode(stringObj);
 
-        System.out.println(stringObj);
-
-//        imageView.setImageResource(nodes.get(position));
-
-//        if (s.equals("WindowsMobile")) {
-//            imageView.setImageResource(R.drawable.windowsmobile_logo);
-//        } else if (s.equals("iOS")) {
-//            imageView.setImageResource(R.drawable.ios_logo);
-//        } else if (s.equals("Blackberry")) {
-//            imageView.setImageResource(R.drawable.blackberry_logo);
-//        } else {
-//            imageView.setImageResource(R.drawable.android_logo);
-//        }
-
+        switch (currNode.getType()) {
+            case 1:
+                imageView.setImageResource(R.drawable.marker_triangle);
+            case 2:
+                imageView.setImageResource(R.drawable.marker_square);
+            case 3:
+                imageView.setImageResource(R.drawable.marker_circle);
+            default:
+        }
         return rowView;
+    }
+
+    private InfoNode findNode(String inputString){
+        InfoNode currentNode = null;
+
+        for (InfoNode node : values) {
+            if(node.getTitle().equals(inputString)) {
+                currentNode = node;
+            }
+        }
+        return currentNode;
     }
 }

@@ -98,16 +98,16 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             e.printStackTrace();
         }
 
-//        opt_sights = new MarkerOptions()
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_triangle));
-//        opt_stores = new MarkerOptions()
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_square));
-//        opt_misc = new MarkerOptions()
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_circle));
-//
-//        busPositionOptions = new MarkerOptions()
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
-//                .anchor(0.5f, 0.5f);
+        opt_sights = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_triangle));
+        opt_stores = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_square));
+        opt_misc = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_circle));
+
+        busPositionOptions = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
+                .anchor(0.5f, 0.5f);
         setUpMapIfNeeded();
         ds.updateDatabaseIfNeeded();
 
@@ -338,17 +338,24 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
     private void createList(){
 
         // Temp-list below map
-//        String[] sites = {"Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"};
-//        ArrayList<String> sites = new ArrayList<String>(
+        ArrayList<String> sites = new ArrayList<>(
+                Arrays.asList("Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"));
+
+        ArrayList<String> ourSites = new ArrayList<>();
+        for (InfoNode node : values) {
+            ourSites.add(node.getTitle());
+        }
+
+//        ArrayList<String> ourSites = new ArrayList<>(
 //                Arrays.asList("Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"));
 
         belowMapList = (ListView) findViewById(R.id.listBelowMap);
 
-        belowMapList.setAdapter(new ArrayAdapter<>(
-                this, R.layout.maplist_layout,
-                R.id.listString, values));
+//        belowMapList.setAdapter(new ArrayAdapter<>(
+//                this, R.layout.maplist_layout,
+//                R.id.listString, ourSites));
 
-//        belowMapList.setAdapter(new ListArrayAdapter(this, sites, values));
+        belowMapList.setAdapter(new ListArrayAdapter(this, ourSites, values));
 
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -359,8 +366,8 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
             }
         });
 
-        // List is hidden by default.
-        setListVisibility(false);
+//        // List is hidden by default.
+//        setListVisibility(false);
 
         // Button to open and close list.
         final Button listButton = (Button) findViewById(R.id.openListButton);
@@ -380,11 +387,10 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
 
     public void favoriteClickHandle(View v) {
 
-        //get the row the clicked button is in
-        //------------------------------------------------------------------------------------------------Kim skall lösa detta.
-        RelativeLayout vwParentRow = (RelativeLayout)v.getParent();
+//        RelativeLayout vwParentRow = (RelativeLayout)v.getParent();
+//        ImageView favButt = (ImageView)vwParentRow.getChildAt(2);
 
-        ImageView favButt = (ImageView)vwParentRow.getChildAt(2);
+        ImageView favButt = (ImageView)v;
 
         favoriteList = new ArrayList<>();
 
@@ -396,7 +402,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         } else {
             favButt.setImageResource(R.drawable.star_filled);
         }
-        vwParentRow.refreshDrawableState();
 
         isFavorite = !isFavorite;
     }
@@ -409,6 +414,9 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
         return belowMapList;
     }
 
+    /*
+        Method to read/write to an favorite.txt.
+     */
 //    private void updateFavList(){
 //        favoriteList = new ArrayList<>();
 //
