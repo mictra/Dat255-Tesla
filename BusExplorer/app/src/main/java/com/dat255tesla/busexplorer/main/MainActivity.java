@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
@@ -62,7 +63,12 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
 
         categories = new boolean[3];
 
+        loadSavedPreferences();
+
         connectionDialog();
+
+        initNavDrawer();
+        setNavDrawerIcons();
     }
 
     @Override
@@ -173,18 +179,6 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
             alert.show();
         }
 
-
-        loadSavedPreferences();
-        initNavDrawer();
-        //setNavDrawerIcons();
-    }
-
-    private void loadSavedPreferences() {
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(this);
-        categories[0] = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
-        categories[1] = sharedPreferences.getBoolean("CheckBox_shopping", true);
-        categories[2] = sharedPreferences.getBoolean("CheckBox_misc", true);
     }
 
     private void initNavDrawer() {
@@ -201,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
 
-
                 //Checking if the item is in checked state or not, if not make it in checked state
                 //menuItem.setChecked(menuItem.isChecked() ? false : true);
 
@@ -216,39 +209,20 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                         drawerLayout.closeDrawers();
                         return true;
                     case R.id.navdrawer_category_1:
-                        if (!categories[0]) {
-                            categories[0] = true;
-                            menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_triangle_fill));
-                        } else {
-                            categories[0] = false;
-                            menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_triangle_nofill));
-                        }
+                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[0] ? R.drawable.marker_triangle_fill : R.drawable.marker_triangle_nofill ));
+                        categories[0] = categories[0] ? false : true;
                         savePreferences("CheckBox_sightseeing", categories[0]);
                         return true;
                     case R.id.navdrawer_category_2:
-                        if (!categories[1]) {
-                            categories[1] = true;
-                            menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_square_fill));
-                        } else {
-                            categories[1] = false;
-                            menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_square_nofill));
-                        }
+                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[1] ? R.drawable.marker_square_fill : R.drawable.marker_square_nofill ));
+                        categories[1] = categories[1] ? false : true;
                         savePreferences("CheckBox_shopping", categories[1]);
                         return true;
                     case R.id.navdrawer_category_3:
-                        if (!categories[2]) {
-                            categories[2] = true;
-                            menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_circle_fill));
-                        } else {
-                            categories[2] = false;
-                            menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_circle_nofill));
-                        }
+                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[2] ? R.drawable.marker_circle_fill : R.drawable.marker_circle_nofill ));
+                        categories[2] = categories[2] ? false : true;
                         savePreferences("CheckBox_misc", categories[2]);
                         return true;
-//                    case R.id.navdrawer_settings:
-//                        openSettings();
-//                        drawerLayout.closeDrawers();
-//                        return true;
                     case R.id.navdrawer_about:
                         openAbout();
                         drawerLayout.closeDrawers();
@@ -287,32 +261,38 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
 
         //Start the next activity
         openExplorer();
-        //openAbout();
 
     }
 
     private void setNavDrawerIcons() {
-        MenuItem menuItem1 = (MenuItem) findViewById(R.id.navdrawer_category_1);
-
+        MenuItem menuItem1 = navigationView.getMenu().findItem(R.id.navdrawer_category_1);
         if (categories[0]) {
             menuItem1.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_triangle_fill));
         } else {
             menuItem1.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_triangle_nofill));
         }
 
-        MenuItem menuItem2 = (MenuItem) findViewById(R.id.navdrawer_category_2);
+        MenuItem menuItem2 = navigationView.getMenu().findItem(R.id.navdrawer_category_2);
         if (categories[1]) {
             menuItem2.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_square_fill));
         } else {
             menuItem2.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_square_nofill));
         }
 
-        MenuItem menuItem3 = (MenuItem) findViewById(R.id.navdrawer_category_3);
+        MenuItem menuItem3 = navigationView.getMenu().findItem(R.id.navdrawer_category_3);
         if (categories[2]) {
             menuItem3.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_circle_fill));
         } else {
             menuItem3.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_circle_nofill));
         }
+    }
+
+    private void loadSavedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        categories[0] = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
+        categories[1] = sharedPreferences.getBoolean("CheckBox_shopping", true);
+        categories[2] = sharedPreferences.getBoolean("CheckBox_misc", true);
     }
 
     private void savePreferences(String key, boolean value) {
@@ -326,18 +306,10 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     private void openAbout() {
         AboutActivity fragment = new AboutActivity();
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frame, fragment);
+        fragmentTransaction.replace(R.id.frame, fragment, "AboutActivity");
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-
-//    private void openSettings() {
-//        SettingsActivity fragment = new SettingsActivity();
-//        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//        fragmentTransaction.replace(R.id.frame, fragment);
-//        fragmentTransaction.addToBackStack(null);
-//        fragmentTransaction.commit();
-//    }
 
     private void openExplorer() {
         ExplorerActivity fragment = new ExplorerActivity();

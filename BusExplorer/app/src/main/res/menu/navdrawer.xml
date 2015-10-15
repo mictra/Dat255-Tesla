@@ -6,8 +6,8 @@
         <item
             android:id="@+id/navdrawer_map"
             android:checked="false"
-            android:icon="@drawable/ic_info"
-            android:title="To The Map" />
+            android:icon="@drawable/googlemaps"
+            android:title="@string/main_tomap" />
         <item
             android:title="Categories">
             <menu>

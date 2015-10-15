@@ -33,6 +33,8 @@
 
     <string name="main_ohgod">(replace me)</string>
 
+    <string name="main_tomap">Back to the map</string>
+
     <string name="main_cancel">Cancel</string>
     <string name="main_exit">Exit</string>
     <string name="main_wanttoexit">Do you really want to exit ?</string>
