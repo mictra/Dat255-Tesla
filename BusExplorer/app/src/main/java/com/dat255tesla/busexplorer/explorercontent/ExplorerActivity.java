@@ -34,6 +34,7 @@ import com.dat255tesla.busexplorer.settingscontent.SettingsActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -215,8 +216,6 @@ public class ExplorerActivity extends AppCompatActivity implements IValuesChange
                 return false;
             }
         });
-        // List is hidden by default.
-        setListVisibility(false);
         apiHelper.execute();
         //nextStopChanged("Poseidon"); //TODO: Enable to see result in terminal.
     }
