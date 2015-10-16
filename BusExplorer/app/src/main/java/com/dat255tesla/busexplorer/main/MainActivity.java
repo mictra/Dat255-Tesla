@@ -81,8 +81,10 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     public void onBackPressed() {
         // Check, if active fragment is of class DetailActivity
         // If it is, we go back to the map. Otherwise we ask to exit.
-        Fragment f = getSupportFragmentManager().findFragmentById(R.id.frame);
-        if (f instanceof DetailActivity) {
+
+        if (drawerLayout.isDrawerOpen(navigationView)) {
+            drawerLayout.closeDrawers();
+        } else if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof DetailActivity) {
             openExplorer();
         } else {
             AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
