@@ -60,7 +60,8 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     private InfoDataSource ds;
     private List<InfoNode> originalValues;
     private Marker busMarker;
-    private ListArrayAdapter adapter;
+//    private ListArrayAdapter adapter2;
+    private ArrayAdapter<InfoNode> adapter;
     private String nextStop;
     private boolean isLockedToBus = true;
 
@@ -135,6 +136,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         busPositionOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
                 .anchor(0.5f, 0.5f);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, new ArrayList());
         setUpMapIfNeeded();
         ds.updateDatabaseIfNeeded();
 
@@ -373,10 +375,17 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
 //                this, R.layout.maplist_layout,
 //                R.id.listString, ourSites));
 
-//        origAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList());
-        adapter = new ListArrayAdapter(getActivity(), sites, originalValues);
 
-        belowMapList.setAdapter(new ListArrayAdapter(getActivity(), sites, originalValues));
+//        origAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList());
+//        adapterOurFirst = new ListArrayAdapter(getActivity(), sites, originalValues);
+
+
+
+//
+
+//        ArrayAdapter<InfoNode> testAdp = new ArrayAdapter<InfoNode>()
+
+        belowMapList.setAdapter(adapter);
 
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
