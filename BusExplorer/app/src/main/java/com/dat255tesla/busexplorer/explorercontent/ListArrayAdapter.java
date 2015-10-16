@@ -69,4 +69,12 @@ public class ListArrayAdapter extends ArrayAdapter<String> {
         }
         return currentNode;
     }
+
+    public void addAll(List<InfoNode> values) {
+        this.values.addAll(values);
+    }
+
+    public void clear() {
+        values.clear();
+    }
 }

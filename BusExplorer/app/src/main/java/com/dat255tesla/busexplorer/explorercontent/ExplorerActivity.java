@@ -60,7 +60,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     private InfoDataSource ds;
     private List<InfoNode> originalValues;
     private Marker busMarker;
-    private ArrayAdapter<InfoNode> adapter;
+    private ListArrayAdapter adapter;
     private String nextStop;
     private boolean isLockedToBus = true;
 
@@ -320,8 +320,8 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
             for (InfoNode node : values) {
                 addMarker(node);
             }
-            //adapter.clear();
-            //adapter.addAll(values); // This mutates this.originalValues variable.
+            adapter.clear();
+            adapter.addAll(values); // This mutates this.originalValues variable.
         }
     }
 
@@ -372,6 +372,9 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
 //        belowMapList.setAdapter(new ArrayAdapter<>(
 //                this, R.layout.maplist_layout,
 //                R.id.listString, ourSites));
+
+//        origAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList());
+        adapter = new ListArrayAdapter(getActivity(), sites, originalValues);
 
         belowMapList.setAdapter(new ListArrayAdapter(getActivity(), sites, originalValues));
 
