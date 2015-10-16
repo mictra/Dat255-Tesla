@@ -387,6 +387,9 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
             }
         });
 
+//        // List is hidden by default.
+//        setListVisibility(false);
+
         // Button to open and close list.
         final Button listButton = (Button) v.findViewById(R.id.openListButton);
         final View.OnClickListener openListListener = new View.OnClickListener() {
@@ -397,13 +400,11 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
                 listButton.setText(listStatus);
                 setListVisibility(!isListOpen);
                 isListOpen = !isListOpen;
+                System.out.println("....................................................." + belowMapList.getVisibility());
 
             }
         };
         listButton.setOnClickListener(openListListener);
-
-        // List is hidden by default.
-        setListVisibility(false);
     }
 
     public void favoriteClickHandle(View v) {
