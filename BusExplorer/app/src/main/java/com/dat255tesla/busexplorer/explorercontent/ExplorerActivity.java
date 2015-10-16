@@ -43,15 +43,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+// These imports are used for i/o at the bottom, used for read/write the favorites.txt
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Scanner;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 public class ExplorerActivity extends Fragment implements IValuesChangedListener, IBusDataListener {
     private GoogleMap mMap;
@@ -123,20 +126,20 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
             e.printStackTrace();
         }
 
-        opt_stops = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_stop));
-        opt_sights = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_triangle));
-        opt_stores = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_square));
-        opt_misc = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_circle));
-
-        busPositionOptions = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
-                .anchor(0.5f, 0.5f);
-        setUpMapIfNeeded();
-        ds.updateDatabaseIfNeeded();
+//        opt_stops = new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_stop));
+//        opt_sights = new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_triangle));
+//        opt_stores = new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_square));
+//        opt_misc = new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_circle));
+//
+//        busPositionOptions = new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
+//                .anchor(0.5f, 0.5f);
+//        setUpMapIfNeeded();
+//        ds.updateDatabaseIfNeeded();
 
         createList();
 
@@ -155,12 +158,12 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         typeFilters = new boolean[]{checkBoxValue_sight, checkBoxValue_shop, checkBoxValue_misc};
         //setUpMapIfNeeded();
         if (!nextStop.equals("")) {
-            visibleValuesChanged(MapUtils.
-                    filterValues(MapUtils.
-                            sortByDistance(originalValues, nextStop), typeFilters));
+//            visibleValuesChanged(MapUtils.
+//                    filterValues(MapUtils.
+//                            sortByDistance(originalValues, nextStop), typeFilters));
         } else {
-            visibleValuesChanged(MapUtils.
-                    filterValues(originalValues, typeFilters));
+//            visibleValuesChanged(MapUtils.
+//                    filterValues(originalValues, typeFilters));
         }
         if (apiHelper.isCancelled()) {
             apiHelper = new APIHelper(this, dgw);
@@ -211,9 +214,9 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
      */
     private void setUpMap() {
         // Add all markers from the internal database
-        originalValues = ds.getAllInfoNodes();
+//        originalValues = ds.getAllInfoNodes();
 
-        List<InfoNode> filteredValues = MapUtils.filterValues(originalValues, typeFilters);
+//        List<InfoNode> filteredValues = MapUtils.filterValues(originalValues, typeFilters);
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -320,8 +323,8 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
             for (InfoNode node : values) {
                 addMarker(node);
             }
-            //adapter.clear();
-            //adapter.addAll(values); // This mutates this.originalValues variable.
+            adapter.clear();
+            adapter.addAll(values); // This mutates this.originalValues variable.
         }
     }
 
@@ -343,9 +346,9 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     @Override
     public void nextStopChanged(String nextStop) {
         if (!this.nextStop.equals(nextStop) && !nextStop.equals("")) {
-            List<InfoNode> sortedValues = MapUtils.sortByDistance(originalValues, nextStop); //TODO: Call this in separate AsyncTask?
-            List<InfoNode> filteredValues = MapUtils.filterValues(sortedValues, typeFilters);
-            visibleValuesChanged(filteredValues);
+//            List<InfoNode> sortedValues = MapUtils.sortByDistance(originalValues, nextStop); //TODO: Call this in separate AsyncTask?
+//            List<InfoNode> filteredValues = MapUtils.filterValues(sortedValues, typeFilters);
+//            visibleValuesChanged(filteredValues);
             this.nextStop = nextStop;
             Toast.makeText(getActivity().getApplicationContext(), "nextStop changed, list should be sorted!", Toast.LENGTH_SHORT).show();
         }
@@ -354,26 +357,26 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     private void createList(){
         belowMapList = (ListView) v.findViewById(R.id.listBelowMap);
 
-//        // Temp-list below map
-//        ArrayList<String> sites = new ArrayList<>(
-//                Arrays.asList("Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"));
+        // Temp-list below map
+        ArrayList<String> sites = new ArrayList<>(
+                Arrays.asList("Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"));
 
-//        ArrayList<InfoNode> valuesClone = new ArrayList<>();
-//        for(int i = 0; i < sites.size(); i++){
-//            InfoNode node = new InfoNode(0, sites.get(0), 0.0, 0.0, 1, "info", "Adr", 0, "objID");
-//            valuesClone.add(node);
-//        }
-
-        ArrayList<String> sites = new ArrayList<>();
-        for (InfoNode node : originalValues) {
-            sites.add(node.getTitle());
+        ArrayList<InfoNode> valuesClone = new ArrayList<>();
+        for(int i = 0; i < sites.size(); i++){
+            InfoNode node = new InfoNode(0, sites.get(0), 0.0, 0.0, 1, "info", "Adr", 0, "objID");
+            valuesClone.add(node);
         }
+
+//        ArrayList<String> sites = new ArrayList<>();
+//        for (InfoNode node : originalValues) {
+//            sites.add(node.getTitle());
+//        }
 
 //        belowMapList.setAdapter(new ArrayAdapter<>(
 //                this, R.layout.maplist_layout,
 //                R.id.listString, ourSites));
 
-        belowMapList.setAdapter(new ListArrayAdapter(getActivity(), sites, originalValues));
+        belowMapList.setAdapter(new ListArrayAdapter(getActivity(), sites, valuesClone));
 
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

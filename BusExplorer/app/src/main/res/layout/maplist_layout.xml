@@ -4,16 +4,6 @@
     android:orientation="horizontal" >
 
     <!-- The small picture to the left-->
-    <!--<ImageView-->
-        <!--android:id="@+id/icon"-->
-        <!--android:layout_width="25dp"-->
-        <!--android:layout_height="25dp"-->
-        <!--android:layout_marginBottom="5dp"-->
-        <!--android:layout_marginLeft="5dp"-->
-        <!--android:layout_marginRight="5dp"-->
-        <!--android:layout_marginTop="5dp"-->
-        <!--android:src="@drawable/poseidon1_thumb" />-->
-
     <ImageView
         android:id="@+id/list_icon"
         android:layout_width="25dp"
@@ -24,12 +14,6 @@
         android:layout_marginTop="5dp"
         android:src="@drawable/poseidon1_thumb"
         />
-
-    <!--android:layout_centerVertical="true"-->
-    <!--android:layout_alignParentLeft="true"-->
-    <!--android:layout_alignParentStart="true"-->
-    <!--android:layout_marginStart="24dp"-->
-
 
     <TextView
         android:id="@+id/listString"
