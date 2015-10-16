@@ -9,7 +9,7 @@ android:orientation="vertical">
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="0.5"
         tools:context="com.dat255tesla.busexplorer.explorercontent.ExplorerActivity" />
 
@@ -43,7 +43,7 @@ android:orientation="vertical">
         android:id="@+id/listBelowMap"
         android:layout_above="@id/openListButton"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="0.5"
         android:gravity="center"
         android:orientation="vertical"

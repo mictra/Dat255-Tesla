@@ -390,9 +390,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity().getApplicationContext(),
-                        parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
-                        .show();
+                openDetailView((InfoNode) parent.getItemAtPosition(position));
             }
         });
 

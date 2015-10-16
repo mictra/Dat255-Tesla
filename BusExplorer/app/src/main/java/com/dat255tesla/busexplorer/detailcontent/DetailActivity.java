@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -88,6 +90,18 @@ public class DetailActivity extends Fragment {
         // Retrieve and cache the system's default medium animation time.
         mAnimationDuration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
 
+        ImageButton b = (ImageButton) v.findViewById(R.id.dv_mapButton);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?daddr=%f,%f (%s)",
+                        node.getLatitude(), node.getLongitude(), node.getTitle());
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                startActivity(intent);
+            }
+        });
+
         return v;
     }
 
@@ -154,17 +168,6 @@ public class DetailActivity extends Fragment {
 //            thumbs[i] = getResources().getIdentifier(imagename + (i+1) + "_thumb", "drawable", getPackageName());
 //        }
 //    }
-
-    /**
-     * Directions button
-     */
-    public void directionsButton(View view) {
-        String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?daddr=%f,%f (%s)",
-                node.getLatitude(), node.getLongitude(), node.getTitle());
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-        startActivity(intent);
-    }
 
     /**
      * Building the image gallery
