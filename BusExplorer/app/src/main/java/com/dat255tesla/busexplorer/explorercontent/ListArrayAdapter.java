@@ -44,7 +44,8 @@ public class ListArrayAdapter extends ArrayAdapter<String> {
         InfoNode currNode = findNode(stringObj);
 
         imageView.setImageResource(R.drawable.marker_triangle);
-
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + currNode);
+        System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB " + currNode.getTitle());
         switch (currNode.getType()) {
             case 1:
                 imageView.setImageResource(R.drawable.marker_triangle);
@@ -69,4 +70,13 @@ public class ListArrayAdapter extends ArrayAdapter<String> {
         }
         return currentNode;
     }
+
+    public void addAll(List<InfoNode> values) {
+        this.values.addAll(values);
+    }
+
+    public void clear() {
+        values.clear();
+    }
+
 }
