@@ -139,10 +139,10 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         busPositionOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
                 .anchor(0.5f, 0.5f);
-        setUpMapIfNeeded();
-        ds.updateDatabaseIfNeeded();
 
         createList();
+        setUpMapIfNeeded();
+        ds.updateDatabaseIfNeeded();
 
         return v;
     }
@@ -358,27 +358,26 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     private void createList(){
         belowMapList = (ListView) v.findViewById(R.id.listBelowMap);
 
-//        // Temp-list below map
-//        ArrayList<String> sites = new ArrayList<>(
-//                Arrays.asList("Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"));
-//
+        // Temp-list below map
+        ArrayList<String> sites = new ArrayList<>(
+                Arrays.asList("Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"));
+
 //        ArrayList<InfoNode> valuesClone = new ArrayList<>();
-//        for(int i = 0; i < sites.size(); i++){
-//            InfoNode node = new InfoNode(0, sites.get(0), 0.0, 0.0, 1, "info", "Adr", 0, "objID");
+//        for (String inputString : sites) {
+//            InfoNode node = new InfoNode(0, inputString, 0.0, 0.0, 1, "info", "Adr", 0, "objID");
 //            valuesClone.add(node);
 //        }
 
-        ArrayList<String> sites = new ArrayList<>();
-        for (InfoNode node : originalValues) {
-            sites.add(node.getTitle());
-        }
-
-//        belowMapList.setAdapter(new ArrayAdapter<>(
-//                this, R.layout.maplist_layout,
-//                R.id.listString, sites));
-
+//        belowMapList.setAdapter(new ArrayAdapter<>(this, R.layout.maplist_layout, R.id.listString, sites));
+//        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.activity_list_item, valuesClone);
         adapter = new ListArrayAdapter(getActivity(), sites, originalValues);
         belowMapList.setAdapter(adapter);
+
+//        // Adding icons....
+//        for(InfoNode node : originalValues) {
+//
+//        }
+
 
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -389,8 +388,8 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
             }
         });
 
-//        // List is hidden by default.
-//        setListVisibility(false);
+        // List is hidden by default.
+        setListVisibility(false);
 
         // Button to open and close list.
         final Button listButton = (Button) v.findViewById(R.id.openListButton);
