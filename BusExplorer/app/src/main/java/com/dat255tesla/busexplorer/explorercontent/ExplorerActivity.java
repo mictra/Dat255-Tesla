@@ -127,6 +127,10 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
             e.printStackTrace();
         }
 
+        originalValues = ds.getAllInfoNodes();
+        System.out.println("LIST LIST LIST LIST LIST LIST LIST LIST");
+        System.out.println(originalValues);
+
         opt_stops = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_stop));
         opt_sights = new MarkerOptions()
@@ -157,7 +161,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         checkBoxValue_misc = sharedPreferences.getBoolean("CheckBox_misc", true);
         System.out.println("-----------------1: " + checkBoxValue_sight + " 2: " + checkBoxValue_shop + " 3: " + checkBoxValue_misc);
         typeFilters = new boolean[]{checkBoxValue_sight, checkBoxValue_shop, checkBoxValue_misc};
-        //setUpMapIfNeeded();
+        setUpMapIfNeeded();
         if (!nextStop.equals("")) {
             visibleValuesChanged(MapUtils.
                     filterValues(MapUtils.
@@ -215,9 +219,8 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
      */
     private void setUpMap() {
         // Add all markers from the internal database
-//        originalValues = ds.getAllInfoNodes();
 
-//        List<InfoNode> filteredValues = MapUtils.filterValues(originalValues, typeFilters);
+        List<InfoNode> filteredValues = MapUtils.filterValues(originalValues, typeFilters);
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -347,16 +350,15 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     @Override
     public void nextStopChanged(String nextStop) {
         if (!this.nextStop.equals(nextStop) && !nextStop.equals("")) {
-//            List<InfoNode> sortedValues = MapUtils.sortByDistance(originalValues, nextStop); //TODO: Call this in separate AsyncTask?
-//            List<InfoNode> filteredValues = MapUtils.filterValues(sortedValues, typeFilters);
-//            visibleValuesChanged(filteredValues);
+            List<InfoNode> sortedValues = MapUtils.sortByDistance(originalValues, nextStop); //TODO: Call this in separate AsyncTask?
+            List<InfoNode> filteredValues = MapUtils.filterValues(sortedValues, typeFilters);
+            visibleValuesChanged(filteredValues);
             this.nextStop = nextStop;
             Toast.makeText(getActivity().getApplicationContext(), "nextStop changed, list should be sorted!", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void createList(){
-        belowMapList = (ListView) v.findViewById(R.id.listBelowMap);
 
         // Temp-list below map
         ArrayList<String> sites = new ArrayList<>(
@@ -370,6 +372,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
 
 //        belowMapList.setAdapter(new ArrayAdapter<>(this, R.layout.maplist_layout, R.id.listString, sites));
 //        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.activity_list_item, valuesClone);
+
         adapter = new ListArrayAdapter(getActivity(), sites, originalValues);
         belowMapList.setAdapter(adapter);
 
