@@ -156,6 +156,10 @@ public class MapUtils {
     }
 
     public static List<InfoNode> filterValues(final List<InfoNode> values, boolean[] typeFilters) {
+        if (typeFilters.length < 3 || values == null) {
+            return values;
+        }
+
         List<InfoNode> valuesCopy = new ArrayList(values);
         List<InfoNode> filteredValues = new ArrayList();
         for (int i = 0; i < typeFilters.length; i++) {
@@ -177,6 +181,10 @@ public class MapUtils {
     OBS: Always use this method before filtering, since sorting takes all InfoNode's into account.
      */
     public static List<InfoNode> sortByDistance(final List<InfoNode> values, String nextStop) {
+        if (nextStop.equals("") || values == null) {
+            return values;
+        }
+
         List<InfoNode> valuesCopy = new ArrayList(values);
         InfoNode node = null;
         for (InfoNode infoNode : valuesCopy) {

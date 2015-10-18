@@ -5,18 +5,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +27,6 @@ import com.dat255tesla.busexplorer.apirequest.CheckBusWIFI;
 import com.dat255tesla.busexplorer.apirequest.IBusWifiListener;
 import com.dat255tesla.busexplorer.detailcontent.DetailActivity;
 import com.dat255tesla.busexplorer.explorercontent.ExplorerActivity;
-import com.dat255tesla.busexplorer.settingscontent.SettingsActivity;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -38,8 +35,8 @@ import com.parse.ParseQuery;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements IBusWifiListener {
-    ConnectivityManager cm;
-    NetworkInfo netInfo;
+    private ConnectivityManager cm;
+    private NetworkInfo netInfo;
     private CheckBusWIFI cbw;
     private String busSystemId = "0";
     private String dgw = "0";
@@ -47,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private boolean[] categories;
+    private boolean mapAccess = false;
+    private ExplorerActivity explorerActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,19 +61,32 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         netInfo = cm.getActiveNetworkInfo();
 
         categories = new boolean[3];
-
         loadSavedPreferences();
-
-        connectionDialog();
-
         initNavDrawer();
         setNavDrawerIcons();
+        connect();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        connectionDialog();
+        //connect();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_buttons, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (!mapAccess && item.getItemId() == R.id.refresh_button) {
+            refreshClick();
+        } else if (mapAccess && item.getItemId() == R.id.refresh_button) {
+            openExplorer();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -112,10 +124,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
 
     }
 
-    /**
-     * Please rename me.
-     */
-    public void connectionDialog() {
+    public void connect() {
         // Check if online
         if (netInfo != null && netInfo.isAvailable() && netInfo.isConnected()) {
             // Check connection type
@@ -123,13 +132,13 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                 // This triggers with WiFI connection
                 // We can check the WiFi name here, to see if it's the same name as the bus wifi
                 // If we care. netInfo.getExtraInfo() will return the WiFi name
-                //cbw.execute(); // Call the AsyncTask and get the system id of the bus.
                 //new CheckBusWIFI(this).execute(); // TODO: Enable when in a bus or testing...
 
                 dgw = "Vin_Num_001";
-                getAccess();
+                mapAccess = true;
+                openExplorer();
 
-            } else {
+            } else { // TODO: Ask; Should only work with WIFI since we restrict the application to only work while in a bus?
                 AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
                 b.setCancelable(true);
                 // This triggers with mobile & no WiFi
@@ -205,32 +214,45 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
 
 
                 //Check to see which item was being clicked and perform appropriate action
-                switch (menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.navdrawer_map:
-                        openExplorer();
+                        if (mapAccess) {
+                            openExplorer();
+                        } else {
+                            refreshClick();
+                        }
                         drawerLayout.closeDrawers();
                         return true;
                     case R.id.navdrawer_category_1:
-                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[0] ? R.drawable.marker_triangle_fill : R.drawable.marker_triangle_nofill ));
+                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[0] ? R.drawable.marker_triangle_fill : R.drawable.marker_triangle_nofill));
                         categories[0] = categories[0] ? false : true;
                         savePreferences("CheckBox_sightseeing", categories[0]);
+                        if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof ExplorerActivity) {
+                            explorerActivity.onResume();
+                        }
                         return true;
                     case R.id.navdrawer_category_2:
-                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[1] ? R.drawable.marker_square_fill : R.drawable.marker_square_nofill ));
+                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[1] ? R.drawable.marker_square_fill : R.drawable.marker_square_nofill));
                         categories[1] = categories[1] ? false : true;
                         savePreferences("CheckBox_shopping", categories[1]);
+                        if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof ExplorerActivity) {
+                            explorerActivity.onResume();
+                        }
                         return true;
                     case R.id.navdrawer_category_3:
-                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[2] ? R.drawable.marker_circle_fill : R.drawable.marker_circle_nofill ));
+                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[2] ? R.drawable.marker_circle_fill : R.drawable.marker_circle_nofill));
                         categories[2] = categories[2] ? false : true;
                         savePreferences("CheckBox_misc", categories[2]);
+                        if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof ExplorerActivity) {
+                            explorerActivity.onResume();
+                        }
                         return true;
                     case R.id.navdrawer_about:
                         openAbout();
                         drawerLayout.closeDrawers();
                         return true;
                     default:
-                        Toast.makeText(getApplicationContext(),"SOMETHING.IS.WRONG.",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "SOMETHING.IS.WRONG.", Toast.LENGTH_SHORT).show();
                         return true;
 
                 }
@@ -239,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
 
         // Initializing Drawer Layout and ActionBarToggle
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.openDrawer, R.string.closeDrawer){
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.openDrawer, R.string.closeDrawer) {
 
             @Override
             public void onDrawerClosed(View drawerView) {
@@ -250,7 +272,6 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
             @Override
             public void onDrawerOpened(View drawerView) {
                 // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
-
                 super.onDrawerOpened(drawerView);
             }
         };
@@ -258,11 +279,8 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         //Setting the actionbarToggle to drawer layout
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
-        //calling sync state is necessary or else your hamburger icon wont show up
+        //calling sync state is necessary or else your icon wont show up
         actionBarDrawerToggle.syncState();
-
-        //Start the next activity
-        openExplorer();
 
     }
 
@@ -314,52 +332,24 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     }
 
     private void openExplorer() {
-        ExplorerActivity fragment = new ExplorerActivity();
+        explorerActivity = new ExplorerActivity(); //Use this to notify settings change instantly
         Bundle args = new Bundle();
         args.putString("dgw", dgw);
-        fragment.setArguments(args);
+        explorerActivity.setArguments(args);
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frame, fragment, "ExplorerActivity");
+        fragmentTransaction.replace(R.id.frame, explorerActivity, "ExplorerActivity");
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
-    public void refreshClick(View view) {
+    private void refreshClick() {
         netInfo = cm.getActiveNetworkInfo();
-        connectionDialog();
-        /*
-        if (netInfo != null && netInfo.isAvailable() && netInfo.isConnected()) {
-            TextView text = (TextView) findViewById(R.id.tv_refreshText);
-            text.setText(getResources().getText(R.string.main_refreshYesConn));
-
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    MainActivity.this.openExplorer();
-                }
-            }, 200);
-        }
-        */
+        connect();
     }
 
     public void openWiFiSettings() {
         Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
         startActivity(intent);
-    }
-
- //   public void openExplorer() {
-//        Intent intent = new Intent(this, ExplorerActivity.class);
-//        intent.putExtra("dgw", dgw);
-//        startActivity(intent);
-//        finish();
-//    }
-
-
-    private void getAccess() {
-        System.out.println(netInfo.getTypeName());
-        System.out.println(netInfo.getExtraInfo());
-        MainActivity.this.openExplorer();
     }
 
     private void getDgwFromBus(final String systemId) {
@@ -369,15 +359,15 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                 boolean getAccess = false;
                 if (e == null) {
                     for (ParseObject object : list) {
-                        if (systemId.equals(object.getString("systemID")) &&
-                                object.getBoolean("isActive")) {
+                        if (systemId.equals(object.getString("systemID"))) {
                             dgw = object.getNumber("dgw").toString();
                             getAccess = true;
                             break;
                         }
                     }
                     if (getAccess) {
-                        getAccess();
+                        //Start the ExplorerActivity
+                        openExplorer();
                     } else {
                         Toast.makeText(getApplicationContext(), "You're in a bus and connected" +
                                 " to its wifi, but this bus doesn't" +
@@ -397,6 +387,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         if (!systemId.equals("0")) {
             busSystemId = systemId;
             System.out.println("*******SystemId of Bus: " + systemId);
+            Toast.makeText(getApplicationContext(), "System ID: " + systemId, Toast.LENGTH_SHORT).show();
             getDgwFromBus(systemId);
             // Check if the Bus is active and get its dgw to know
             // which "API" to call (this data is on the server database).

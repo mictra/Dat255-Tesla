@@ -72,7 +72,7 @@ public class DetailActivity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.activity_detail_view,container,false);
+        v = inflater.inflate(R.layout.activity_detail_view, container, false);
 
         imgMap = new HashMap<>();
 
@@ -146,7 +146,6 @@ public class DetailActivity extends Fragment {
             }
         });
     }
-
 
 
 //    private void setFields() {
