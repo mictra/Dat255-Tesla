@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="google_maps_key" translatable="false"></string>
+    <string name="about_aboutHeader">Om BusExplorer</string>
+    <string name="about_aboutText">BusExplorer är en app skapad för innovationstävlingen ElectriCity. Appen är designad för att göra bussresan roligare för både turister och lokalbefolkningen genom att visa användaren alla spännande sevärdheter längs bussens rutt. </string>
+    <string name="action_about">Om Appen</string>
+    <string name="action_detailview">Detaljvy</string>
+    <string name="action_settings">Inställningar</string>
+    <string name="about_usText">BusExplorer skapades av fem studenter från Chalmers Tekniska Högskola och Göteborgs Universitet som ett mjukvaruprojekt.</string>
+    <string name="about_usHeader">Om Oss</string>
+    <string name="about_licenseText">Ikon skapad av www.flaticon.com/authors/daniel-bruce från flaticon.com samt freepik.com/ från flaticon.com</string>
+    <string name="about_licenseHeader">Licens</string>
+    <string name="app_settings">Inställningar</string>
+    <string name="closeDrawer">Navigationsvy Stängd</string>
+    <string name="description_zoom_touch_close">Expanderad bild (vidrör för att stänga)</string>
+    <string name="list_bottom_default">Öppna Listan</string>
+    <string name="main_exit">Avsluta</string>
+    <string name="main_cancel">Avbryt</string>
+    <string name="main_tomap">Tillbaka till kartan</string>
+    <string name="title_activity_settings">Inställningar</string>
+    <string name="title_activity_maps">Karta</string>
+    <string name="title_activity_detail_view">Detaljvy</string>
+    <string name="title_activity_about">Om Appen</string>
+    <string name="settings_optSightseeing">Sevärdheter</string>
+    <string name="settings_optMisc">Blandat</string>
+    <string name="settings_optBars">Barer</string>
+    <string name="settings_filterHeader">Filtrera Kartan</string>
+    <string name="refreshButton"></string>
+    <string name="main_wanttoexit">Vill du verkligen avsluta?</string>
+    <string name="openDrawer">Navigationsvy</string>
 </resources>
