@@ -359,6 +359,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     }
 
     private void createList(){
+        belowMapList = (ListView) v.findViewById(R.id.listBelowMap);
 
         // Temp-list below map
         ArrayList<String> sites = new ArrayList<>(
@@ -373,13 +374,9 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
 //        belowMapList.setAdapter(new ArrayAdapter<>(this, R.layout.maplist_layout, R.id.listString, sites));
 //        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.activity_list_item, valuesClone);
 
+
         adapter = new ListArrayAdapter(getActivity(), sites, originalValues);
         belowMapList.setAdapter(adapter);
-
-//        // Adding icons....
-//        for(InfoNode node : originalValues) {
-//
-//        }
 
 
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -390,9 +387,6 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
                         .show();
             }
         });
-
-        // List is hidden by default.
-        setListVisibility(false);
 
         // Button to open and close list.
         final Button listButton = (Button) v.findViewById(R.id.openListButton);
