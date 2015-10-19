@@ -71,6 +71,9 @@
     // Strings in Toolbar (buttons)
     <string name="refreshButton">Refresh</string>
 
+    // String in DetailActivity
+    <string name="free_entry">Click here to get free entry!</string>
+
     // Usage unknown
     <string name="app_settings">Settings</string>
 </resources>
