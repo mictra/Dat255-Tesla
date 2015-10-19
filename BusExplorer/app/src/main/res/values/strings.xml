@@ -29,7 +29,7 @@
 
     <string name="main_title_noConn">No network found!</string>
     <string name="main_text_noConn">Could not detect an internet connection!
-        An internet connection is required to use</string>
+        An internet connection is required to use BusExplorer</string>
 
     <string name="main_ohgod">(replace me)</string>
 
@@ -38,6 +38,7 @@
     <string name="main_cancel">Cancel</string>
     <string name="main_exit">Exit</string>
     <string name="main_wanttoexit">Do you really want to exit ?</string>
+    <string name="main_ok">Ok</string>
 
     // Strings in AboutActivity
     <string name="about_aboutHeader">About BusExplorer</string>

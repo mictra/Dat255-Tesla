@@ -1,2 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="action_settings">Einstellungen</string>
+    <string name="about_aboutHeader">Über BusExplorer</string>
+    <string name="about_licenseHeader">Lizenz</string>
+    <string name="about_usHeader">Über uns</string>
+    <string name="action_about">Über</string>
+    <string name="action_detailview">Detail-Ansicht</string>
+    <string name="app_name">BusExplorer</string>
+    <string name="app_settings">Einstellungen</string>
+    <string name="close">Schließen</string>
+    <string name="closeDrawer">Seitenmenu geschlossen</string>
+    <string name="description_zoom_touch_close">Bild vergrößern (berühren um zu schließen)</string>
+    <string name="dv_click_free_entry">Hier für freien Eintritt klicken!</string>
+    <string name="dv_popupheader">Vielen Dank, daß sie Bus 55 benutzen!</string>
+    <string name="dv_show_for_free_entry">Zeige diesen Code für freien Eintritt in der</string>
+    <string name="hello_world">Hallo Welt!</string>
+    <string name="list_bottom_default">Liste zeigen</string>
+    <string name="main_cancel">Abbrechen</string>
+    <string name="main_exit">Beenden</string>
+    <string name="main_refreshButton">Aktualisieren</string>
+    <string name="main_refreshNoConn">Keine Internetverbindung gefunden!</string>
+    <string name="main_refreshYesConn">Internetverbindung gefunden!</string>
+    <string name="main_text_noConn">Internetverbindung konnte nicht gefunden werden!</string>
+    <string name="main_text_noWifi">Die Elektrobusse bieten kostenloses WLAN an!</string>
+    <string name="main_title_noConn">Kein Netzwerk gefunden!</string>
+    <string name="main_title_noWifi">Nur zur Information...</string>
+    <string name="main_tomap">Zurück zur Karte</string>
+    <string name="main_wanttoexit">Möchtest Du wirklich beenden?</string>
+    <string name="openDrawer">Seitenmenü</string>
+    <string name="refreshButton">Aktualisieren</string>
+    <string name="settings_optBars">Bars</string>
+    <string name="settings_optSightseeing">Sehenswürdigkeiten</string>
+    <string name="settings_optStores">Einkaufen</string>
+    <string name="title_activity_about">Über</string>
+    <string name="title_activity_detail_view">Detail-Ansicht</string>
+    <string name="title_activity_maps">Karte</string>
+    <string name="title_activity_settings">Einstellungen</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="version">Version 1.0.0</string>
+    <string name="settings_filterHeader"></string>
+    <string name="about_usText">BusExplorer wurde von 5 Studenten an der Technischen Hochschule Chalmers sowie der Universität Göteborg im Rahmen einen Software Engineering Projektes erstellt.</string>
+    <string name="about_licenseText">Symbole von www.flaticon.com/authors/daniel-bruce von flaticon.com and freepik.com/ von flaticon.com</string>
+    <string name="about_aboutText">BusExplorer ist eine App für die ElectriCity Innovation Challenge. Der Zweck der App ist sowohl Touristen, als auch Ortsansässigen durch das Aufzeigen von aufregenden Sehenswürdigkeiten eine unterhaltsame Reise zu ermöglichen.</string>
+    <string name="main_ok">Verstanden</string>
+</resources>

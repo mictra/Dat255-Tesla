@@ -146,14 +146,14 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                         + " \uD83D\uDE0F");
                 b.setMessage(getResources().getString(R.string.main_text_noWifi));
 
-                b.setPositiveButton("Ok",
+                b.setPositiveButton(getResources().getString(R.string.main_ok),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 MainActivity.this.openExplorer();
                             }
                         });
-                b.setNegativeButton("Settings",
+                b.setNegativeButton(getResources().getString(R.string.app_settings),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -169,17 +169,16 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
             b.setCancelable(true);
             b.setTitle(getResources().getString(R.string.main_title_noConn)
                     + " \uD83D\uDE1E");
-            b.setMessage(getResources().getString(R.string.main_text_noConn)
-                    + " " + getResources().getString(R.string.app_name));
+            b.setMessage(getResources().getString(R.string.main_text_noConn));
 
-            b.setPositiveButton("Ok",
+            b.setPositiveButton(getResources().getString(R.string.main_ok),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
                         }
                     });
-            b.setNegativeButton("Exit",
+            b.setNegativeButton(getResources().getString(R.string.main_exit),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
