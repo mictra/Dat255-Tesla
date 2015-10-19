@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dat255tesla.busexplorer.database.InfoNode;
 import com.dat255tesla.busexplorer.R;
@@ -101,6 +103,20 @@ public class DetailActivity extends Fragment {
                 startActivity(intent);
             }
         });
+
+        TextView coupon = (TextView) v.findViewById(R.id.dv_coupon);
+        coupon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity().getApplicationContext(), "Grattis -- Gratis inträde", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        if (node.getType() != 3) {
+            coupon.setVisibility(View.GONE);
+            View separator = v.findViewById(R.id.dv_separator2);
+            separator.setVisibility(View.GONE);
+        }
 
         return v;
     }
