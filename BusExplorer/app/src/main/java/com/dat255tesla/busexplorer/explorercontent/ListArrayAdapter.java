@@ -1,8 +1,5 @@
 package com.dat255tesla.busexplorer.explorercontent;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,19 +11,22 @@ import android.widget.TextView;
 import com.dat255tesla.busexplorer.R;
 import com.dat255tesla.busexplorer.database.InfoNode;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /*
     Class used to make a custom-list-view(Adapter) to be able to show a unique icon for each list-category.
  */
-public class ListArrayAdapter extends ArrayAdapter<String> {
+public class ListArrayAdapter extends ArrayAdapter<InfoNode> {
     private final Context context;
-    private final ArrayList<String> stringList;
-    private final List<InfoNode> values;
+    private List<InfoNode> values;
 
-    public ListArrayAdapter(Context context, ArrayList<String> stringList, List<InfoNode> values) {
-        super(context, R.layout.maplist_layout, stringList);
+    public ListArrayAdapter(Context context, final List<InfoNode> values) {
+        super(context, R.layout.maplist_layout, new ArrayList(values));
         this.context = context;
-        this.stringList = stringList;
-        this.values = values;
+        List<InfoNode> copyValues = new ArrayList(values);
+        this.values = copyValues;
     }
 
     @Override
@@ -34,14 +34,11 @@ public class ListArrayAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+        InfoNode currNode = values.get(position);
         View rowView = inflater.inflate(R.layout.maplist_layout, parent, false);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.list_icon);
         TextView textView = (TextView) rowView.findViewById(R.id.listString);
-        textView.setText(stringList.get(position));
-
-        // Change icon based on name
-        String stringObj = stringList.get(position);
-        InfoNode currNode = findNode(stringObj);
+        textView.setText(currNode.getTitle());
 
         imageView.setImageResource(R.drawable.marker_triangle);
         switch (currNode.getType()) {
@@ -58,22 +55,15 @@ public class ListArrayAdapter extends ArrayAdapter<String> {
         return rowView;
     }
 
-    private InfoNode findNode(String inputString){
-        InfoNode currentNode = null;
-
-        for (InfoNode node : values) {
-            if(node.getTitle().equals(inputString)) {
-                currentNode = node;
-            }
-        }
-        return currentNode;
-    }
-
-    public void addAll(List<InfoNode> values) {
-        this.values.addAll(values);
-    }
-
+    @Override
     public void clear() {
+        super.clear();
         values.clear();
+    }
+
+    @Override
+    public void addAll(Collection<? extends InfoNode> collection) {
+        super.addAll(collection);
+        values.addAll(collection);
     }
 }

@@ -139,7 +139,6 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     @Override
     public void onResume() {
         super.onResume();
-
         loadSavedPreferences();
         sortFilterShow();
         if (apiHelper.isCancelled()) {
@@ -348,7 +347,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
 //        belowMapList.setAdapter(new ArrayAdapter<>(this, R.layout.maplist_layout, R.id.listString, sites));
 //        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.activity_list_item, valuesClone);
 
-        adapter = new ListArrayAdapter(getActivity(), sites, originalValues);
+        adapter = new ListArrayAdapter(getActivity(), originalValues);
         belowMapList.setAdapter(adapter);
 
 
