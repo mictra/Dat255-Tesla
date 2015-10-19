@@ -41,12 +41,23 @@
 
     // Strings in AboutActivity
     <string name="about_aboutHeader">About BusExplorer</string>
-    <string name="about_aboutText">BusExplorer was created for the ElectriCity Innovation Challange. Etc etc</string>
+    <string name="about_aboutText">BusExplorer is an app created for the ElectriCity Innovation Challenge.
+    It is designed to make the bus trip more fun for both tourists and locals
+    by showing the user all the exciting sights around the bus route.</string>
     <string name="about_licenseHeader">License</string>
     <string name="about_licenseText">Icon made by www.flaticon.com/authors/daniel-bruce from flaticon.com and freepik.com/ from flaticon.com </string>
     <string name="about_usHeader">About Us</string>
-    <string name="about_usText">We\'re great.</string>
+    <string name="about_usText">BusExplorer was created by 5 students from Chalmers University of Technology
+    and University of Gothenburg as a software engineering project.</string>
+    <string name="version">Version 1.0.0</string>
+    /*
+    A normal version number MUST take the form X.Y.Z where X, Y, and Z are non-negative integers,
+    and MUST NOT contain leading zeroes. X is the major version, Y is the minor version, and Z is the patch version.
+    Each element MUST increase numerically. For instance: 1.9.0 -> 1.10.0 -> 1.11.0.
 
+    Once a versioned package has been released, the contents of that version MUST NOT be modified.
+    Any modifications MUST be released as a new version.
+    */
     // Strings in SettingsActivity
     <string name="settings_optSightseeing">Sightseeing</string>
     <string name="settings_optStores">Shopping</string>
@@ -56,6 +67,9 @@
     // Strings in NavigationDrawer
     <string name="openDrawer">Navigation View</string>
     <string name="closeDrawer">Navigation View Closed</string>
+
+    // Strings in Toolbar (buttons)
+    <string name="refreshButton">Refresh</string>
 
     // Usage unknown
     <string name="app_settings">Settings</string>

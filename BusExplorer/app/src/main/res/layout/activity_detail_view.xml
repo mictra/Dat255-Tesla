@@ -7,17 +7,17 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="6dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="0dp"
-        android:paddingBottom="6dp"
         tools:context="dat255.tesla.delta_one.helloworld.DetailView">
 
         <RelativeLayout
             android:id="@+id/loadingPanel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center" >
+            android:gravity="center">
 
             <ProgressBar
                 android:layout_width="wrap_content"
@@ -27,53 +27,51 @@
 
         <TextView
             android:id="@+id/dv_headline"
-            android:text="@string/hello_world"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
             android:layout_marginTop="0dp"
+            android:text="@string/hello_world"
             android:textSize="32dp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/dv_subheadline"
-            android:text="@string/hello_world"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18dp"
             android:layout_below="@id/dv_headline"
             android:layout_marginBottom="6dp"
             android:layout_marginTop="-8dp"
-            android:textStyle="normal"/>
+            android:text="@string/hello_world"
+            android:textSize="18dp"
+            android:textStyle="normal" />
 
         <ImageButton
             android:id="@+id/dv_mapButton"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/googlemaps"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            android:paddingTop="12dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:onClick="directionsButton"/>
+            android:adjustViewBounds="true"
+            android:paddingTop="12dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/googlemaps" />
 
         <View
             android:id="@+id/dv_seperator1"
             android:layout_width="fill_parent"
             android:layout_height="2dp"
-            android:paddingTop="12dp"
             android:layout_below="@id/dv_subheadline"
-            android:background="#c0c0c0"/>
+            android:background="#c0c0c0"
+            android:paddingTop="12dp" />
 
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical"
-            android:layout_below="@id/dv_seperator1"
+            android:id="@+id/wholeScrollView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="12dp"
-            android:id="@+id/wholeScrollView"
-            >
+            android:layout_below="@id/dv_seperator1"
+            android:orientation="vertical"
+            android:paddingTop="12dp">
 
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
@@ -81,11 +79,10 @@
                 android:layout_height="match_parent">
 
                 <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/dv_imageScrollView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    android:id="@+id/dv_imageScrollView"
-                    >
+                    android:paddingBottom="8dp">
 
                     <LinearLayout
                         android:id="@+id/dv_imageGallery"
@@ -98,10 +95,9 @@
 
                 <WebView xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/dv_description"
-                    android:layout_height="match_parent"
                     android:layout_width="match_parent"
-                    android:layout_below="@id/dv_imageScrollView"
-                    />
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/dv_imageScrollView" />
 
             </RelativeLayout>
 
@@ -113,7 +109,7 @@
         android:id="@+id/dv_expanded_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
-        android:contentDescription="@string/description_zoom_touch_close" />
+        android:contentDescription="@string/description_zoom_touch_close"
+        android:visibility="invisible" />
 
 </FrameLayout>

@@ -76,5 +76,4 @@ public class ListArrayAdapter extends ArrayAdapter<String> {
     public void clear() {
         values.clear();
     }
-
 }

@@ -2,18 +2,13 @@ package com.dat255tesla.busexplorer.explorercontent;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,18 +18,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.dat255tesla.busexplorer.R;
-import com.dat255tesla.busexplorer.aboutcontent.AboutActivity;
 import com.dat255tesla.busexplorer.apirequest.APIHelper;
 import com.dat255tesla.busexplorer.apirequest.IBusDataListener;
 import com.dat255tesla.busexplorer.database.IValuesChangedListener;
 import com.dat255tesla.busexplorer.database.InfoDataSource;
 import com.dat255tesla.busexplorer.database.InfoNode;
 import com.dat255tesla.busexplorer.detailcontent.DetailActivity;
-import com.dat255tesla.busexplorer.settingscontent.SettingsActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -63,8 +54,10 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     private InfoDataSource ds;
     private List<InfoNode> originalValues;
     private Marker busMarker;
+
     private ListArrayAdapter adapter;
 //    private ArrayAdapter<InfoNode> adapter;
+
     private String nextStop;
     private boolean isLockedToBus = true;
 
@@ -85,10 +78,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     private List<String> favoriteList;
 
     private String dgw;
-    private boolean checkBoxValue_sight;
-    private boolean checkBoxValue_shop;
-    private boolean checkBoxValue_misc;
-    private boolean[] typeFilters;
+    private boolean[] categories;
 
     private View v;
 
@@ -102,20 +92,15 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.activity_explorer,container,false);
+        v = inflater.inflate(R.layout.activity_explorer, container, false);
 
         apiHelper = new APIHelper(this, dgw);
         markers = new HashMap<>();
         nextStop = "";
 
         // Retrieve settings data
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(getActivity());
-        checkBoxValue_sight = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
-        checkBoxValue_shop = sharedPreferences.getBoolean("CheckBox_shopping", true);
-        checkBoxValue_misc = sharedPreferences.getBoolean("CheckBox_misc", true);
-
-        typeFilters = new boolean[]{checkBoxValue_sight, checkBoxValue_shop, checkBoxValue_misc};
+        categories = new boolean[3];
+        loadSavedPreferences();
 
         // Establish database connection
         ds = new InfoDataSource(getActivity());
@@ -154,22 +139,9 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     @Override
     public void onResume() {
         super.onResume();
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(getActivity());
-        checkBoxValue_sight = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
-        checkBoxValue_shop = sharedPreferences.getBoolean("CheckBox_shopping", true);
-        checkBoxValue_misc = sharedPreferences.getBoolean("CheckBox_misc", true);
-        System.out.println("-----------------1: " + checkBoxValue_sight + " 2: " + checkBoxValue_shop + " 3: " + checkBoxValue_misc);
-        typeFilters = new boolean[]{checkBoxValue_sight, checkBoxValue_shop, checkBoxValue_misc};
-        setUpMapIfNeeded();
-        if (!nextStop.equals("")) {
-            visibleValuesChanged(MapUtils.
-                    filterValues(MapUtils.
-                            sortByDistance(originalValues, nextStop), typeFilters));
-        } else {
-            visibleValuesChanged(MapUtils.
-                    filterValues(originalValues, typeFilters));
-        }
+
+        loadSavedPreferences();
+        sortFilterShow();
         if (apiHelper.isCancelled()) {
             apiHelper = new APIHelper(this, dgw);
             apiHelper.execute();
@@ -182,7 +154,13 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         apiHelper.cancel(true);
     }
 
-
+    private void loadSavedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        categories[0] = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
+        categories[1] = sharedPreferences.getBoolean("CheckBox_shopping", true);
+        categories[2] = sharedPreferences.getBoolean("CheckBox_misc", true);
+    }
 
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
@@ -220,19 +198,17 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     private void setUpMap() {
         // Add all markers from the internal database
 
-        List<InfoNode> filteredValues = MapUtils.filterValues(originalValues, typeFilters);
-
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if (marker.getTitle().equals("Buss"))
+                if (marker.getTitle().equals("Buss")) {
                     isLockedToBus = true;
-
-                if (marker.getTitle().equals("Regnbågsgatan")) {
+                } else if (marker.getTitle().equals("Regnbågsgatan")) {
                     busMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_03));
                 }
 
-                showPopup(getActivity());
+                // Disable for now
+                //showPopup(getActivity());
 
                 return false;
             }
@@ -272,14 +248,6 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         }
     }
 
-
-    /**
-     * Open the DetailActivity
-     * This is just a temporary method. Will be moved to ListView-listener once available.
-     *
-     * @param node
-     */
-
     private void openDetailView(InfoNode node) {
         DetailActivity fragment = new DetailActivity();
         Bundle args = new Bundle();
@@ -313,9 +281,17 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         });
     }
 
+    private void sortFilterShow() {
+        // TODO: Call this in separate AsyncTask?
+        List<InfoNode> sortedValues = MapUtils.sortByDistance(originalValues, nextStop);
+        List<InfoNode> filteredValues = MapUtils.filterValues(sortedValues, categories);
+        visibleValuesChanged(filteredValues);
+    }
+
     @Override
     public void originalValuesChanged(List<InfoNode> values) {
         this.originalValues = values;
+        sortFilterShow();
     }
 
     public void visibleValuesChanged(List<InfoNode> values) {
@@ -350,15 +326,13 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     @Override
     public void nextStopChanged(String nextStop) {
         if (!this.nextStop.equals(nextStop) && !nextStop.equals("")) {
-            List<InfoNode> sortedValues = MapUtils.sortByDistance(originalValues, nextStop); //TODO: Call this in separate AsyncTask?
-            List<InfoNode> filteredValues = MapUtils.filterValues(sortedValues, typeFilters);
-            visibleValuesChanged(filteredValues);
             this.nextStop = nextStop;
-            Toast.makeText(getActivity().getApplicationContext(), "nextStop changed, list should be sorted!", Toast.LENGTH_SHORT).show();
+            sortFilterShow();
+            //Toast.makeText(getActivity().getApplicationContext(), "nextStop changed, list should be sorted!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void createList(){
+    private void createList() {
         belowMapList = (ListView) v.findViewById(R.id.listBelowMap);
 
         // Temp-list below map
@@ -374,7 +348,6 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
 //        belowMapList.setAdapter(new ArrayAdapter<>(this, R.layout.maplist_layout, R.id.listString, sites));
 //        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.activity_list_item, valuesClone);
 
-
         adapter = new ListArrayAdapter(getActivity(), sites, originalValues);
         belowMapList.setAdapter(adapter);
 
@@ -382,17 +355,18 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity().getApplicationContext(),
-                        parent.getItemAtPosition(position) + " clicked", Toast.LENGTH_SHORT)
-                        .show();
+                openDetailView((InfoNode) parent.getItemAtPosition(position));
             }
         });
+
+//        // List is hidden by default.
+//        setListVisibility(false);
 
         // Button to open and close list.
         final Button listButton = (Button) v.findViewById(R.id.openListButton);
         final View.OnClickListener openListListener = new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
 
                 String listStatus = (isListOpen) ? "Open List" : "Close List";
                 listButton.setText(listStatus);
@@ -404,11 +378,11 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     }
 
     public void favoriteClickHandle(View v) {
-        ImageView favButt = (ImageView)v;
+        ImageView favButt = (ImageView) v;
 
         favoriteList = new ArrayList<>();
 
-        if(isFavorite){
+        if (isFavorite) {
             favButt.setImageResource(R.drawable.star_unfilled);
 
         } else {
