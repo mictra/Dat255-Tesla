@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/*
+/**
     Class used to make a custom-list-view(Adapter) to be able to show a unique icon for each list-category.
  */
 public class ListArrayAdapter extends ArrayAdapter<InfoNode> {

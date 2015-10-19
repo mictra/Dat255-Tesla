@@ -12,9 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -42,8 +40,6 @@ import java.io.FileReader;
 import java.util.Scanner;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -71,7 +67,6 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     private ListView belowMapList;
 
     // Using an boolean to check, instead of checking its visibility or a status.
-    private boolean isListOpen = false;
     private boolean isFavorite = false;
 
     // our empty arrayList
@@ -331,25 +326,14 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         }
     }
 
+    /**
+     *  Creates the custom-made list below the map.
+     */
     private void createList() {
         belowMapList = (ListView) v.findViewById(R.id.listBelowMap);
 
-        // Temp-list below map
-        ArrayList<String> sites = new ArrayList<>(
-                Arrays.asList("Poseidon", "Zeus", "Hades", "Demeter", "Ares", "Athena", "Apollo"));
-
-//        ArrayList<InfoNode> valuesClone = new ArrayList<>();
-//        for (String inputString : sites) {
-//            InfoNode node = new InfoNode(0, inputString, 0.0, 0.0, 1, "info", "Adr", 0, "objID");
-//            valuesClone.add(node);
-//        }
-
-//        belowMapList.setAdapter(new ArrayAdapter<>(this, R.layout.maplist_layout, R.id.listString, sites));
-//        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.activity_list_item, valuesClone);
-
         adapter = new ListArrayAdapter(getActivity(), originalValues);
         belowMapList.setAdapter(adapter);
-
 
         belowMapList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -358,46 +342,36 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
             }
         });
 
-//        // List is hidden by default.
-//        setListVisibility(false);
-
-        // Button to open and close list.
-        final Button listButton = (Button) v.findViewById(R.id.openListButton);
-        final View.OnClickListener openListListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String listStatus = (isListOpen) ? "Open List" : "Close List";
-                listButton.setText(listStatus);
-                setListVisibility(!isListOpen);
-                isListOpen = !isListOpen;
-            }
-        };
-        listButton.setOnClickListener(openListListener);
+//        // Saved/commented to help to create favorite-click-handler.
+//        // Button to open and close list.
+//        final Button listButton = (Button) v.findViewById(R.id.openListButton);
+//        final View.OnClickListener openListListener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                String listStatus = (isListOpen) ? "Open List" : "Close List";
+//                listButton.setText(listStatus);
+//                setListVisibility(!isListOpen);
+//                isListOpen = !isListOpen;
+//            }
+//        };
+//        listButton.setOnClickListener(openListListener);
     }
 
-    public void favoriteClickHandle(View v) {
-        ImageView favButt = (ImageView) v;
-
-        favoriteList = new ArrayList<>();
-
-        if (isFavorite) {
-            favButt.setImageResource(R.drawable.star_unfilled);
-
-        } else {
-            favButt.setImageResource(R.drawable.star_filled);
-        }
-
-        isFavorite = !isFavorite;
-    }
-
-    private void setListVisibility(boolean isVisible) {
-        getListView().setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    private ListView getListView() {
-        return belowMapList;
-    }
+//    public void favoriteClickHandle(View v) {
+//        ImageView favButt = (ImageView) v;
+//
+//        favoriteList = new ArrayList<>();
+//
+//        if (isFavorite) {
+//            favButt.setImageResource(R.drawable.star_unfilled);
+//
+//        } else {
+//            favButt.setImageResource(R.drawable.star_filled);
+//        }
+//
+//        isFavorite = !isFavorite;
+//    }
 
     /*
         Method to read/write to an favorite.txt, which will be used to be excluded when our

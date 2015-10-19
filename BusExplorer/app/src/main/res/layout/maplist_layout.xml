@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <!-- The small picture to the left-->
+    <!-- The small picture to the left -->
     <ImageView
         android:id="@+id/list_icon"
         android:layout_width="25dp"
@@ -15,6 +15,7 @@
         android:src="@drawable/poseidon1_thumb"
         />
 
+    <!-- The name of the site -->
     <TextView
         android:id="@+id/listString"
         android:layout_width="wrap_content"
@@ -24,7 +25,7 @@
         android:textSize="20sp"
         android:paddingTop="5dp"/>
 
-    <!-- For the Favorite Icon-->
+    <!-- For the Favorite Icon -->
     <ImageView
         android:id="@+id/favButton"
         android:layout_width="25dp"
