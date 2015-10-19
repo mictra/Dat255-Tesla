@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,11 +15,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -26,12 +25,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.dat255tesla.busexplorer.database.InfoNode;
 import com.dat255tesla.busexplorer.R;
-import com.dat255tesla.busexplorer.settingscontent.SettingsActivity;
+import com.dat255tesla.busexplorer.database.InfoNode;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -108,7 +106,7 @@ public class DetailActivity extends Fragment {
         coupon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity().getApplicationContext(), "Grattis -- Gratis inträde", Toast.LENGTH_LONG).show();
+                showPopup(getActivity());
             }
         });
 
@@ -119,6 +117,31 @@ public class DetailActivity extends Fragment {
         }
 
         return v;
+    }
+
+    private void showPopup(final Activity context) {
+        LinearLayout viewGroup = (LinearLayout) v.findViewById(R.id.popup_element);
+        LayoutInflater inflater = (LayoutInflater)
+                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.popup_layout, viewGroup);
+
+        final PopupWindow popup = new PopupWindow(context);
+        popup.setContentView(layout);
+        popup.setFocusable(true);
+        popup.setWidth(Math.round(300 * (getResources().getDisplayMetrics().densityDpi / 160)));
+        popup.setHeight(Math.round(400 * (getResources().getDisplayMetrics().densityDpi / 160)));
+        popup.showAtLocation(layout, Gravity.CENTER, 0, 0);
+
+        TextView tv = (TextView) layout.findViewById(R.id.popup_text);
+        tv.append(" " + node.getTitle() + "!");
+
+/*        Button close = (Button) layout.findViewById(R.id.popup_close);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popup.dismiss();
+            }
+        });*/
     }
 
     /*

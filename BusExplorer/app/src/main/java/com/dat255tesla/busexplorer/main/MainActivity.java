@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         } else {
             AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
             b.setCancelable(true);
-            b.setTitle("\ud83d\ude22 \uD83D\uDE22 \uD83D\uDE22 \uD83D\uDE22");
+            b.setTitle("\ud83d\ude22");
             b.setMessage(getResources().getText(R.string.main_wanttoexit));
             b.setPositiveButton(getResources().getText(R.string.main_exit),
                     new DialogInterface.OnClickListener() {
@@ -212,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                 //Closing drawer on item click
                 //drawerLayout.closeDrawers();
 
-
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()) {
                     case R.id.navdrawer_map:
@@ -242,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                     case R.id.navdrawer_category_3:
                         menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[2] ? R.drawable.marker_circle_fill : R.drawable.marker_circle_nofill));
                         categories[2] = categories[2] ? false : true;
-                        savePreferences("CheckBox_misc", categories[2]);
+                        savePreferences("CheckBox_bars", categories[2]);
                         if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof ExplorerActivity) {
                             explorerActivity.onResume();
                         }
@@ -312,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                 .getDefaultSharedPreferences(this);
         categories[0] = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
         categories[1] = sharedPreferences.getBoolean("CheckBox_shopping", true);
-        categories[2] = sharedPreferences.getBoolean("CheckBox_misc", true);
+        categories[2] = sharedPreferences.getBoolean("CheckBox_bars", true);
     }
 
     private void savePreferences(String key, boolean value) {

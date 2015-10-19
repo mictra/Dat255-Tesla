@@ -8,10 +8,10 @@
         android:id="@+id/list_icon"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="7dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="7dp"
         android:src="@drawable/poseidon1_thumb"
         />
 
@@ -23,17 +23,18 @@
         android:layout_toEndOf="@id/list_icon"
         android:layout_toRightOf="@id/list_icon"
         android:textSize="20sp"
-        android:paddingTop="5dp"/>
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"/>
 
     <!-- For the Favorite Icon -->
     <ImageView
         android:id="@+id/favButton"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="7dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="7dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:clickable="true"

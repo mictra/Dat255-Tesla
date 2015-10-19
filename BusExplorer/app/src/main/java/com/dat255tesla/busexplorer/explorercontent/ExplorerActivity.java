@@ -60,7 +60,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     private MarkerOptions opt_stops;
     private MarkerOptions opt_sights;
     private MarkerOptions opt_stores;
-    private MarkerOptions opt_misc;
+    private MarkerOptions opt_bars;
 
     private MarkerOptions busPositionOptions;
 
@@ -117,7 +117,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_triangle));
         opt_stores = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_square));
-        opt_misc = new MarkerOptions()
+        opt_bars = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_circle));
 
         busPositionOptions = new MarkerOptions()
@@ -153,7 +153,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
                 .getDefaultSharedPreferences(getActivity());
         categories[0] = sharedPreferences.getBoolean("CheckBox_sightseeing", true);
         categories[1] = sharedPreferences.getBoolean("CheckBox_shopping", true);
-        categories[2] = sharedPreferences.getBoolean("CheckBox_misc", true);
+        categories[2] = sharedPreferences.getBoolean("CheckBox_bars", true);
     }
 
     /**
@@ -234,9 +234,9 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
                 markers.put(mMap.addMarker(opt_stores), node);
                 return;
             case 3:
-                opt_misc.position(pos)
+                opt_bars.position(pos)
                         .title(node.getTitle());
-                markers.put(mMap.addMarker(opt_misc), node);
+                markers.put(mMap.addMarker(opt_bars), node);
             default:
                 return;
         }
@@ -253,7 +253,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         fragmentTransaction.commit();
     }
 
-    private void showPopup(final Activity context) {
+/*    private void showPopup(final Activity context) {
         LinearLayout viewGroup = (LinearLayout) v.findViewById(R.id.popup_element);
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -266,14 +266,14 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         popup.setHeight(900);
         popup.showAtLocation(layout, Gravity.CENTER, 0, 0);
 
-        Button close = (Button) layout.findViewById(R.id.b_ClosePopup);
+        Button close = (Button) layout.findViewById(R.id.popup_close);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 popup.dismiss();
             }
         });
-    }
+    }*/
 
     private void sortFilterShow() {
         // TODO: Call this in separate AsyncTask?

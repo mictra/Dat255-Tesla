@@ -8,17 +8,35 @@
     android:layout_height="fill_parent">
 
     <TextView
-        android:id="@+id/tv_Header"
-        android:layout_width="wrap_content"
+        android:id="@+id/popup_header"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Header"
+        android:gravity="center"
+        android:text="@string/dv_popupheader"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/b_ClosePopup"
+    <TextView
+        android:id="@+id/popup_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/dv_show_for_free_entry"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pop_qrcode"
+        android:src="@drawable/qrcode"
+        android:layout_gravity="center_horizontal" />
+
+<!--    <Button
+        android:id="@+id/popup_close"
         android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Close" />
+        android:text="@string/close" />-->
 </LinearLayout>

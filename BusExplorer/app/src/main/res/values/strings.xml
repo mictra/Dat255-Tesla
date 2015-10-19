@@ -61,7 +61,7 @@
     // Strings in SettingsActivity
     <string name="settings_optSightseeing">Sightseeing</string>
     <string name="settings_optStores">Shopping</string>
-    <string name="settings_optMisc">Miscellaneous</string>
+    <string name="settings_optBars">Bars</string>
     <string name="settings_filterHeader">Filter Map</string>
 
     // Strings in NavigationDrawer
@@ -72,7 +72,10 @@
     <string name="refreshButton">Refresh</string>
 
     // String in DetailActivity
-    <string name="free_entry">Click here to get free entry!</string>
+    <string name="dv_click_free_entry">Click here to get free entry!</string>
+    <string name="dv_show_for_free_entry">Show this code to get free entry at</string>
+    <string name="close">Close</string>
+    <string name="dv_popupheader">Thank you for using bus 55!</string>
 
     // Usage unknown
     <string name="app_settings">Settings</string>

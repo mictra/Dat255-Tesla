@@ -24,7 +24,7 @@
                     android:id="@+id/navdrawer_category_3"
                     android:checked="false"
                     android:icon="@drawable/marker_circle_nofill"
-                    android:title="@string/settings_optMisc" />
+                    android:title="@string/settings_optBars" />
             </menu>
         </item>
     </group>

@@ -54,7 +54,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/settings_optMisc"
+        android:text="@string/settings_optBars"
         android:id="@+id/checkBox_misc"
         android:layout_below="@+id/checkBox_shopping"
         android:layout_alignParentLeft="true"
