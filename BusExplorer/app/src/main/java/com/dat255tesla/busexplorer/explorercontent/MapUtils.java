@@ -162,13 +162,11 @@ public class MapUtils {
 
         List<InfoNode> valuesCopy = new ArrayList(values);
         List<InfoNode> filteredValues = new ArrayList();
-        for (int i = 0; i < typeFilters.length; i++) {
-            if (typeFilters[i]) {
-                for (InfoNode node : valuesCopy) {
-                    if (node.getType() == (i + 1)) {
-                        filteredValues.add(node);
-                    }
-                }
+        for (InfoNode node : valuesCopy) {
+            if (node.getType() != 0 &&
+                    typeFilters[node.getType() - 1] &&
+                    node.getType() <= typeFilters.length) {
+                filteredValues.add(node);
             }
         }
 

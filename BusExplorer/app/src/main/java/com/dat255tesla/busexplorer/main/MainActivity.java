@@ -193,6 +193,14 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     }
 
     private void initNavDrawer() {
+        findViewById(R.id.app_image).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                explorerActivity.prideMode();
+                return true;
+            }
+        });
+
         //Initializing NavigationView
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
 

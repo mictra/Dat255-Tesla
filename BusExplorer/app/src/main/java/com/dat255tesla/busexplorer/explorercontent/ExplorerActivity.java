@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.dat255tesla.busexplorer.R;
 import com.dat255tesla.busexplorer.apirequest.APIHelper;
@@ -74,6 +75,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
 
     private String dgw;
     private boolean[] categories;
+    private boolean prideMode = false;
 
     private View v;
 
@@ -108,8 +110,6 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         }
 
         originalValues = ds.getAllInfoNodes();
-        System.out.println("LIST LIST LIST LIST LIST LIST LIST LIST");
-        System.out.println(originalValues);
 
         opt_stops = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_stop));
@@ -190,15 +190,18 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        // Add all markers from the internal database
-
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                isLockedToBus = false;
+            }
+        });
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if (marker.getTitle().equals("Buss")) {
                     isLockedToBus = true;
-                } else if (marker.getTitle().equals("Regnbågsgatan")) {
-                    busMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_03));
                 }
 
                 // Disable for now
@@ -327,7 +330,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     }
 
     /**
-     *  Creates the custom-made list below the map.
+     * Creates the custom-made list below the map.
      */
     private void createList() {
         belowMapList = (ListView) v.findViewById(R.id.listBelowMap);
@@ -397,4 +400,18 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
 //            }
 //        }
 //    }
+
+    public void prideMode() {
+        if (busMarker != null) {
+            if (!prideMode) {
+                busMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_03));
+                prideMode = true;
+                Toast.makeText(getActivity().getApplicationContext(), "All aboard the Pride Bus!", Toast.LENGTH_SHORT).show();
+            } else {
+                busMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02));
+                prideMode = false;
+                Toast.makeText(getActivity().getApplicationContext(), "Pride-Mode deactivated.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
