@@ -28,4 +28,10 @@
     <string name="refreshButton"></string>
     <string name="main_wanttoexit">Vill du verkligen avsluta?</string>
     <string name="openDrawer">Navigationsvy</string>
+    <string name="dv_click_free_entry">Klicka här för att få gratis inträde!</string>
+    <string name="dv_popupheader">Tack för att du reser med linje 55!</string>
+    <string name="dv_show_for_free_entry">Visa upp den här koden för att få gratis inträde hos </string>
+    <string name="main_refreshNoConn"></string>
+    <string name="main_text_noConn"></string>
+    <string name="main_title_noConn">Hittade inget nätverk!</string>
 </resources>
