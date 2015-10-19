@@ -1,6 +1,8 @@
 package com.dat255tesla.busexplorer.explorercontent;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,11 +36,42 @@ public class ListArrayAdapter extends ArrayAdapter<InfoNode> {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        InfoNode currNode = values.get(position);
+        final InfoNode currNode = values.get(position);
         View rowView = inflater.inflate(R.layout.maplist_layout, parent, false);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.list_icon);
         TextView textView = (TextView) rowView.findViewById(R.id.listString);
         textView.setText(currNode.getTitle());
+
+        final ImageView favButton = (ImageView) rowView.findViewById(R.id.favButton);
+        favButton.setOnClickListener(new View.OnClickListener() {
+            boolean isFavorite = false;
+
+            @Override
+            public void onClick(View v) {
+                isFavorite = !isFavorite;
+
+                if (isFavorite)
+                    favButton.setImageResource(R.drawable.star_filled);
+                else
+                    favButton.setImageResource(R.drawable.star_unfilled);
+
+                SharedPreferences sharedPreferences = PreferenceManager
+                        .getDefaultSharedPreferences(getContext());
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(currNode.getTitle(), isFavorite);
+                editor.apply();
+            }
+        });
+
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getContext());
+        boolean isFavorite = sharedPreferences.getBoolean(currNode.getTitle(), false);
+
+        if (isFavorite)
+            favButton.setImageResource(R.drawable.star_filled);
+        else
+            favButton.setImageResource(R.drawable.star_unfilled);
+
 
         imageView.setImageResource(R.drawable.marker_triangle);
         switch (currNode.getType()) {
