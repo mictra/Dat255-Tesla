@@ -12,7 +12,7 @@
     <string name="closeDrawer">Seitenmenu geschlossen</string>
     <string name="description_zoom_touch_close">Bild vergrößern (berühren um zu schließen)</string>
     <string name="dv_click_free_entry">Hier für freien Eintritt klicken!</string>
-    <string name="dv_popupheader">Vielen Dank, daß sie Bus 55 benutzen!</string>
+    <string name="dv_popupheader">Vielen Dank, daß Sie Bus 55 benutzen!</string>
     <string name="dv_show_for_free_entry">Zeige diesen Code für freien Eintritt in der</string>
     <string name="hello_world">Hallo Welt!</string>
     <string name="list_bottom_default">Liste zeigen</string>
@@ -26,7 +26,7 @@
     <string name="main_title_noConn">Kein Netzwerk gefunden!</string>
     <string name="main_title_noWifi">Nur zur Information...</string>
     <string name="main_tomap">Zurück zur Karte</string>
-    <string name="main_wanttoexit">Möchtest Du wirklich beenden?</string>
+    <string name="main_wanttoexit">Wirklich beenden?</string>
     <string name="openDrawer">Seitenmenü</string>
     <string name="refreshButton">Aktualisieren</string>
     <string name="settings_optBars">Bars</string>
