@@ -3,6 +3,7 @@ package com.dat255tesla.busexplorer.explorercontent;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -38,6 +39,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 
 import java.sql.SQLException;
@@ -76,6 +78,8 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     private String dgw;
     private boolean[] categories;
     private boolean prideMode = false;
+    private MediaPlayer mPlayer;
+    private int mPlayer_pos = 0;
 
     private View v;
 
@@ -401,17 +405,28 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
 //        }
 //    }
 
-    public void prideMode() {
+    public void prideMode() throws IOException {
         if (busMarker != null) {
             if (!prideMode) {
                 busMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_03));
                 prideMode = true;
                 Toast.makeText(getActivity().getApplicationContext(), "All aboard the Pride Bus!", Toast.LENGTH_SHORT).show();
+                mPlayer = MediaPlayer.create(getActivity(), R.raw.pride_music);
+                mPlayer.setLooping(true);
+                mPlayer.seekTo(mPlayer_pos);
+                mPlayer.start();
             } else {
                 busMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02));
                 prideMode = false;
                 Toast.makeText(getActivity().getApplicationContext(), "Pride-Mode deactivated.", Toast.LENGTH_SHORT).show();
+                mPlayer.pause();
+                mPlayer_pos = mPlayer.getCurrentPosition();
+                mPlayer.release();
             }
+        } else if (mPlayer.isPlaying()) { // To be able to stop music, if API doesn't work
+            mPlayer.pause();
+            mPlayer_pos = mPlayer.getCurrentPosition();
+            mPlayer.release();
         }
     }
 }

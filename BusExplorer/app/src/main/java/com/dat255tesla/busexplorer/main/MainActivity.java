@@ -32,6 +32,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.IOException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements IBusWifiListener {
@@ -195,7 +196,11 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         findViewById(R.id.app_image).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                explorerActivity.prideMode();
+                try {
+                    explorerActivity.prideMode();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 return true;
             }
         });
