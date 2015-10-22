@@ -43,4 +43,5 @@
     <string name="about_licenseText">Symbole von www.flaticon.com/authors/daniel-bruce von flaticon.com and freepik.com/ von flaticon.com</string>
     <string name="about_aboutText">BusExplorer ist eine App für die ElectriCity Innovation Challenge. Der Zweck der App ist sowohl Touristen, als auch Ortsansässigen durch das Aufzeigen von aufregenden Sehenswürdigkeiten eine unterhaltsame Reise zu ermöglichen.</string>
     <string name="main_ok">Verstanden</string>
+    <string name="main_categories">Kategorien</string>
 </resources>

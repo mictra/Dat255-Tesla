@@ -8,7 +8,7 @@
             android:checked="false"
             android:icon="@drawable/googlemaps"
             android:title="@string/main_tomap" />
-        <item android:title="Categories">
+        <item android:title="@string/main_categories">
             <menu>
                 <item
                     android:id="@+id/navdrawer_category_1"

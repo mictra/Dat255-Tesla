@@ -31,9 +31,8 @@
     <string name="main_text_noConn">Could not detect an internet connection!
         An internet connection is required to use BusExplorer</string>
 
-    <string name="main_ohgod">(replace me)</string>
-
     <string name="main_tomap">Back to the map</string>
+    <string name="main_categories">Categories</string>
 
     <string name="main_cancel">Cancel</string>
     <string name="main_exit">Exit</string>
