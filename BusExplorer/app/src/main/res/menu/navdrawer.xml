@@ -8,6 +8,11 @@
             android:checked="false"
             android:icon="@drawable/googlemaps"
             android:title="@string/main_tomap" />
+        <item
+            android:id="@+id/navdrawer_favorites"
+            android:checked="false"
+            android:icon="@drawable/star_filled"
+            android:title="@string/favorites" />
         <item android:title="@string/main_categories">
             <menu>
                 <item

@@ -35,4 +35,5 @@
     <string name="main_text_noConn"></string>
     <string name="main_title_noConn">Hittade inget nätverk!</string>
     <string name="main_categories">Kategorier</string>
+    <string name="favorites">Favoriter</string>
 </resources>

@@ -234,6 +234,10 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                         }
                         drawerLayout.closeDrawers();
                         return true;
+                    case R.id.navdrawer_favorites:
+                        explorerActivity.openFavorites();
+                        drawerLayout.closeDrawers();
+                        return true;
                     case R.id.navdrawer_category_1:
                         menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[0] ? R.drawable.marker_triangle_fill : R.drawable.marker_triangle_nofill));
                         categories[0] = categories[0] ? false : true;

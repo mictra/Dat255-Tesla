@@ -67,6 +67,7 @@
     // Strings in NavigationDrawer
     <string name="openDrawer">Navigation View</string>
     <string name="closeDrawer">Navigation View Closed</string>
+    <string name="favorites">Favorites</string>
 
     // Strings in Toolbar (buttons)
     <string name="refreshButton">Refresh</string>
@@ -79,4 +80,5 @@
 
     // Usage unknown
     <string name="app_settings">Settings</string>
+
 </resources>

@@ -40,6 +40,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import java.sql.SQLException;
@@ -73,7 +75,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     private boolean isFavorite = false;
 
     // our empty arrayList
-    private List<String> favoriteList;
+    private List<InfoNode> favoriteList;
 
     private String dgw;
     private boolean[] categories;
@@ -131,6 +133,8 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         createList();
         setUpMapIfNeeded();
         ds.updateDatabaseIfNeeded();
+
+        favoriteList = new ArrayList<>();
 
         return v;
     }
@@ -428,5 +432,26 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
             mPlayer_pos = mPlayer.getCurrentPosition();
             mPlayer.release();
         }
+    }
+
+    public void openFavorites() {
+        FavoritesActivity fragment = new FavoritesActivity();
+        favoriteList.clear();
+
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        for (InfoNode node : originalValues) {
+            if (sharedPreferences.getBoolean(node.getTitle(), false)) {
+                favoriteList.add(node);
+            }
+        }
+
+        Bundle args = new Bundle();
+        args.putSerializable("Favorites", (Serializable) favoriteList);
+        fragment.setArguments(args);
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
