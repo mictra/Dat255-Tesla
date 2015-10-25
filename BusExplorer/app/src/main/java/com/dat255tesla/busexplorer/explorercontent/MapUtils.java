@@ -106,55 +106,14 @@ public class MapUtils {
         return latlng;
     }
 
-    public static List<Marker> MarkersInRange(HashMap<Marker, InfoNode> map, Location center,
-                                              int maxDist) {
-
-        ArrayList<Marker> out = new ArrayList<>();
-        Location tempLoc;
-
-        for (Marker key : map.keySet()) {
-            tempLoc = LatLngToLoc(key.getPosition(), "temp");
-
-            float distance = center.distanceTo(tempLoc);
-            if (distance < maxDist) {
-                out.add(key);
-            }
-        }
-        return out;
-    }
-
     /**
-     * Returns a {@link LatLng} that has the same positional properties as the supplied
-     * {@link Location}
-     * Useful for easily switching between the normal Location class used by Android and the LatLng
-     * class that is used by the Google Maps V2 API.
+     * Returns a filtered list of InfoNode #filteredValues, given a list of InfoNode #values and
+     * a boolean array #typeFilters (categories/types to be filtered).
      *
-     * @param loc An existing object with a latitude and longitude
-     * @return A new LatLng instance at provided Location.
-     * @see LatLng
+     * @param values
+     * @param typeFilters
+     * @return filteredValues
      */
-    public static LatLng LocToLatLng(Location loc) {
-        return new LatLng(loc.getLatitude(), loc.getLongitude());
-    }
-
-    /**
-     * Returns a {@link Location} that has the same positional properties as the supplied
-     * {@link LatLng}
-     * Useful for easily switching between the normal Location class used by Android and the LatLng
-     * class that is used by the Google Maps V2 API.
-     *
-     * @param latlng An existing object with a latitude and longitude
-     * @param name   A name/identifier used by the Location class
-     * @return A new Location instance at provided LatLng
-     * @see Location
-     */
-    public static Location LatLngToLoc(LatLng latlng, String name) {
-        Location loc = new Location(name);
-        loc.setLatitude(latlng.latitude);
-        loc.setLongitude(latlng.longitude);
-        return loc;
-    }
-
     public static List<InfoNode> filterValues(final List<InfoNode> values, boolean[] typeFilters) {
         if (typeFilters.length < 3 || values == null) {
             return values;
@@ -173,10 +132,15 @@ public class MapUtils {
         return filteredValues;
     }
 
-    /*
-    Given a string (nextStop) and list of InfoNode, returns a sorted list by distance if there's a
-    next stop matching one of the bus stations. Returns the same list received otherwise.
-    OBS: Always use this method before filtering, since sorting takes all InfoNode's into account.
+
+    /**
+     * Given a String #nextStop and list of InfoNode #values, returns a sorted list by distance if there's a
+     * next stop matching one of the bus stations. Returns the same list received otherwise.
+     * OBS: Always use this method before filtering, since sorting takes all InfoNode's into account.
+     *
+     * @param values
+     * @param nextStop
+     * @return values
      */
     public static List<InfoNode> sortByDistance(final List<InfoNode> values, String nextStop) {
         if (nextStop.equals("") || values == null) {
@@ -209,6 +173,13 @@ public class MapUtils {
 
     }
 
+    /**
+     * Helper method used in #sortByDistance method.
+     * Compares and sorts in a ascending order by distance.
+     *
+     * @param unsortedMap
+     * @return sortedList
+     */
     private static List<InfoNode> sortByComparator(Map<InfoNode, Float> unsortedMap) {
 
         // Convert Map to List
@@ -230,7 +201,7 @@ public class MapUtils {
         return sortedList;
     }
 
-    public static void printMap(List<Map.Entry<InfoNode, Float>> list) {
+    private static void printMap(List<Map.Entry<InfoNode, Float>> list) {
         for (Map.Entry<InfoNode, Float> entry : list) {
             System.out.println("\n-------------[InfoNode title (marker name)] : " + entry.getKey().getTitle()
                     + " [Value (distance in meters)] : " + entry.getValue());

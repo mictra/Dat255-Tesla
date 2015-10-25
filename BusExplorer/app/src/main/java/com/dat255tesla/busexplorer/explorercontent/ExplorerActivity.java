@@ -1,22 +1,16 @@
 package com.dat255tesla.busexplorer.explorercontent;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.dat255tesla.busexplorer.R;
@@ -34,61 +28,44 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-// These imports are used for i/o at the bottom, used for read/write the favorites.txt
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Scanner;
-
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class ExplorerActivity extends Fragment implements IValuesChangedListener, IBusDataListener {
     private GoogleMap mMap;
     private APIHelper apiHelper;
-    private HashMap<Marker, InfoNode> markers;
     private InfoDataSource ds;
-    private List<InfoNode> originalValues;
-    private Marker busMarker;
-
-    private ListArrayAdapter adapter;
-//    private ArrayAdapter<InfoNode> adapter;
-
-    private String nextStop;
-    private boolean isLockedToBus = true;
-
-    private MarkerOptions opt_stops;
-    private MarkerOptions opt_sights;
-    private MarkerOptions opt_stores;
-    private MarkerOptions opt_bars;
-
-    private MarkerOptions busPositionOptions;
-
-    private ListView belowMapList;
-
-    // Using an boolean to check, instead of checking its visibility or a status.
-    private boolean isFavorite = false;
-
-    // our empty arrayList
-    private List<InfoNode> favoriteList;
-
     private String dgw;
     private boolean[] categories;
     private boolean prideMode = false;
     private MediaPlayer mPlayer;
     private int mPlayer_pos = 0;
-
     private View v;
 
+    private String nextStop = "";
+    private boolean isLockedToBus = true;
+
+    private HashMap<Marker, InfoNode> markers;
+    private Marker busMarker;
+    private MarkerOptions opt_stops;
+    private MarkerOptions opt_sights;
+    private MarkerOptions opt_stores;
+    private MarkerOptions opt_bars;
+    private MarkerOptions busPositionOptions;
+
+    private ListArrayAdapter adapter;
+    private ListView belowMapList;
+    private List<InfoNode> originalValues;
+    private List<InfoNode> favoriteList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Receive dgw number from the identified bus when connecting to its wifi
         dgw = getArguments().getString("dgw");
     }
 
@@ -97,26 +74,26 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.activity_explorer, container, false);
 
+        // Create an AsyncTask (APIHelper), and reference this class as a listener
         apiHelper = new APIHelper(this, dgw);
         markers = new HashMap<>();
         nextStop = "";
 
-        // Retrieve settings data
+        // Retrieve settings data (filter categories settings)
         categories = new boolean[3];
         loadSavedPreferences();
 
-        // Establish database connection
+        // Establish internal database connection and retrieve the values from it (with type List<InfoNode>)
         ds = new InfoDataSource(getActivity());
         ds.setValuesChangedListener(this);
-
         try {
             ds.open();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         originalValues = ds.getAllInfoNodes();
 
+        // Set marker icons for marker options
         opt_stops = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_stop));
         opt_sights = new MarkerOptions()
@@ -125,7 +102,6 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_square));
         opt_bars = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_circle));
-
         busPositionOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
                 .anchor(0.5f, 0.5f);
@@ -142,6 +118,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     @Override
     public void onResume() {
         super.onResume();
+        // Load filtered categories from settings and show filtered markers on markers list
         loadSavedPreferences();
         sortFilterShow();
         if (apiHelper.isCancelled()) {
@@ -156,6 +133,9 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         apiHelper.cancel(true);
     }
 
+    /**
+     * Load the values of categories to be filtered and save them in the categories array
+     */
     private void loadSavedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(getActivity());
@@ -167,17 +147,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p/>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p/>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
+     * call setUpMap() once when mMap is not null.
      */
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
@@ -194,8 +164,8 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
 
     /**
      * This is where we can add markers or lines, add listeners or move the camera.
-     * <p/>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
+     * This should only be called once and when we are sure that mMap is not null.
+     * We also execute the AsyncTask #apiHelper to get relevant data from the bus in the background.
      */
     private void setUpMap() {
         mMap.getUiSettings().setMapToolbarEnabled(false);
@@ -212,9 +182,6 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
                     isLockedToBus = true;
                 }
 
-                // Disable for now
-                //showPopup(getActivity());
-
                 return false;
             }
         });
@@ -225,6 +192,13 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         apiHelper.execute();
     }
 
+    /**
+     * Given an InfoNode, determine its category/type and set the right marker icon for it.
+     * Add #node and marker as an entry in HashMap #markers,
+     * and display the marker in Google Maps #mMap fragment.
+     *
+     * @param node
+     */
     private void addMarker(InfoNode node) {
         LatLng pos = new LatLng(node.getLatitude(), node.getLongitude());
 
@@ -253,6 +227,11 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         }
     }
 
+    /**
+     * Switches the current visible fragment to a detail view/activity of a given InfoNode #node.
+     *
+     * @param node
+     */
     private void openDetailView(InfoNode node) {
         DetailActivity fragment = new DetailActivity();
         Bundle args = new Bundle();
@@ -264,42 +243,38 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         fragmentTransaction.commit();
     }
 
-/*    private void showPopup(final Activity context) {
-        LinearLayout viewGroup = (LinearLayout) v.findViewById(R.id.popup_element);
-        LayoutInflater inflater = (LayoutInflater)
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.popup_layout, viewGroup);
-
-        final PopupWindow popup = new PopupWindow(context);
-        popup.setContentView(layout);
-        popup.setFocusable(true);
-        popup.setWidth(800);
-        popup.setHeight(900);
-        popup.showAtLocation(layout, Gravity.CENTER, 0, 0);
-
-        Button close = (Button) layout.findViewById(R.id.popup_close);
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popup.dismiss();
-            }
-        });
-    }*/
-
+    /**
+     * Sorts the values from #originalValues first, then filters #sortedValues, and then display
+     * #filteredValues to list adapter.
+     */
     private void sortFilterShow() {
-        // TODO: Call this in separate AsyncTask?
         List<InfoNode> sortedValues = MapUtils.sortByDistance(originalValues, nextStop);
         List<InfoNode> filteredValues = MapUtils.filterValues(sortedValues, categories);
         visibleValuesChanged(filteredValues);
     }
 
+    /**
+     * A listener method from implementing IValuesChangedListener.
+     * Gets notified with new List<InfoNode> #values if the internal
+     * database has been updated with the server database from Parse.
+     * Calls sortFilterShow() to display new #values to list adapter.
+     *
+     * @param values
+     */
     @Override
     public void originalValuesChanged(List<InfoNode> values) {
         this.originalValues = values;
         sortFilterShow();
     }
 
-    public void visibleValuesChanged(List<InfoNode> values) {
+    /**
+     * If #values is not null, remove all old/current markers on Google Maps, clear #markers HashMap
+     * and clear the list adapter. Update visible markers on Google Maps fragment, #markers HashMap
+     * and list adapter with new #values.
+     *
+     * @param values
+     */
+    private void visibleValuesChanged(List<InfoNode> values) {
         if (values != null) {
             for (Marker marker : markers.keySet()) {
                 marker.remove();
@@ -309,10 +284,18 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
                 addMarker(node);
             }
             adapter.clear();
-            adapter.addAll(values); // This mutates this.originalValues variable.
+            adapter.addAll(values);
         }
     }
 
+    /**
+     * A listener method from implementing IBusDataListener.
+     * Gets notified with a new LatLng #pos from (AsyncTask) #apiHelper after executing it.
+     * Adds and animates the newly added Bus marker in the Google Maps with the new position #pos,
+     * if it is a valid LatLng #pos (see if() case).
+     *
+     * @param pos
+     */
     @Override
     public void positionChanged(LatLng pos) {
         if (pos != null && pos.latitude != 0 && pos.longitude != 0) {
@@ -328,17 +311,26 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         }
     }
 
+    /**
+     * A listener method from implementing IBusDataListener.
+     * Gets notified with a new String #nextStop from (AsyncTask) #apiHelper after executing it.
+     * Sets the local class variable #this.nextStop to received value #nextStop, if they do not
+     * have the same value and the received value #nextStop isn't an empty string ("").
+     * Calls sortFilterShow() if this is the case.
+     *
+     * @param nextStop
+     */
     @Override
     public void nextStopChanged(String nextStop) {
         if (!this.nextStop.equals(nextStop) && !nextStop.equals("")) {
             this.nextStop = nextStop;
             sortFilterShow();
-            //Toast.makeText(getActivity().getApplicationContext(), "nextStop changed, list should be sorted!", Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
-     * Creates the custom-made list below the map.
+     * Creates the custom-made list below the map and adds a listener for every list item
+     * (switch fragment to/opens the detail view/activity).
      */
     private void createList() {
         belowMapList = (ListView) v.findViewById(R.id.listBelowMap);
@@ -353,62 +345,14 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
             }
         });
 
-//        // Saved/commented to help to create favorite-click-handler.
-//        // Button to open and close list.
-//        final Button listButton = (Button) v.findViewById(R.id.openListButton);
-//        final View.OnClickListener openListListener = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                String listStatus = (isListOpen) ? "Open List" : "Close List";
-//                listButton.setText(listStatus);
-//                setListVisibility(!isListOpen);
-//                isListOpen = !isListOpen;
-//            }
-//        };
-//        listButton.setOnClickListener(openListListener);
     }
 
-//    public void favoriteClickHandle(View v) {
-//        ImageView favButt = (ImageView) v;
-//
-//        favoriteList = new ArrayList<>();
-//
-//        if (isFavorite) {
-//            favButt.setImageResource(R.drawable.star_unfilled);
-//
-//        } else {
-//            favButt.setImageResource(R.drawable.star_filled);
-//        }
-//
-//        isFavorite = !isFavorite;
-//    }
-
-    /*
-        Method to read/write to an favorite.txt, which will be used to be excluded when our
-        "listBelowMap is being refreshed and removing things to far away, then favorites will still be shown.
+    /**
+     * Easter egg method to be invoked when user taps and holds the application icon in Navigation
+     * Drawer (left menu). Changes the bus marker icon and plays an audio file using MediaPlayer #mPlayer.
+     *
+     * @throws IOException
      */
-//    private void updateFavList(){
-//        favoriteList = new ArrayList<>();
-//
-//        Scanner sc = null;
-//        try {
-//            sc = new Scanner(new BufferedReader(new FileReader("favorites.txt")));
-//
-//            while (sc.hasNext()) {
-//                favoriteList.add(sc.nextLine());
-//            }
-//        }
-//        catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        finally {
-//            if(sc != null) {
-//                sc.close();
-//            }
-//        }
-//    }
-
     public void prideMode() throws IOException {
         if (busMarker != null) {
             if (!prideMode) {
@@ -434,6 +378,9 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         }
     }
 
+    /**
+     * Switches the current visible fragment to FavoritesActivity.
+     */
     public void openFavorites() {
         FavoritesActivity fragment = new FavoritesActivity();
         favoriteList.clear();
@@ -454,4 +401,5 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
 }

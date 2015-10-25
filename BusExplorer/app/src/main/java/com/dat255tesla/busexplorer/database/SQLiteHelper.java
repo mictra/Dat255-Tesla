@@ -9,6 +9,7 @@ import android.util.Log;
  * Created by roy lena on 2015-09-24.
  */
 public class SQLiteHelper extends SQLiteOpenHelper {
+    // SQL table name and column names
     public static final String TABLE_MARKERS = "markers";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_TITLE = "title";

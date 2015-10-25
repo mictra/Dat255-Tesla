@@ -21,7 +21,7 @@ import java.util.List;
  * Created by roy lena on 2015-09-24.
  */
 public class InfoDataSource {
-    private IValuesChangedListener vcl; // TODO: Maybe abstract this to another class, more like Observer pattern?
+    private IValuesChangedListener vcl;
     private SQLiteDatabase db;
     private SQLiteHelper helper;
     private String[] allColumns = {SQLiteHelper.COLUMN_ID,
@@ -38,10 +38,20 @@ public class InfoDataSource {
         helper = new SQLiteHelper(context);
     }
 
+    /**
+     * Set a listener to later notify if values has changed.
+     *
+     * @param vcl
+     */
     public void setValuesChangedListener(IValuesChangedListener vcl) {
         this.vcl = vcl;
     }
 
+    /**
+     * Open the database session to be able to perform
+     *
+     * @throws SQLException
+     */
     public void open() throws SQLException {
         db = helper.getWritableDatabase();
     }
@@ -54,7 +64,11 @@ public class InfoDataSource {
         helper.onUpgrade(db, 1, 1);
     }
 
-    // Method for getting the Date in millis (long) for the latest modified object.
+    /**
+     * Method for getting the Date in millis (long) for the latest modified object.
+     *
+     * @return long
+     */
     public long getLatestModified() {
         Cursor cursor = db.rawQuery("SELECT * FROM markers WHERE " +
                 "lastmod = (SELECT MAX(lastmod) FROM markers) " +
@@ -69,7 +83,19 @@ public class InfoDataSource {
         }
     }
 
-    // Method for adding new InfoNodes
+    /**
+     * Method for adding new InfoNode to internal database table (as primitive values)
+     *
+     * @param title
+     * @param lat
+     * @param lng
+     * @param type
+     * @param info
+     * @param addr
+     * @param date
+     * @param objId
+     * @return
+     */
     public InfoNode createInfoNode(String title, double lat, double lng, int type,
                                    String info, String addr, long date, String objId) {
 
@@ -97,13 +123,19 @@ public class InfoDataSource {
         return newInfo;
     }
 
-    // Method for deleting InfoNodes
+    /**
+     * Method for deleting InfoNode in internal database
+     */
     public void deleteInfoNode(InfoNode node) {
         long id = node.getId();
         db.delete(SQLiteHelper.TABLE_MARKERS, SQLiteHelper.COLUMN_ID + " = " + id, null);
     }
 
-    // Method for grabbing all InfoNodes
+    /**
+     * Method for getting all data as list of InfoNode from internal database.
+     *
+     * @return
+     */
     public List<InfoNode> getAllInfoNodes() {
         List<InfoNode> nodes = new ArrayList<>();
 
@@ -122,42 +154,36 @@ public class InfoDataSource {
         return nodes;
     }
 
-    // Creates an InfoNode from the database at cursor
+    /**
+     * Creates an InfoNode from the database at #cursor (with primitive data)
+     *
+     * @param cursor
+     * @return
+     */
     private InfoNode cursorToInfo(Cursor cursor) {
         return new InfoNode(cursor.getInt(0), cursor.getString(1),
                 cursor.getDouble(2), cursor.getDouble(3), cursor.getInt(4),
                 cursor.getString(5), cursor.getString(6), cursor.getLong(7), cursor.getString(8));
     }
 
-    /*
-    Update the internal database with the server database if
-    the server database was modified at a latter date than the internal.
+    /**
+     * Update the internal database with the server database if
+     * the server database was modified at a latter date than the internal.
      */
     public void updateDatabaseIfNeeded() {
-        /*
-        Anonymous function that is invoked once the callback succeeds with either a ParseObject or ParseException.
-        Checks the date where the server database was last updated (through latest modified object).
+        /**
+         * Anonymous function that is invoked once the callback succeeds with either a ParseObject or ParseException.
+         * Checks the date where the server database was last updated (through latest modified object).
          */
         ParseQuery.getQuery("Marker").addDescendingOrder("updatedAt").getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
                 if (e == null) {
                     long latestUpdate = parseObject.getUpdatedAt().getTime();
-
                     if (latestUpdate > getLatestModified()) {
-                        //Toast.makeText(getApplicationContext(), "UPDATE IS NEEDED, SERVER DATABASE NEWER VERSION: " + ds.getLatestModified(), Toast.LENGTH_SHORT).show();
                         clearTable();
                         updateDatabase();
-                            /*
-                            values = ds.getAllInfoNodes();
-
-                            adapter.clear();
-                            adapter.addAll(values);
-                            */
-                    } else {
-                        // TODO: No update needed, notify somehow?
                     }
-
                 } else {
                     e.printStackTrace();
                 }
@@ -166,8 +192,8 @@ public class InfoDataSource {
 
     }
 
-    /*
-    Update the internal database with the server database.
+    /**
+     * Update the internal database with the server database.
      */
     private void updateDatabase() {
         ParseQuery.getQuery("Marker").findInBackground(new FindCallback<ParseObject>() {
@@ -187,7 +213,6 @@ public class InfoDataSource {
                     vcl.originalValuesChanged(getAllInfoNodes());
                 } else {
                     e.printStackTrace();
-                    // TODO: Error message, failed to retrieve database from server
                 }
             }
         });

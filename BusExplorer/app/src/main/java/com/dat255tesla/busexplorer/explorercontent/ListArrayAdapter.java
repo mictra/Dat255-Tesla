@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
-    Class used to make a custom-list-view(Adapter) to be able to show a unique icon for each list-category.
+ * Class used to make a custom-list-view(Adapter) to be able to show a unique icon for each list-category.
  */
 public class ListArrayAdapter extends ArrayAdapter<InfoNode> {
     private final Context context;
@@ -31,6 +31,16 @@ public class ListArrayAdapter extends ArrayAdapter<InfoNode> {
         this.values = copyValues;
     }
 
+    /**
+     * Returns View #rowView of the adapter containing information on the InfoNode at position
+     * #position in the adapter (with the right icon depending on type, a title and a favorite-icon
+     * with a listener that saves if it was clicked/marked or not in SharedPreferences.
+     *
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return rowView
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context

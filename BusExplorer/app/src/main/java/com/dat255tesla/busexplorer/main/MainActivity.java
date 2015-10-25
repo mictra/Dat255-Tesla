@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Set (AsyncTask) CheckBusWIFI with this class as a listener (IBusWifiListener)
         cbw = new CheckBusWIFI(this);
         cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         netInfo = cm.getActiveNetworkInfo();
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     @Override
     protected void onResume() {
         super.onResume();
-        //connect();
     }
 
     @Override
@@ -90,11 +90,12 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Check if active fragment is of class DetailActivity.
+     * If it is, we go back to the map. Otherwise we ask to exit application using an AlertDialog.
+     */
     @Override
     public void onBackPressed() {
-        // Check, if active fragment is of class DetailActivity
-        // If it is, we go back to the map. Otherwise we ask to exit.
-
         if (drawerLayout.isDrawerOpen(navigationView)) {
             drawerLayout.closeDrawers();
         } else if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof DetailActivity) {
@@ -122,9 +123,14 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
             AlertDialog alert = b.create();
             alert.show();
         }
-
     }
 
+    /**
+     * Checks if there is an active WIFI or Mobile Network (3G/4G) connection, and starts the
+     * ExplorerActivity if that is the case. Else, shows an AlertDialog.
+     * (The application is intended to only work if there is an active WIFI connection to
+     * one of the electric buses, but for demonstration purposes, we chose this temporal solution).
+     */
     public void connect() {
         // Check if online
         if (netInfo != null && netInfo.isAvailable() && netInfo.isConnected()) {
@@ -132,14 +138,21 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
             if (netInfo.getTypeName().equals("WIFI")) {
                 // This triggers with WiFI connection
                 // We can check the WiFi name here, to see if it's the same name as the bus wifi
-                // If we care. netInfo.getExtraInfo() will return the WiFi name
-                //new CheckBusWIFI(this).execute(); // TODO: Enable when in a bus or testing...
+                /*
+                 * new CheckBusWIFI(this).execute();
+                 * TODO: Enable when (testing) in an electric bus.
+                 * Disable rest of the code in this if() case below.
+                 * This is how the application is intended to work
+                 * when using it without any simulations/testing.
+                 */
 
+                // We use this to demonstrate on a simulated bus with corresponding dgw.
+                // We could also change this dgw value and hard code a real bus.
                 dgw = "Vin_Num_001";
                 mapAccess = true;
                 openExplorer();
 
-            } else { // TODO: Ask; Should only work with WIFI since we restrict the application to only work while in a bus?
+            } else { // Also for testing purposes. Disable this else-case when using on an electric bus.
                 AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
                 b.setCancelable(true);
                 // This triggers with mobile & no WiFi
@@ -151,7 +164,9 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                MainActivity.this.openExplorer();
+                                dgw = "Vin_Num_001";
+                                mapAccess = true;
+                                openExplorer();
                             }
                         });
                 b.setNegativeButton(getResources().getString(R.string.app_settings),
@@ -192,7 +207,11 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
 
     }
 
+    /**
+     * Initializes the navigation drawer (left side menu) and its list items with listeners.
+     */
     private void initNavDrawer() {
+        // Easter egg when tapping and holding the icon. Try it!
         findViewById(R.id.app_image).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -217,12 +236,6 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
             // This method will trigger on item Click of navigation menu
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-
-                //Checking if the item is in checked state or not, if not make it in checked state
-                //menuItem.setChecked(menuItem.isChecked() ? false : true);
-
-                //Closing drawer on item click
-                //drawerLayout.closeDrawers();
 
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()) {
@@ -322,6 +335,9 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         }
     }
 
+    /**
+     * Load the values of categories to be filtered and save them in the categories array
+     */
     private void loadSavedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
@@ -330,6 +346,9 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         categories[2] = sharedPreferences.getBoolean("CheckBox_bars", true);
     }
 
+    /**
+     * Save a key-value pair to SharedPreferences (settings)
+     */
     private void savePreferences(String key, boolean value) {
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
@@ -338,6 +357,9 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         editor.apply();
     }
 
+    /**
+     * Switches the current visible fragment to AboutActivity.
+     */
     private void openAbout() {
         AboutActivity fragment = new AboutActivity();
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -346,6 +368,9 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         fragmentTransaction.commit();
     }
 
+    /**
+     * Switches the current visible fragment to ExplorerActivity.
+     */
     private void openExplorer() {
         explorerActivity = new ExplorerActivity(); //Use this to notify settings change instantly
         Bundle args = new Bundle();
@@ -357,16 +382,32 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         fragmentTransaction.commit();
     }
 
+    /**
+     * Checks if there's a new valid connection to be able to start ExplorerActivity.
+     */
     private void refreshClick() {
         netInfo = cm.getActiveNetworkInfo();
         connect();
     }
 
+    /**
+     * Open the settings for WIFI connection on the device.
+     */
     public void openWiFiSettings() {
         Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
         startActivity(intent);
     }
 
+    /**
+     * Retrieves Bus-data from the server (Parse) and checks if the given #systemId of the bus
+     * is valid (i.e. if the #systemId matches any bus on the server database).
+     * If that is the case; retrieve and save the #dgw string of the bus (with corresponding systemId)
+     * and call openExplorer(). Else, deny authentication to start ExplorerActivity and display a Toast.
+     * (This method is used to get the right dgw of the current bus you're in. dgw of the bus is needed
+     * to know which bus we want to get data from when calling the API in the APIHelper class (AsyncTask)).
+     *
+     * @param systemId
+     */
     private void getDgwFromBus(final String systemId) {
         ParseQuery.getQuery("Bus").findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -397,15 +438,22 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         });
     }
 
+    /**
+     * A listener method from implementing IBusWifiListener.
+     * Gets notified with a String #systemId after executing (AsyncTask) CheckBusWIFI.
+     * Saves the value to #this.busSystemId if the retrieved value #systemId is not "0",
+     * and calls getDgwFromBus(#systemId). Else, displays a Toast with error message.
+     *
+     * @param systemId
+     */
     @Override
     public void notifySystemId(String systemId) {
         if (!systemId.equals("0")) {
             busSystemId = systemId;
             System.out.println("*******SystemId of Bus: " + systemId);
-            Toast.makeText(getApplicationContext(), "System ID: " + systemId, Toast.LENGTH_SHORT).show();
-            getDgwFromBus(systemId);
             // Check if the Bus is active and get its dgw to know
             // which "API" to call (this data is on the server database).
+            getDgwFromBus(systemId);
         } else {
             Toast.makeText(getApplicationContext(), "ERROR: You're either not connected " +
                     "to the bus wifi or on the wrong bus!", Toast.LENGTH_SHORT).show();

@@ -5,6 +5,10 @@ import java.io.Serializable;
 /**
  * Created by roy lena on 2015-09-23.
  */
+
+/**
+ * Class representing a row in database table named "markers" with corresponding primitive data
+ */
 public class InfoNode implements Serializable {
     private final long id;
     private final String title;
