@@ -21,19 +21,18 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-/**
- * Created by Michael on 2015-10-13.
- */
 public class CheckBusWIFI extends AsyncTask<Void, Void, Void> {
 
     private IBusWifiListener bwl;
     private String bus_system_id = "0";
 
     public CheckBusWIFI(IBusWifiListener bwl) {
+        // Set the listener to notify
         this.bwl = bwl;
     }
 
     private void getBusSystemID() throws IOException {
+        // The url we want to request when connected to one of the electric buses' wifi
         String url = "https://ombord.info/api/xml/system/";
         URL requestURL = new URL(url);
         HttpsURLConnection con = (HttpsURLConnection) requestURL
@@ -48,6 +47,7 @@ public class CheckBusWIFI extends AsyncTask<Void, Void, Void> {
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
 
+        // Read and save the response
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
@@ -55,8 +55,8 @@ public class CheckBusWIFI extends AsyncTask<Void, Void, Void> {
         in.close();
 
         String responseString = response.toString();
-        System.out.println("!!!!!!!!!RESPONSE FROM ICOMERA API!!!!!!!!!!: " + responseString);
 
+        // Try to parse the system_id of the bus
         try {
             bus_system_id = parseSystemIDXML(responseString);
         } catch (ParserConfigurationException | SAXException e) {
@@ -65,6 +65,17 @@ public class CheckBusWIFI extends AsyncTask<Void, Void, Void> {
 
     }
 
+    /**
+     * Parse the received response in XML format to get system_id of current bus
+     * when connected to its wifi. If response is not in XML format or the XML-element
+     * "system_id" does not exist, return string "0".
+     *
+     * @param xml
+     * @return system_id
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
     private String parseSystemIDXML(String xml) throws ParserConfigurationException, IOException, SAXException {
         String system_id = "0";
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -86,6 +97,12 @@ public class CheckBusWIFI extends AsyncTask<Void, Void, Void> {
         return system_id;
     }
 
+    /**
+     * Helper method used by parseSystemIDXML() to parse CharacterData from Element.
+     *
+     * @param e
+     * @return String
+     */
     private String getCharacterDataFromElement(Element e) {
         Node child = e.getFirstChild();
         if (child instanceof CharacterData) {
@@ -95,17 +112,30 @@ public class CheckBusWIFI extends AsyncTask<Void, Void, Void> {
         return "0";
     }
 
+    /**
+     * A background task that runs once this class instance gets executed.
+     * Calls getBusSystemID() once executed and calls onPostExecute() when done
+     * executing.
+     *
+     * @param params
+     * @return null
+     */
     @Override
     protected Void doInBackground(Void... params) {
         try {
             getBusSystemID();
         } catch (IOException e) {
             e.printStackTrace();
-            //TODO: Dialog to notify that you're not connected to Bus WIFI? Use notifySystemId();
         }
         return null;
     }
 
+    /**
+     * Notifies/Updates the listener with relevant parsed
+     * data-values (system_id of the bus in this case).
+     *
+     * @param aVoid
+     */
     @Override
     protected void onPostExecute(Void aVoid) {
         bwl.notifySystemId(bus_system_id);
