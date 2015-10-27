@@ -86,16 +86,16 @@ public class ListArrayAdapterFavorites extends ArrayAdapter<InfoNode> {
             favButton.setImageResource(R.drawable.star_unfilled);
 
 
-        imageView.setImageResource(R.drawable.marker_triangle);
+        imageView.setImageResource(R.drawable.ic_local_see_black_48dp);
         switch (currNode.getType()) {
             case 1:
-                imageView.setImageResource(R.drawable.marker_triangle);
+                imageView.setImageResource(R.drawable.ic_local_see_black_48dp);
                 break;
             case 2:
-                imageView.setImageResource(R.drawable.marker_square);
+                imageView.setImageResource(R.drawable.ic_local_mall_black_48dp);
                 break;
             case 3:
-                imageView.setImageResource(R.drawable.marker_circle);
+                imageView.setImageResource(R.drawable.ic_restaurant_menu_black_48dp);
                 break;
         }
         return rowView;

@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                         drawerLayout.closeDrawers();
                         return true;
                     case R.id.navdrawer_category_1:
-                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[0] ? R.drawable.marker_triangle_fill : R.drawable.marker_triangle_nofill));
+                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[0] ? R.drawable.ic_local_see_black_48dp : R.drawable.ic_local_see_white_48dp));
                         categories[0] = !categories[0];
                         savePreferences("CheckBox_sightseeing", categories[0]);
                         if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof ExplorerActivity) {
@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                         }
                         return true;
                     case R.id.navdrawer_category_2:
-                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[1] ? R.drawable.marker_square_fill : R.drawable.marker_square_nofill));
+                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[1] ? R.drawable.ic_local_mall_black_48dp : R.drawable.ic_local_mall_white_48dp));
                         categories[1] = !categories[1];
                         savePreferences("CheckBox_shopping", categories[1]);
                         if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof ExplorerActivity) {
@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                         }
                         return true;
                     case R.id.navdrawer_category_3:
-                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[2] ? R.drawable.marker_circle_fill : R.drawable.marker_circle_nofill));
+                        menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[2] ? R.drawable.ic_restaurant_menu_black_48dp : R.drawable.ic_restaurant_menu_white_48dp));
                         categories[2] = !categories[2];
                         savePreferences("CheckBox_bars", categories[2]);
                         if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof ExplorerActivity) {
@@ -324,23 +324,23 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     private void setNavDrawerIcons() {
         MenuItem menuItem1 = navigationView.getMenu().findItem(R.id.navdrawer_category_1);
         if (categories[0]) {
-            menuItem1.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_triangle_fill));
+            menuItem1.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_local_see_black_48dp));
         } else {
-            menuItem1.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_triangle_nofill));
+            menuItem1.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_local_see_white_48dp));
         }
 
         MenuItem menuItem2 = navigationView.getMenu().findItem(R.id.navdrawer_category_2);
         if (categories[1]) {
-            menuItem2.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_square_fill));
+            menuItem2.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_local_mall_black_48dp));
         } else {
-            menuItem2.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_square_nofill));
+            menuItem2.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_local_mall_white_48dp));
         }
 
         MenuItem menuItem3 = navigationView.getMenu().findItem(R.id.navdrawer_category_3);
         if (categories[2]) {
-            menuItem3.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_circle_fill));
+            menuItem3.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_restaurant_menu_black_48dp));
         } else {
-            menuItem3.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.marker_circle_nofill));
+            menuItem3.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_restaurant_menu_white_48dp));
         }
     }
 

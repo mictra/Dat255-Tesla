@@ -97,11 +97,11 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         opt_stops = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_stop));
         opt_sights = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_triangle));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_local_see_black_48dp));
         opt_stores = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_square));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_local_mall_black_48dp));
         opt_bars = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_circle));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_menu_black_48dp));
         busPositionOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
                 .anchor(0.5f, 0.5f);
@@ -131,6 +131,10 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     public void onPause() {
         super.onPause();
         apiHelper.cancel(true);
+        if (mPlayer != null) {
+            mPlayer.stop();
+            mPlayer.release();
+        }
     }
 
     /**
