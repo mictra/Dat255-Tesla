@@ -36,10 +36,10 @@ public class ListArrayAdapter extends ArrayAdapter<InfoNode> {
      * #position in the adapter (with the right icon depending on type, a title and a favorite-icon
      * with a listener that saves if it was clicked/marked or not in SharedPreferences.
      *
-     * @param position
-     * @param convertView
-     * @param parent
-     * @return rowView
+     * @param position The position in our values-list for our current row
+     * @param convertView not used.
+     * @param parent The "root-parent" for this layout used to create each custom row.
+     * @return rowView - An custom-made-view(adapter) that represent an row in the list below map.
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -56,6 +56,7 @@ public class ListArrayAdapter extends ArrayAdapter<InfoNode> {
         favButton.setOnClickListener(new View.OnClickListener() {
             boolean isFavorite = false;
 
+            // The onclick handler for the favorite-icon in the list below map.
             @Override
             public void onClick(View v) {
                 isFavorite = !isFavorite;
@@ -73,6 +74,8 @@ public class ListArrayAdapter extends ArrayAdapter<InfoNode> {
             }
         });
 
+        // get saved preferances for each favorite-icons state to tell which icon-type to show
+        // (favorited/not favorited)
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(getContext());
         boolean isFavorite = sharedPreferences.getBoolean(currNode.getTitle(), false);
@@ -82,7 +85,7 @@ public class ListArrayAdapter extends ArrayAdapter<InfoNode> {
         else
             favButton.setImageResource(R.drawable.star_unfilled);
 
-
+        // draw the images for each category-type for items in the list.
         imageView.setImageResource(R.drawable.ic_local_see_black_48dp);
         switch (currNode.getType()) {
             case 1:
