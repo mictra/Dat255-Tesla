@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
             drawerLayout.closeDrawers();
         } else if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof DetailActivity) {
             int size = getSupportFragmentManager().getBackStackEntryCount();
-            android.support.v4.app.FragmentManager.BackStackEntry bs = getSupportFragmentManager().getBackStackEntryAt(size-2);
+            android.support.v4.app.FragmentManager.BackStackEntry bs = getSupportFragmentManager().getBackStackEntryAt(size - 2);
             if (bs.getName().equals("ExplorerActivity")) {
                 openExplorer();
             } else {
@@ -223,12 +223,15 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         findViewById(R.id.app_image).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                try {
-                    explorerActivity.prideMode();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof ExplorerActivity) {
+                    try {
+                        explorerActivity.prideMode();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return true;
                 }
-                return true;
+                return false;
             }
         });
 
