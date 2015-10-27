@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <!-- The small picture to the left -->
+    <ImageView
+        android:id="@+id/favlist_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/poseidon1_thumb"
+        />
+
+    <!-- The name of the site -->
+    <TextView
+        android:id="@+id/favlist_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/favlist_icon"
+        android:layout_toRightOf="@id/favlist_icon"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:paddingTop="7dp"
+        android:paddingBottom="0dp"/>
+
+    <!-- The address of the site -->
+    <TextView
+        android:id="@+id/favlist_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/favlist_title"
+        android:layout_toRightOf="@id/favlist_icon"
+        android:textSize="18sp"
+        android:textStyle="normal"
+        android:paddingBottom="7dp"/>
+
+    <!-- For the Favorite Icon -->
+    <ImageView
+        android:id="@+id/favlist_favButton"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:clickable="true"
+        android:src="@drawable/star_unfilled" />
+
+</RelativeLayout>

@@ -91,15 +91,23 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
     }
 
     /**
-     * Check if active fragment is of class DetailActivity.
-     * If it is, we go back to the map. Otherwise we ask to exit application using an AlertDialog.
+     * Close the navigation drawer, if it is open.
+     * If not, check if the active fragment is of class DetailActivity.
+     * If it is, we go back to the map or the favorites depending on, where we came from.
+     * Otherwise we ask to exit application using an AlertDialog.
      */
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(navigationView)) {
             drawerLayout.closeDrawers();
         } else if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof DetailActivity) {
-            openExplorer();
+            int size = getSupportFragmentManager().getBackStackEntryCount();
+            android.support.v4.app.FragmentManager.BackStackEntry bs = getSupportFragmentManager().getBackStackEntryAt(size-2);
+            if (bs.getName().equals("ExplorerActivity")) {
+                openExplorer();
+            } else {
+                openFavorites();
+            }
         } else {
             AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
             b.setCancelable(true);
@@ -248,12 +256,12 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                         drawerLayout.closeDrawers();
                         return true;
                     case R.id.navdrawer_favorites:
-                        explorerActivity.openFavorites();
+                        openFavorites();
                         drawerLayout.closeDrawers();
                         return true;
                     case R.id.navdrawer_category_1:
                         menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[0] ? R.drawable.marker_triangle_fill : R.drawable.marker_triangle_nofill));
-                        categories[0] = categories[0] ? false : true;
+                        categories[0] = !categories[0];
                         savePreferences("CheckBox_sightseeing", categories[0]);
                         if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof ExplorerActivity) {
                             explorerActivity.onResume();
@@ -261,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                         return true;
                     case R.id.navdrawer_category_2:
                         menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[1] ? R.drawable.marker_square_fill : R.drawable.marker_square_nofill));
-                        categories[1] = categories[1] ? false : true;
+                        categories[1] = !categories[1];
                         savePreferences("CheckBox_shopping", categories[1]);
                         if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof ExplorerActivity) {
                             explorerActivity.onResume();
@@ -269,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
                         return true;
                     case R.id.navdrawer_category_3:
                         menuItem.setIcon(ContextCompat.getDrawable(getApplicationContext(), !categories[2] ? R.drawable.marker_circle_fill : R.drawable.marker_circle_nofill));
-                        categories[2] = categories[2] ? false : true;
+                        categories[2] = !categories[2];
                         savePreferences("CheckBox_bars", categories[2]);
                         if (getSupportFragmentManager().findFragmentById(R.id.frame) instanceof ExplorerActivity) {
                             explorerActivity.onResume();
@@ -311,6 +319,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         actionBarDrawerToggle.syncState();
 
     }
+
 
     private void setNavDrawerIcons() {
         MenuItem menuItem1 = navigationView.getMenu().findItem(R.id.navdrawer_category_1);
@@ -364,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         AboutActivity fragment = new AboutActivity();
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame, fragment, "AboutActivity");
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.addToBackStack("AboutActivity");
         fragmentTransaction.commit();
     }
 
@@ -378,8 +387,15 @@ public class MainActivity extends AppCompatActivity implements IBusWifiListener 
         explorerActivity.setArguments(args);
         android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame, explorerActivity, "ExplorerActivity");
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.addToBackStack("ExplorerActivity");
         fragmentTransaction.commit();
+    }
+
+    /**
+     * Switches the current visible fragment to FavoritesActivity.
+     */
+    public void openFavorites() {
+        explorerActivity.openFavorites();
     }
 
     /**

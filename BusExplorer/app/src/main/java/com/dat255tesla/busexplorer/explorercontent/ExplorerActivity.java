@@ -239,7 +239,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         fragment.setArguments(args);
         android.support.v4.app.FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame, fragment);
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.addToBackStack("DetailView");
         fragmentTransaction.commit();
     }
 
@@ -398,7 +398,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         fragment.setArguments(args);
         android.support.v4.app.FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame, fragment);
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.addToBackStack("FavoritesActivity");
         fragmentTransaction.commit();
     }
 

@@ -2,13 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.dat255tesla.busexplorer.explorercontent.FavoritesActivity">
+    tools:context="com.dat255tesla.busexplorer.explorercontent.FavoritesActivity"
+    android:orientation="horizontal">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/fav_test"
+    <ListView
+        android:id="@+id/fav_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="" />
+        android:orientation="vertical" />
+
 
 </FrameLayout>
