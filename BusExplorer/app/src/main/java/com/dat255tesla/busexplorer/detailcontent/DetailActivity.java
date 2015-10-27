@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -85,7 +84,7 @@ public class DetailActivity extends Fragment {
 
         getImagesFromServer();
 
-        description.loadUrl("file:///android_asset/detailview/" + node.getInfo()); //TODO: Store html file on server and retrieve it from there?
+        description.loadUrl("file:///android_asset/detailview/" + node.getInfo());
 
         // Retrieve and cache the system's default medium animation time.
         mAnimationDuration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
@@ -134,33 +133,24 @@ public class DetailActivity extends Fragment {
 
         TextView tv = (TextView) layout.findViewById(R.id.popup_text);
         tv.append(" " + node.getTitle() + "!");
-
-/*        Button close = (Button) layout.findViewById(R.id.popup_close);
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popup.dismiss();
-            }
-        });*/
     }
 
-    /*
-    Retrieves and displays images from server database.
-    This method has inner callback functions/methods and is done in the background.
+    /**
+     * Retrieves and displays images from server database.
+     * This method has inner callback functions/methods and is done in the background.
      */
     private void getImagesFromServer() {
         // Background method, displays images from server when its done retrieving them.
         final BitmapFactory.Options options = new BitmapFactory.Options();
         /*
-        Options used to free up memory while required (deprecated, might need a better solution?).
-        Problem known for devices with low ram memory.
+         * Options used to free up memory while required (deprecated, might need a better solution?).
+         * Problem known for devices with low ram memory.
          */
         options.inPurgeable = true;
         ParseQuery.getQuery("Marker").getInBackground(node.getObjId(), new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
                 if (e == null) { // If there are no exceptions, continue
-
                     parseObject.getRelation("imgs").getQuery().findInBackground(new FindCallback<ParseObject>() {
                         @Override
                         public void done(List<ParseObject> list, ParseException e) {
@@ -185,27 +175,6 @@ public class DetailActivity extends Fragment {
             }
         });
     }
-
-
-//    private void setFields() {
-//        headline.setText(title);
-//        subheadline.setText(address);
-//        if (noimages > 0) {
-//            //createArrays();
-//            addImagesToGallery();
-//        }
-//        description.loadUrl("file:///android_asset/detailview/" + info);
-//    }
-
-//    private void createArrays() {
-//        images = new Integer[noimages];
-//        thumbs = new Integer[noimages];
-//
-//        for (int i = 0; i < noimages; i++) {
-//            images[i] = getResources().getIdentifier(imagename + (i+1), "drawable", getPackageName());
-//            thumbs[i] = getResources().getIdentifier(imagename + (i+1) + "_thumb", "drawable", getPackageName());
-//        }
-//    }
 
     /**
      * Building the image gallery
@@ -362,4 +331,5 @@ public class DetailActivity extends Fragment {
             }
         });
     }
+
 }
