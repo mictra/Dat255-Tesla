@@ -74,7 +74,7 @@
             android:layout_marginBottom="12dp"
             android:layout_marginTop="12dp"
             android:text="@string/dv_click_free_entry"
-            android:background="@color/AccentColor"
+            android:background="@color/PrimaryDarkColor"
             android:textColor="@color/white"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"

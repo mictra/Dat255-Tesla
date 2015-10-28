@@ -72,11 +72,5 @@ public class FavoritesActivity extends Fragment {
         toolbar_title.setText(getResources().getString(R.string.favorites));
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        toolbar_title.setText(getResources().getString(R.string.app_name));
-    }
-
 
 }

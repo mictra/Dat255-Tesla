@@ -61,6 +61,7 @@ public class DetailActivity extends Fragment {
     private int mAnimationDuration;
 
     private View v;
+    private TextView toolbar_title;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,6 +115,8 @@ public class DetailActivity extends Fragment {
             View separator = v.findViewById(R.id.dv_separator2);
             separator.setVisibility(View.GONE);
         }
+
+        toolbar_title = (TextView) getActivity().findViewById(R.id.toolbar_title);
 
         return v;
     }
@@ -330,6 +333,12 @@ public class DetailActivity extends Fragment {
                 mCurrentAnimator = set;
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        toolbar_title.setText(node.getTitle());
     }
 
 }

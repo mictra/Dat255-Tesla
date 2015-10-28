@@ -11,11 +11,11 @@ p {
 }
 
 div.happyhour {
-    background-color: #ff5722;
+    background-color: #82aefe;
     color: white;
     padding: 5 5 5 5;
     font-weight: bold;
     font-size: 18pt;
-    border-radius: 23px;
+    border-radius: 0px;
     text-align: center;
 }

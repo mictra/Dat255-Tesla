@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dat255tesla.busexplorer.R;
@@ -62,6 +63,8 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
     private List<InfoNode> originalValues;
     private List<InfoNode> favoriteList;
 
+    private TextView toolbar_title;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +115,8 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
 
         favoriteList = new ArrayList<>();
 
+        toolbar_title = (TextView) getActivity().findViewById(R.id.toolbar_title);
+
         return v;
     }
 
@@ -125,6 +130,7 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
             apiHelper = new APIHelper(this, dgw);
             apiHelper.execute();
         }
+        toolbar_title.setText(getResources().getString(R.string.app_name));
     }
 
     @Override
