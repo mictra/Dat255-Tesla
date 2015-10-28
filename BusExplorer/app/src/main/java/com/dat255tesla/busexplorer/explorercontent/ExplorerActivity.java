@@ -97,11 +97,11 @@ public class ExplorerActivity extends Fragment implements IValuesChangedListener
         opt_stops = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_stop));
         opt_sights = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_local_see_black_48dp));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_local_see_black_24dp));
         opt_stores = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_local_mall_black_48dp));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_local_mall_black_24dp));
         opt_bars = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_menu_black_48dp));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_menu_black_24dp));
         busPositionOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_02))
                 .anchor(0.5f, 0.5f);
