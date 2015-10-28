@@ -47,7 +47,8 @@ public class ParseRetrieveDataTest extends AndroidTestCase implements IValuesCha
         super.setUp();
         objects = ParseQuery.getQuery("TestObject").find();
         markers = ParseQuery.getQuery("Marker").find();
-        RenamingDelegatingContext context = new RenamingDelegatingContext(getContext(), "test");
+        // Mock context
+        RenamingDelegatingContext context = new RenamingDelegatingContext(getContext(), "test_");
         ids = new InfoDataSource(context);
         ids.setValuesChangedListener(this);
         signal = new CountDownLatch(1);

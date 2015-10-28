@@ -13,6 +13,16 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,6 +30,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Created by roy lena on 2015-09-23.
@@ -206,6 +220,53 @@ public class MapUtils {
             System.out.println("\n-------------[InfoNode title (marker name)] : " + entry.getKey().getTitle()
                     + " [Value (distance in meters)] : " + entry.getValue());
         }
+    }
+
+    /**
+     * Parse the received response in XML format to get system_id of current bus
+     * when connected to its wifi. If response is not in XML format or the XML-element
+     * "system_id" does not exist, return string "0".
+     *
+     * @param xml
+     * @return system_id
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public static String parseSystemIDXML(String xml) throws ParserConfigurationException, IOException, SAXException {
+        String system_id = "0";
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputSource is = new InputSource();
+        is.setCharacterStream(new StringReader(xml));
+        Document doc = builder.parse(is);
+        NodeList nodeList = doc.getElementsByTagName("system");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Element e = (Element) nodeList.item(i);
+            NodeList systemId = e.getElementsByTagName("system_id");
+            Element line = (Element) systemId.item(0);
+            if (line != null) {
+                system_id = getCharacterDataFromElement(line);
+            }
+        }
+
+        System.out.println("----------------SystemID: " + system_id);
+        return system_id;
+    }
+
+    /**
+     * Helper method used by parseSystemIDXML() to parse CharacterData from Element.
+     *
+     * @param e
+     * @return String
+     */
+    private static String getCharacterDataFromElement(Element e) {
+        Node child = e.getFirstChild();
+        if (child instanceof CharacterData) {
+            CharacterData cd = (CharacterData) child;
+            return cd.getData();
+        }
+        return "0";
     }
 
 }

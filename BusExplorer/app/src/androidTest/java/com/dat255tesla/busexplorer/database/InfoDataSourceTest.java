@@ -17,7 +17,8 @@ public class InfoDataSourceTest extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        RenamingDelegatingContext context = new RenamingDelegatingContext(getContext(), "test");
+        // Mock context
+        RenamingDelegatingContext context = new RenamingDelegatingContext(getContext(), "test_");
         ids = new InfoDataSource(context);
         ids.open();
     }

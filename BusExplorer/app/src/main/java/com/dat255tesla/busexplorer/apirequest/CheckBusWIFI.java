@@ -2,6 +2,8 @@ package com.dat255tesla.busexplorer.apirequest;
 
 import android.os.AsyncTask;
 
+import com.dat255tesla.busexplorer.explorercontent.MapUtils;
+
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -58,58 +60,11 @@ public class CheckBusWIFI extends AsyncTask<Void, Void, Void> {
 
         // Try to parse the system_id of the bus
         try {
-            bus_system_id = parseSystemIDXML(responseString);
+            bus_system_id = MapUtils.parseSystemIDXML(responseString);
         } catch (ParserConfigurationException | SAXException e) {
             e.printStackTrace();
         }
 
-    }
-
-    /**
-     * Parse the received response in XML format to get system_id of current bus
-     * when connected to its wifi. If response is not in XML format or the XML-element
-     * "system_id" does not exist, return string "0".
-     *
-     * @param xml
-     * @return system_id
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    private String parseSystemIDXML(String xml) throws ParserConfigurationException, IOException, SAXException {
-        String system_id = "0";
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        InputSource is = new InputSource();
-        is.setCharacterStream(new StringReader(xml));
-        Document doc = builder.parse(is);
-        NodeList nodeList = doc.getElementsByTagName("system");
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Element e = (Element) nodeList.item(i);
-            NodeList systemId = e.getElementsByTagName("system_id");
-            Element line = (Element) systemId.item(0);
-            if (line != null) {
-                system_id = getCharacterDataFromElement(line);
-            }
-        }
-
-        System.out.println("----------------SystemID: " + system_id);
-        return system_id;
-    }
-
-    /**
-     * Helper method used by parseSystemIDXML() to parse CharacterData from Element.
-     *
-     * @param e
-     * @return String
-     */
-    private String getCharacterDataFromElement(Element e) {
-        Node child = e.getFirstChild();
-        if (child instanceof CharacterData) {
-            CharacterData cd = (CharacterData) child;
-            return cd.getData();
-        }
-        return "0";
     }
 
     /**
