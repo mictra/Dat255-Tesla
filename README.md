@@ -7,4 +7,6 @@ BusExplorer is an android app developed for the electrical buses in Gothenburg, 
 To be able to run the tests, a device or an emulator needs to be connected.</br>
 Navigate to the project directory `BusExplorer` and run the tests (while connected):
 
-`$ gradlew connectedCheck`
+```
+./gradlew connectedCheck
+```
