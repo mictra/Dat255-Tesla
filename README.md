@@ -4,9 +4,9 @@ BusExplorer is an android app developed for the electrical buses in Gothenburg, 
 
 ## Generating APK
 
-There is a generated APK-file (signed) in the `apk` folder ready to be installed and tested.</br>
+There are generated APK-files in the `apk` folder: release (signed) and debug ready to be installed and tested (release preferred).</br>
 There are known issues testing on an emulator, so it is adviced to test on an actual Android device.</br>
-To build and generate an APK-file in debug mode, navigate to the project directory `BusExplorer` and type the following command:
+To build and generate an own APK-file in debug mode, navigate to the project directory `BusExplorer` and type the following command:
 ```
 ./gradlew.bat assembleDebug
 ```
