@@ -11,7 +11,7 @@ To build and generate an own APK-file in debug mode, navigate to the project dir
 ./gradlew.bat assembleDebug
 ```
 
-The generated APK is located in `BusExplorer/app/build/outputs/apk/` named `app-debug.apk`
+The generated APK is located in `BusExplorer/app/build/outputs/apk/` named `app-debug.apk` and is ready to be installed on the Android device.
 
 ## Running Tests
 
@@ -21,3 +21,13 @@ Navigate to the project directory `BusExplorer` and run the tests (while connect
 ```
 ./gradlew connectedCheck
 ```
+
+## License
+
+## Team
+
+* Jonas Arvidsson
+* Kim Berger
+* Patrick Franz
+* Sebastian Kvarnström
+* Michael Tran
