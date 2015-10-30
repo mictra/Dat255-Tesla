@@ -28,7 +28,7 @@ Reports, Documents and Diagrams are found in the `docs`folder.
 
 ## Concept videos
 
-Concept video: https://www.youtube.com/watch?v=g2EOvuQus1A
+Concept video: https://www.youtube.com/watch?v=g2EOvuQus1A </br>
 Prototype (demo) video: https://www.youtube.com/watch?v=ki-ZAGCaL0o
 
 ## Team
