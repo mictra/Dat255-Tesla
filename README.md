@@ -24,7 +24,12 @@ Navigate to the project directory `BusExplorer` and run the tests (while connect
 
 ## Documents
 
-Reports, Documents and Diagrams are found in the `doc`folder.
+Reports, Documents and Diagrams are found in the `docs`folder.
+
+## Concept videos
+
+Concept video: https://www.youtube.com/watch?v=g2EOvuQus1A
+Prototype (demo) video: https://www.youtube.com/watch?v=ki-ZAGCaL0o
 
 ## Team
 
