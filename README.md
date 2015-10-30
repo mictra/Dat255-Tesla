@@ -22,7 +22,9 @@ Navigate to the project directory `BusExplorer` and run the tests (while connect
 ./gradlew connectedCheck
 ```
 
-## License
+## Documents
+
+Reports, Documents and Diagrams are found in the `doc`folder.
 
 ## Team
 
